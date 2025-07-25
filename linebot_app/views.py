@@ -210,8 +210,6 @@ def upload_closet(request):
 #     return JsonResponse({'images': result})
 
 
-
-
 def view_closet(request, user_id):
     media_root = '/home/babomomo26/AIOutfit/media/closet'  # ✅ 實體儲存目錄根路徑
     base_url = 'media/closet'  # ✅ 網頁可訪問的URL前綴
@@ -220,7 +218,7 @@ def view_closet(request, user_id):
     if settings.DEBUG:
         media_root = settings.MEDIA_ROOT_CLOSET
         base_url = settings.MEDIA_CLOSET_PARTIAL_PATH
-        
+
     user_path = os.path.join(media_root, user_id)
     image_data = []
 
