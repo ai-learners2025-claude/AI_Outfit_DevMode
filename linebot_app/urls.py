@@ -2,6 +2,8 @@
 from django.urls import path
 from .views import upload_closet, view_closet
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('upload_closet/', upload_closet, name='upload_closet'),
@@ -10,4 +12,4 @@ urlpatterns = [
     path('view_closet/<str:user_id>/', view_closet, name='view_closet'),
     # path('linebot/view_closet/<str:user_id>/', view_closet, name='view_closet'),
     
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

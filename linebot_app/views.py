@@ -209,37 +209,47 @@ def upload_closet(request):
 #     return JsonResponse({'images': result})
 
 
+# def view_closet(request, user_id):
+#     media_root = '/home/babomomo26/AIOutfit/media/closet'  # ✅ 實體儲存目錄根路徑
+#     base_url = 'media/closet'  # ✅ 網頁可訪問的URL前綴
+
+#     # 如果為開發模式從本機儲存目錄讀取
+#     if settings.DEBUG:
+#         media_root = settings.MEDIA_ROOT_CLOSET
+#         base_url = settings.MEDIA_CLOSET_PARTIAL_PATH
+
+#     user_path = os.path.join(media_root, user_id)
+#     image_data = []
+
+#     if os.path.exists(user_path):
+#         for category in os.listdir(user_path):
+#             category_path = os.path.join(user_path, category)
+#             if os.path.isdir(category_path):
+#                 for filename in os.listdir(category_path):
+#                     if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
+#                         image_url = f"{base_url}/{user_id}/{category}/{filename}"
+#                         image_data.append({
+#                             "url": image_url,
+#                             "category": category
+#                         })
+
+#     return JsonResponse({"images": image_data})
+
+@csrf_exempt
 def view_closet(request, user_id):
-    media_root = '/home/babomomo26/AIOutfit/media/closet'  # ✅ 實體儲存目錄根路徑
-    base_url = 'media/closet'  # ✅ 網頁可訪問的URL前綴
+    items = ClosetItem.objects.filter(user_id=user_id)
+    images = [{
+        'id': item.id,
+        'url': item.image.url,
+        'category': item.category
+    } for item in items]
+    return JsonResponse({'images': images})
 
-    # 如果為開發模式從本機儲存目錄讀取
-    if settings.DEBUG:
-        media_root = settings.MEDIA_ROOT_CLOSET
-        base_url = settings.MEDIA_CLOSET_PARTIAL_PATH
-
-    user_path = os.path.join(media_root, user_id)
-    image_data = []
-
-    if os.path.exists(user_path):
-        for category in os.listdir(user_path):
-            category_path = os.path.join(user_path, category)
-            if os.path.isdir(category_path):
-                for filename in os.listdir(category_path):
-                    if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
-                        image_url = f"{base_url}/{user_id}/{category}/{filename}"
-                        image_data.append({
-                            "url": image_url,
-                            "category": category
-                        })
-
-    return JsonResponse({"images": image_data})
 
 @csrf_exempt
 def delete_closet_images(request):
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': '只接受 POST 請求'})
-
     try:
         data = json.loads(request.body)
         user_id = data.get('userId')
@@ -248,10 +258,15 @@ def delete_closet_images(request):
         if not user_id or not image_ids:
             return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
 
-        # 刪除符合 user_id 且 id 在 image_ids 的圖片
-        deleted_count, _ = ClosetItem.objects.filter(user_id=user_id, id__in=image_ids).delete()
+        items = ClosetItem.objects.filter(user_id=user_id, id__in=image_ids)
+        deleted_count = 0
+        for item in items:
+            if item.image and os.path.exists(item.image.path):
+                os.remove(item.image.path)
+            item.delete()
+            deleted_count += 1
 
-        return JsonResponse({'status': 'success', 'deleted_count': deleted_count})
+        return JsonResponse({"status": "success", "deleted_count": deleted_count})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
 
