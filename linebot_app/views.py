@@ -270,29 +270,58 @@ def delete_closet_images(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
 
-
 @csrf_exempt
 def edit_closet_image_category(request):
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': '只接受 POST 請求'})
 
     try:
+        # 解析請求中的 JSON 數據
         data = json.loads(request.body)
         user_id = data.get('userId')
         image_id = data.get('imageId')
         new_category = data.get('newCategory')
+        new_imageURL = data.get('newURL')
+
+        print(f"收到請求: user_id={user_id}, image_id={image_id}, new_category={new_category}")  # 日誌輸出
 
         if not user_id or not image_id or not new_category:
             return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
 
-        # 找出該使用者指定的圖片
+        # 查詢圖片
         item = ClosetItem.objects.filter(user_id=user_id, id=image_id).first()
         if not item:
             return JsonResponse({'status': 'error', 'message': '找不到指定圖片'})
 
+        # 更新圖片分類
+        old_category = item.category
         item.category = new_category
+
+        # 下載新的圖片並更新
+        if new_imageURL:
+            response = requests.get(new_imageURL)
+            if response.status_code == 200:
+                # 生成唯一的圖片名稱，避免覆蓋舊圖片
+                timestamp = str(int(time.time()))  # 使用時間戳來保證唯一性
+                random_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))  # 隨機字符串
+                new_image_name = f"{item.user_id}_{item.category}_{timestamp}_{random_str}.jpg"  # 生成唯一名稱
+
+                # 儲存新的圖片檔案
+                item.image.save(new_image_name, ContentFile(response.content), save=True)
+
+                # 更新圖片名稱，這樣它將會有新的 URL
+                item.image.name = f'closet/{item.user_id}/{new_category}/{new_image_name}'
+
+            else:
+                return JsonResponse({'status': 'error', 'message': '無法下載新的圖片'})
+
         item.save()
 
-        return JsonResponse({'status': 'success'})
+        # 獲取更新後的圖片 URL
+        new_image_url = item.image.url if item.image else None
+
+        return JsonResponse({'status': 'success', 'newImageUrl': new_image_url})  # 返回新的圖片 URL
+
     except Exception as e:
+        print(f"錯誤: {str(e)}")  # 日誌輸出
         return JsonResponse({'status': 'error', 'message': str(e)})

@@ -664,17 +664,18 @@ document.addEventListener('click', function (e) {
       }
 
       // 儲存編輯
-  document.getElementById('modal-yes').addEventListener('click', async function () {
+document.getElementById('modal-yes').addEventListener('click', async function () {
+    console.log("編輯按鈕被點擊");  // 確認是否被觸發
     const selectedCategory = document.getElementById('edit-category').value;
     if (selectedItemCard) {
-      const imageId = selectedItemCard.getAttribute('data-id');
-      if (imageId) {
-        await editImageCategory(Number(imageId), selectedCategory);
-        selectedItemCard.setAttribute('data-category', selectedCategory);
-      }
+        const imageId = selectedItemCard.getAttribute('data-id');
+        if (imageId) {
+            await editImageCategory(Number(imageId), selectedCategory);
+            selectedItemCard.setAttribute('data-category', selectedCategory);
+        }
     }
     closeModal('edit-modal');
-  });
+});
 
       // 刪除衣物
   document.getElementById('confirm-delete').addEventListener('click', async function () {
@@ -762,29 +763,31 @@ document.addEventListener('click', function (e) {
   }
 
   // 編輯圖片分類
-  async function editImageCategory(imageId, newCategory) {
+async function editImageCategory(imageId, newCategory) {
     try {
-      const res = await fetch('/linebot/edit_closet_image_category/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: globalUserId,
-          imageId: imageId,
-          newCategory: newCategory,
-        }),
-      });
-      const result = await res.json();
-      if (result.status === 'success') {
-        alert('分類更新成功');
-        await fetchGalleryFromBackend(); // ★ 重新拉最新資料
-      } else {
-        alert('更新分類失敗');
-      }
+        console.log("編輯請求發送中...", imageId, newCategory);  // 確認參數
+        const res = await fetch('/linebot/edit_closet_image_category/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: globalUserId,
+                imageId: imageId,
+                newCategory: newCategory,
+            }),
+        });
+        const result = await res.json();
+        console.log(result);  // 輸出後端回應
+        if (result.status === 'success') {
+            alert('分類更新成功');
+            await fetchGalleryFromBackend();  // 重新拉取最新資料
+        } else {
+            alert('更新分類失敗');
+        }
     } catch (error) {
-      status.innerText = '更新分類時發生錯誤';
-      console.error(error);
+        console.error("更新分類時發生錯誤", error);
+        status.innerText = '更新分類時發生錯誤';
     }
-  }
+}
   </script>
     {% include   "components\footer.html" %}
 
