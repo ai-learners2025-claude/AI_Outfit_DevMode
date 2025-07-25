@@ -6,8 +6,9 @@
   --hover-secondary: #9E8BC3;
   --text-color: #4C445B;
   --bg-color: #F9F8FC;
-  --shadow-color: rgba(140,122,169,0.25);
+  --shadow-color: rgba(140,122,169,0.3);
   --modal-bg: rgba(0, 0, 0, 0.4);
+  --border-color: #858589; /* 淺色細線的顏色 */
 }
 
 * {

@@ -42,10 +42,8 @@
 .item-card {
   display: block;
   visibility: visible;
-  background-color: white;
-  border-radius: 12px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.948) 0%, rgba(235, 233, 233, 0.848) 70%); /* Light gray at edges, darker at center */  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 6px 12px var(--shadow-color);
   transition: transform 0.2s ease;
   position: relative;
   height: 190px;  /* 固定高度來確保圖片卡片的大小一致 */
@@ -154,19 +152,6 @@
       .upload-label i {
         margin-right: 8px;
       }
-      .modal {
-        background: white;
-        border-radius: 12px;
-        padding: 28px 32px;
-        max-width: 380px;
-        width: 90%;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-        text-align: center;
-        font-size: 1.1rem;
-        color: var(--text-color);
-        user-select: none;
-        position: relative;
-      }
 
       .modal-overlay {
         position: fixed;
@@ -180,18 +165,19 @@
 
   .modal-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 24px;
   }
 
   .modal-button {
-    padding: 8px 14px;
+    padding: 10px 28px;
     border: none;
-    border-radius: 6px;
+    border-radius: 25px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
   }
 
   .modal-yes {
@@ -206,6 +192,8 @@
   .btn-cancel {
     background-color: var(--accent-color);
     color: var(--text-color);
+    border-radius: 20px;
+  
   }
 
   .btn-cancel:hover {
@@ -216,7 +204,8 @@
   .modal-title {
     background: white;
     border-radius: 12px;
-    padding: 24px 28px;
+    text-align: center;
+    padding: 24px 28px;  /* 提升內邊距 */
     width: 90%;
     max-width: 360px;
     box-shadow: 0 8px 20px var(--shadow-color);
@@ -224,17 +213,20 @@
     color: var(--text-color);
   }
 
-  .modal-title h3 {
-    margin-top: 0;
-  }
+.modal-title h3 {
+  margin-top: 0;
+  font-size: 1.2rem; /* 增加字型大小 */
+  color: var(--text-color);
+  margin-bottom: 16px; /* 增加底部間距 */
+}
 
   .modal-title select {
     width: 100%;
-    padding: 10px;
-    margin-top: 12px;
+    padding: 12px;
+    margin-top: 16px;
     font-size: 1rem;
     border: 1px solid var(--secondary-color);
-    border-radius: 6px;
+    border-radius: 8px; /* 加大圓角 */
     background: var(--accent-color);
     color: var(--text-color);
   }
@@ -318,6 +310,22 @@
         background-color: var(--hover-secondary);
         color: white;
 }
+
+#upload-category {
+    text-align: center; /* 讓下拉框文字置中 */
+}
+
+/* 設定 option 項目的樣式 */
+#upload-category option {
+    text-align: center; /* 讓選項文字置中 */
+    padding: 12px 20px; /* 增加內邊距 */
+    font-size: 1rem;
+    background-color: var(--bg-color); /* 預設背景色 */
+    color: var(--text-color); /* 文字顏色 */
+    transition: background-color 0.3s ease; /* 背景色過渡效果 */
+}
+
+
     </style>
   </head>
   <body>
@@ -351,13 +359,13 @@
       </div>
 
   <!-- 編輯 Modal -->
-  <div id="edit-modal" class="modal-overlay">
+  <div class="modal-overlay" id="edit-modal">
     <div class="modal-title">
       <h3>選擇新的衣物類別</h3>
       <select id="edit-category"></select>
 
       <div class="modal-buttons">
-        <button class="modal-button modal-yes" id="modal-yes">儲存</button>
+        <button class="modal-button modal-yes" id="modal-edit-save">儲存</button>
         <button class="modal-button btn-cancel">取消</button>
       </div>
     </div>
@@ -365,10 +373,10 @@
 
   <!-- 刪除 Modal -->
   <div class="modal-overlay" id="delete-modal" >
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <p id="modal-title">你確定要刪除這件衣物嗎？</p>
+    <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3>您確定要刪除這件衣物嗎？</h3>
         <div class="modal-buttons">
-          <button class="modal-button modal-yes" id="confirm-delete">確認刪除</button>
+          <button class="modal-button modal-yes" id="modal-delete-yes">確定</button>
           <button class="modal-button btn-cancel">取消</button>
         </div>
       </div>
@@ -547,13 +555,25 @@ function filterCategory(category) {
       }
 
       // === 5. 浮動按鈕：開關上傳彈窗 ===
-      uploadBtn.addEventListener('click', function () {
-      const isOpen = uploadPopup.style.display === 'flex';
-      uploadPopup.style.display = isOpen ? 'none' : 'flex';
-      if (!isOpen) {
-          CategorySelect.value = ''; // 每次打開時重置分類
-      }
-      });
+uploadBtn.addEventListener('click', function (e) {
+    // 阻止點擊事件冒泡，防止被 document 監聽到
+    e.stopPropagation();
+
+    // 切換上傳彈窗顯示狀態
+    const isOpen = uploadPopup.style.display === 'flex';
+    uploadPopup.style.display = isOpen ? 'none' : 'flex';
+    if (!isOpen) {
+        CategorySelect.value = ''; // 每次打開時重置分類
+    }
+});
+
+// 點擊任何地方關閉上傳彈窗
+document.addEventListener('click', function (e) {
+    // 如果點擊的地方既不是上傳彈窗也不是浮動按鈕，則關閉上傳彈窗
+    if (!uploadPopup.contains(e.target) && e.target !== uploadBtn) {
+        uploadPopup.style.display = 'none';
+    }
+});
 
       // === 6. 選擇分類後打開檔案上傳 ===
       confirmUpload.addEventListener('click', function () {
@@ -664,21 +684,21 @@ document.addEventListener('click', function (e) {
       }
 
       // 儲存編輯
-document.getElementById('modal-yes').addEventListener('click', async function () {
-    console.log("編輯按鈕被點擊");  // 確認是否被觸發
-    const selectedCategory = document.getElementById('edit-category').value;
-    if (selectedItemCard) {
-        const imageId = selectedItemCard.getAttribute('data-id');
-        if (imageId) {
-            await editImageCategory(Number(imageId), selectedCategory);
-            selectedItemCard.setAttribute('data-category', selectedCategory);
-        }
-    }
-    closeModal('edit-modal');
-});
-
+  document.getElementById('modal-edit-save').addEventListener('click', async function () {
+      console.log("編輯按鈕被點擊");  // 確認是否被觸發
+      const selectedCategory = document.getElementById('edit-category').value;
+      if (selectedItemCard) {
+          const imageId = selectedItemCard.getAttribute('data-id');
+          if (imageId) {
+              await editImageCategory(Number(imageId), selectedCategory);
+              selectedItemCard.setAttribute('data-category', selectedCategory);
+          }
+      }
+      closeModal('edit-modal');
+  });
+  
       // 刪除衣物
-  document.getElementById('confirm-delete').addEventListener('click', async function () {
+  document.getElementById('modal-delete-yes').addEventListener('click', async function () {
     if (selectedItemCard) {
       const imageId = selectedItemCard.getAttribute('data-id');
       if (!imageId) {
@@ -727,6 +747,8 @@ document.getElementById('modal-yes').addEventListener('click', async function ()
           }
       });
       });
+
+
 
   // 刪除圖片
   async function deleteSelected() {
