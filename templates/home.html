@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+  <title>MyStylist - 隨身設計師</title>
+  <style>
+    /* 根據網站的色系與設計語言來調整 */
+    :root {
+      --main-color: #8C7AA9;
+      --text-color: #4C445B;
+      --accent-color: #F0EAFB;
+      --bg-color: #F9F8FC;
+      --hover-color: #7B6995;
+      --shadow-color: rgba(140,122,169,0.3);
+      --transition-speed: 0.3s;
+      --border-color: #DCDCDC; /* 淺色細線的顏色 */
+    }
+    
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+    
+    /* 全螢幕背景 */
+    .hero {
+     background-image: url("{% static 'images/index.jpg' %}"); /* 替換為適合的圖像 */
+     background-size: cover;
+     background-position: center;
+     height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     text-align: center;
+     color: var(--text-color);
+     padding: 0; /* Remove padding that might affect bottom positioning */
+     position: relative; /* Ensure this is the positioning context */
+     overflow: hidden;
+    }
+    
+    
+    .scroll-indicator {
+     position: absolute;
+     bottom: 10px; /* Adjust the distance from the very bottom as needed */
+     left: 50%;
+     transform: translateX(-50%);
+     font-size: 40px;
+     color: rgba(136, 136, 136, 0.9);
+     animation: bounce 1.5s infinite;
+     cursor: pointer;
+     z-index: 3; /* Ensure it's above the overlay and other content */
+    }
+    
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(10px);
+      }
+    }
+    
+    .hero::after {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-color: rgba(255, 255, 255, 0.6); /* 透明遮罩層 */
+     z-index: 1;
+    }
+    
+    
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .hero > div {
+     position: relative; /* Keep this for the text and buttons to be above the overlay */
+     z-index: 2;
+    }
+    
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    
+    .btn-hero {
+      display: inline-block;
+      background-color: var(--text-color);
+      color: white;
+      padding: 12px 30px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      margin-top: 20px;
+      margin-right: 20px;
+      transition: background-color 0.8s ease, transform 0.8s ease;
+      opacity: 0; /* 初始不可見 */
+      animation: fadeIn 1.8s ease-out forwards; /* 使用 'forwards' 保持最終狀態 */
+      animation-delay: 0.5s;
+    } 
+    
+    .btn-hero:hover {
+      background-color: var(--hover-color);
+      transform: scale(1.1);
+    }
+    
+    .btn-start {
+      animation-delay: 1.2s;
+    }
+    
+    
+    /* 願景區 */
+    #vision {
+      padding: 60px 20px;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+      color: var(--text-color);
+      border-bottom: 1px solid var(--border-color); /* 添加底部分隔線 */
+    }
+    
+    #vision h2 {
+      font-size: 28px;
+      color: var(--text-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    
+    #vision p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      text-align: left; /* 文字靠左對齊 */
+      display: inline-block; /* 讓段落內的文字成為區塊，並允許水平居中 */
+      width: 100%; /* 占滿整個容器 */
+      text-align: center; /* 置中整個段落 */
+    }
+    
+    /* 核心理念區 */
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border-color); /* 添加底部分隔線 */
+    }
+    
+    .section h2 {
+      font-size: 32px;
+      color: var(--main-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    
+    .section p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    
+    /* 團隊成員區 */
+    .team-members {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      padding: 40px 20px;
+    }
+    
+    .team-members h2 {
+      font-size: 32px;
+      color: var(--main-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    /* 團隊成員的單個卡片 */
+    .team-member {
+      background-color: var(--accent-color);
+      border-radius: 5px;
+      padding: 5px;
+      width: 220px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+      text-align: center;
+    }
+    
+    .team-member:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 20px var(--shadow-color);
+    }
+    
+    .team-member h3 {
+      font-size: 22px;
+      color: var(--text-color);
+      font-weight: bold;
+    }
+    
+    .team-member p {
+      font-size: 14px;
+      color: var(--text-color);
+      margin-top: 10px;
+    }
+    
+    /* 動畫效果 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div>
+      <h1>MyStylist</h1>
+      <p>妳想成為的樣子，我們一起穿出來</p>
+      <a href="#vision" class="btn-hero" onclick="smoothScroll(event)">了解更多</a>
+      <a href="/liff/mimic/" class="btn-hero">開始體驗</a>
+    </div>
+    <!-- 向下滾動的箭頭 -->
+    <div class="scroll-indicator">
+      &#x2193; <!-- 向下的箭頭符號 -->
+    </div>
+  </div>
+
+  <!-- 願景區 -->
+  <div id="vision" class="section">
+    <h2>「時尚從不是盲目的追逐，而是一次次自我風格的重組」</h2>
+    <p>我們結合科技的力量，為你梳理衣櫃的可能性，</p>
+    <p>讓每一件衣服都有再次發光的機會。</p>
+  </div>
+
+  <!-- 團隊成員區 -->
+  <div class="section">
+    <h2>團隊成員</h2>
+    <div class="team-members">
+      <div class="team-member">
+        <h3>吳姿漫</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>郭啓榮</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>林群偉</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>曾詩婷</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>蘇靜瑜</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>陳禹翔</h3>  
+        <p>XXXXX</p>
+      </div>
+    </div>
+  </div>
+<script>
+    // 平滑滾動到指定區域
+    function smoothScroll(event) {
+      event.preventDefault();
+      const targetId = event.target.getAttribute("href");
+      const targetElement = document.querySelector(targetId);
+    
+      window.scrollTo({
+        top: targetElement.offsetTop,
+        behavior: "smooth"
+      });
+    }
+  </script>
+</body>
+</html>
