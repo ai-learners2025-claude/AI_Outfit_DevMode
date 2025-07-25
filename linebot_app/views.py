@@ -25,12 +25,11 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 
 from pathlib import Path
-
+import json
 
 from io import BytesIO 
 
 import logging
-
 
 
 # 將以下設定寫入 settings.py 中
@@ -235,3 +234,50 @@ def view_closet(request, user_id):
                         })
 
     return JsonResponse({"images": image_data})
+
+@csrf_exempt
+def delete_closet_images(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': '只接受 POST 請求'})
+
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('userId')
+        image_ids = data.get('imageIds', [])
+
+        if not user_id or not image_ids:
+            return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
+
+        # 刪除符合 user_id 且 id 在 image_ids 的圖片
+        deleted_count, _ = ClosetItem.objects.filter(user_id=user_id, id__in=image_ids).delete()
+
+        return JsonResponse({'status': 'success', 'deleted_count': deleted_count})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+@csrf_exempt
+def edit_closet_image_category(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': '只接受 POST 請求'})
+
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('userId')
+        image_id = data.get('imageId')
+        new_category = data.get('newCategory')
+
+        if not user_id or not image_id or not new_category:
+            return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
+
+        # 找出該使用者指定的圖片
+        item = ClosetItem.objects.filter(user_id=user_id, id=image_id).first()
+        if not item:
+            return JsonResponse({'status': 'error', 'message': '找不到指定圖片'})
+
+        item.category = new_category
+        item.save()
+
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})

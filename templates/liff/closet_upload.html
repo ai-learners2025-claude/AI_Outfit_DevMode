@@ -492,37 +492,43 @@
     }
   });
 
-    function renderGallery() {
-    gallery.innerHTML = '';  // 清空
+function renderGallery() {
+  gallery.innerHTML = ''; // 先清空現有內容
 
-    images.forEach(img => {
-      if (currentFilter !== 'all' && img.category !== currentFilter) return;
+  images.forEach(img => {
+    if (currentFilter !== 'all' && img.category !== currentFilter) return;
 
-      const card = document.createElement('div');
-      card.className = 'item-card';
+    const card = document.createElement('div');
+    card.className = 'item-card';
 
-      const imgEl = document.createElement('img');
-      imgEl.src = img.url;
-      imgEl.alt = '衣物';
-      card.appendChild(imgEl);
+    // 加上 data-category 屬性，方便篩選
+    card.setAttribute('data-id', img.id);
+    card.setAttribute('data-category', img.category);
 
-      const moreBtn = document.createElement('div');
-      moreBtn.className = 'more-options';
-      moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-      moreBtn.onclick = () => toggleItemActions(actions);
-      card.appendChild(moreBtn);
+    const imgEl = document.createElement('img');
+    imgEl.src = img.url;
+    imgEl.alt = '衣物';
+    card.appendChild(imgEl);
 
-      const actions = document.createElement('div');
-      actions.className = 'item-actions';
-      actions.innerHTML = `
-        <i class="fas fa-edit" title="編輯衣物"></i>
-        <i class="fas fa-trash" title="刪除衣物"></i>
-      `;
-      card.appendChild(actions);
+    const moreBtn = document.createElement('div');
+    moreBtn.className = 'more-options';
+    moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+    card.appendChild(moreBtn);
 
-      gallery.appendChild(card);
-    });
-  }
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+    actions.innerHTML = `
+      <i class="fas fa-edit" title="編輯衣物"></i>
+      <i class="fas fa-trash" title="刪除衣物"></i>
+    `;
+    card.appendChild(actions);
+
+    gallery.appendChild(card);
+
+    // 如果有事件綁定函式，也可這裡呼叫
+    bindItemCardEvents(card);
+  });
+}
   async function fetchGalleryFromBackend() {
     try {
       const res = await fetch(`/linebot/view_closet/${globalUserId}/`);
@@ -582,51 +588,29 @@
   //   alert(`已從本機選擇 ${files.length} 張圖片，請選擇分類並上傳`);
   // });
 
-  async function sendToBackend() {
-    const category = categorySelect.value;
-    const formData = new FormData();
-    formData.append('userId', globalUserId);
-    formData.append('category', category);
+  // async function sendToBackend() {
+  //   const category = categorySelect.value;
+  //   const formData = new FormData();
+  //   formData.append('userId', globalUserId);
+  //   formData.append('category', category);
 
-    selectedFiles.forEach((file) => {
-      formData.append('images', file);
-    });
+  //   selectedFiles.forEach((file) => {
+  //     formData.append('images', file);
+  //   });
 
-    const res = await fetch('/linebot/upload_closet/', {
-      method: 'POST',
-      body: formData,
-    });
+  //   const res = await fetch('/linebot/upload_closet/', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
 
-    const result = await res.json();
-    if (result.status === 'success') {
-      alert('圖片上傳成功！');
-      await fetchGalleryFromBackend();
-    } else {
-      alert('圖片上傳失敗');
-    }
-  }
-
-  function uploadImages() {
-    if (selectedFiles.length === 0) {
-      alert('請先選擇圖片');
-      return;
-    }
-
-    const category = categorySelect.value;
-    if (!category) {
-      alert('請先選擇分類再上傳');
-      return;
-    }
-
-    selectedFiles.forEach(file => {
-      const url = URL.createObjectURL(file);
-      images.push({ id: idCounter++, file, category, url, selected: false });
-    });
-
-    renderGallery();
-    sendToBackend();
-    fileInput.value = '';
-  }
+  //   const result = await res.json();
+  //   if (result.status === 'success') {
+  //     alert('圖片上傳成功！');
+  //     await fetchGalleryFromBackend();
+  //   } else {
+  //     alert('圖片上傳失敗');
+  //   }
+  // }
 
   function toggleItemActions(actionsEl) {
     actionsEl.style.display = actionsEl.style.display === 'block' ? 'none' : 'block';
@@ -706,62 +690,54 @@
     });
 
     // 選擇完圖片後自動上傳
-uploadInput.addEventListener('change', async function (event) {
-  const files = event.target.files;
-  if (!files.length) {
-    alert('請選擇至少一張圖片');
-    return;
-  }
-  if (!globalUserId) {
-    alert('用戶尚未登入，請重新整理或稍後再試');
-    return;
-  }
-  if (!categorySelect.value) {
-    alert('請先選擇分類');
-    return;
-  }
+    uploadInput.addEventListener('change', async function (event) {
+      const files = event.target.files;
+      if (!files.length) {
+        alert('請選擇至少一張圖片');
+        return;
+      }
+      if (!globalUserId) {
+        alert('用戶尚未登入，請重新整理或稍後再試');
+        return;
+      }
+      if (!categorySelect.value) {
+        alert('請先選擇分類');
+        return;
+      }
 
-  const formData = new FormData();
-  formData.append('userId', globalUserId);
-  formData.append('category', categorySelect.value);
-  Array.from(files).forEach(file => formData.append('images', file));
+    const formData = new FormData();
+    formData.append('userId', globalUserId);
+    formData.append('category', categorySelect.value);
+    Array.from(files).forEach(file => formData.append('images', file));
 
-  try {
-    const res = await fetch('/linebot/upload_closet/', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await res.json();
+    try {
+      const res = await fetch('/linebot/upload_closet/', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
 
-    if (result.status === 'success') {
-      alert('圖片上傳成功！');
-      await fetchGalleryFromBackend(); // 上傳成功後刷新圖片
-    } else {
-      alert(result.message || '上傳失敗，請重試');
+      if (result.status === 'success') {
+        alert('圖片上傳成功！');
+        await fetchGalleryFromBackend(); // 上傳成功後刷新圖片
+      } else {
+        alert(result.message || '上傳失敗，請重試');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('上傳過程發生錯誤');
     }
-  } catch (err) {
-    console.error(err);
-    alert('上傳過程發生錯誤');
-  }
 
-  // 清空檔案輸入，讓同檔案能重複選取
-  event.target.value = '';
-});
-
+    // 清空檔案輸入，讓同檔案能重複選取
+    event.target.value = '';
+  });
 
     // === 7. 篩選功能 ===
     document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('filter-btn')) {
-        const selected = e.target.dataset.category;
-        document.querySelectorAll('.item-card').forEach(card => {
-        const cardCategory = card.getAttribute('data-category');
-        if (selected === 'all' || cardCategory === selected) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
-        });
-    }
+      if (e.target.classList.contains('filter-btn')) {
+        currentFilter = e.target.dataset.category;  // 更新篩選條件
+        renderGallery();                            // 重新渲染畫面
+      }
     });
     // === 9. 卡片事件綁定 ===
     function bindItemCardEvents(card) {
@@ -778,6 +754,8 @@ uploadInput.addEventListener('change', async function (event) {
     editBtn.addEventListener('click', function (event) {
         event.stopPropagation();
         selectedItemCard = card;
+        const currentCategory = card.getAttribute('data-category');
+        editCategory.value = currentCategory;  // 預設選擇目前分類
         openModal('edit-modal');
     });
 
@@ -802,22 +780,52 @@ uploadInput.addEventListener('change', async function (event) {
     }
 
     // 儲存編輯
-    document.getElementById('modal-yes').addEventListener('click', function () {
-    const selectedCategory = document.getElementById('edit-category').value;
-    if (selectedItemCard) {
-        selectedItemCard.setAttribute('data-category', selectedCategory);
+document.getElementById('modal-yes').addEventListener('click', async function () {
+  const selectedCategory = document.getElementById('edit-category').value;
+  if (selectedItemCard) {
+    const imageId = selectedItemCard.getAttribute('data-id');
+    if (imageId) {
+      await editImageCategory(Number(imageId), selectedCategory);
+      selectedItemCard.setAttribute('data-category', selectedCategory);
     }
-    closeModal('edit-modal');
-    });
+  }
+  closeModal('edit-modal');
+});
 
     // 刪除衣物
-    document.getElementById('confirm-delete').addEventListener('click', function () {
-    if (selectedItemCard) {
-        selectedItemCard.remove();
-        selectedItemCard = null;
+document.getElementById('confirm-delete').addEventListener('click', async function () {
+  if (selectedItemCard) {
+    const imageId = selectedItemCard.getAttribute('data-id');
+    if (!imageId) {
+      alert('找不到圖片 ID，無法刪除');
+      return;
     }
+    try {
+      const res = await fetch('/linebot/delete_closet_images/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: globalUserId,
+          imageIds: [Number(imageId)],
+        }),
+      });
+      const result = await res.json();
+      if (result.status === 'success') {
+        images = images.filter(img => img.id !== Number(imageId));
+        renderGallery();
+        alert('刪除成功');
+      } else {
+        alert(result.message || '刪除失敗');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('刪除時發生錯誤');
+    }
+    selectedItemCard = null;
     closeModal('delete-modal');
-    });
+  }
+});
+
 
     // 關閉 modal
     document.querySelectorAll('.btn-cancel').forEach((btn) => {
@@ -835,6 +843,69 @@ uploadInput.addEventListener('change', async function (event) {
         }
     });
     });
+
+// 刪除圖片
+async function deleteSelected() {
+  const selectedImages = images.filter(img => img.selected);
+  if (selectedImages.length === 0) {
+    alert('請先選擇要刪除的圖片');
+    return;
+  }
+  if (!confirm(`確定要刪除 ${selectedImages.length} 張圖片嗎？`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch('/linebot/delete_closet_images/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: globalUserId,
+        imageIds: selectedImages.map(img => img.id),
+      }),
+    });
+    const result = await res.json();
+    if (result.status === 'success') {
+      images = images.filter(img => !img.selected);
+      status.innerText = `已刪除 ${selectedImages.length} 張圖片`;
+      renderGallery();
+    } else {
+      status.innerText = '刪除失敗，請稍後再試';
+    }
+  } catch (error) {
+    status.innerText = '刪除時發生錯誤';
+    console.error(error);
+  }
+}
+
+// 編輯圖片分類
+async function editImageCategory(imageId, newCategory) {
+  try {
+    const res = await fetch('/linebot/edit_closet_image_category/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: globalUserId,
+        imageId: imageId,
+        newCategory: newCategory,
+      }),
+    });
+    const result = await res.json();
+    if (result.status === 'success') {
+      const image = images.find(img => img.id === imageId);
+      if (image) {
+        image.category = newCategory;
+      }
+      renderGallery();
+      status.innerText = '分類更新成功';
+    } else {
+      status.innerText = '更新分類失敗';
+    }
+  } catch (error) {
+    status.innerText = '更新分類時發生錯誤';
+    console.error(error);
+  }
+}
 
 </script>
 
