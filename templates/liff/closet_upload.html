@@ -2,88 +2,13 @@
   <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
+    
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>我的衣櫃 - MyStylist</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      :root {
-        --main-color: #8C7AA9;
-        --secondary-color: #B8A9D1;
-        --accent-color: #F0EAFB;
-        --hover-main: #7B6995;
-        --hover-secondary: #9E8BC3;
-        --text-color: #4C445B;
-        --bg-color: #F9F8FC;
-        --shadow-color: rgba(140,122,169,0.25);
-      }
-
-
-  * {
-    box-sizing: border-box;
-  }
-
-      body {
-        margin: 0;
-        font-family: 'Noto Sans TC', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        overflow-x: hidden;
-      }
-
-      .navbar {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        height: 64px;
-        background: white;
-        box-shadow: 0 3px 10px var(--shadow-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 28px;
-        z-index: 100;
-        border-bottom: 3px solid var(--secondary-color);
-      }
-
-      .logo {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text-color);
-        letter-spacing: 1px;
-        user-select: none;
-      }
-      .logo a {
-        text-decoration: none; /* 去掉底線 */
-        font-weight: bold;     /* 讓文字加粗以顯示為Logo */
-        color: var(--text-color); /* 讓文字顏色與主題色一致，這裡可以根據需要調整 */
-        font-size: 24px; /* 設定合適的字型大小 */
-      }
-
-      .nav-icons {
-        display: flex;
-        gap: 28px;
-      }
-
-      .nav-icons i {
-        font-size: 1.5rem;
-        color: var(--secondary-color);
-        cursor: pointer;
-        transition: color 0.3s ease, transform 0.25s ease;
-        padding: 6px;
-        border-radius: 50%;
-      }
-
-      .nav-icons i:hover {
-        color: var(--hover-secondary);
-        background-color: var(--accent-color);
-        transform: scale(1.15);
-      }
-
-      main {
-        padding: 100px 24px 40px;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
 
       .closet-title {
         font-size: 1.8rem;
@@ -114,26 +39,28 @@
         color: white;
       }
 
-      .closet-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 18px;
-      }
+.item-card {
+  display: block;
+  visibility: visible;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px var(--shadow-color);
+  transition: transform 0.2s ease;
+  position: relative;
+  height: 190px;  /* 固定高度來確保圖片卡片的大小一致 */
+  max-height: 190px;
+}
+.item-card.hidden {
+  visibility: hidden; /* 使用 hidden 讓卡片隱藏，但不會影響 grid */
+}
 
-      .item-card {
-        background-color: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 6px 12px var(--shadow-color);
-        transition: transform 0.2s ease;
-        position: relative;
-      }
-
-      .item-card img {
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
-      }
+.item-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 
           .item-actions i {
         padding: 6px;
@@ -188,6 +115,7 @@
         background-color: var(--accent-color);
       }
 
+
       @media (max-width: 600px) {
         .closet-title {
           font-size: 1.4rem;
@@ -226,8 +154,6 @@
       .upload-label i {
         margin-right: 8px;
       }
-
-
       .modal {
         background: white;
         border-radius: 12px;
@@ -387,17 +313,16 @@
   .confirm-upload-btn:hover {
     background-color: var(--hover-main);
   }
+
+.filter-btn.active {
+        background-color: var(--hover-secondary);
+        color: white;
+}
     </style>
   </head>
   <body>
+    {% include "components/header.html" %}
 
-    <nav class="navbar">
-      <div class="logo">MyStylist</div>
-      <div class="nav-icons">
-        <i class="fas fa-heart" title="穿搭" aria-label="穿搭"></i>
-        <i class="fas fa-shirt" title="衣櫃" aria-label="衣櫃"></i>
-      </div>
-    </nav>
 
   <!-- 浮動上傳按鈕 -->
   <div class="upload-section">
@@ -418,12 +343,13 @@
   <input type="file" id="upload-input" accept="image/*" hidden />
 
     <main>
-
       <h1 class="closet-title">我的衣櫃</h1>
-
       <div class="filter-bar" id="filter-bar"></div>
 
-      <section class="closet-grid"></section>
+      <div class="closet-grid-container">
+        <section class="closet-grid"></section>
+      </div>
+
   <!-- 編輯 Modal -->
   <div id="edit-modal" class="modal-overlay">
     <div class="modal-title">
@@ -491,43 +417,49 @@
       }
     });
 
-  function renderGallery() {
-    gallery.innerHTML = ''; // 先清空現有內容
+function renderGallery() {
+  gallery.innerHTML = ''; // 先清空現有內容
 
-    images.forEach(img => {
-      if (currentFilter !== 'all' && img.category !== currentFilter) return;
+  images.forEach(img => {
+    if (currentFilter !== 'all' && img.category !== currentFilter) return;
 
-      const card = document.createElement('div');
-      card.className = 'item-card';
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    
+    // 加上 data-category 屬性，方便篩選
+    card.setAttribute('data-id', img.id);
+    card.setAttribute('data-category', img.category);
 
-      // 加上 data-category 屬性，方便篩選
-      card.setAttribute('data-id', img.id);
-      card.setAttribute('data-category', img.category);
+    const imgEl = document.createElement('img');
+    imgEl.src = img.url;
+    imgEl.alt = '衣物';
+    card.appendChild(imgEl);
 
-      const imgEl = document.createElement('img');
-      imgEl.src = img.url;
-      imgEl.alt = '衣物';
-      card.appendChild(imgEl);
+    const moreBtn = document.createElement('div');
+    moreBtn.className = 'more-options';
+    moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+    card.appendChild(moreBtn);
 
-      const moreBtn = document.createElement('div');
-      moreBtn.className = 'more-options';
-      moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-      card.appendChild(moreBtn);
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+    actions.innerHTML = `
+      <i class="fas fa-edit" title="編輯衣物"></i>
+      <i class="fas fa-trash" title="刪除衣物"></i>
+    `;
+    card.appendChild(actions);
 
-      const actions = document.createElement('div');
-      actions.className = 'item-actions';
-      actions.innerHTML = `
-        <i class="fas fa-edit" title="編輯衣物"></i>
-        <i class="fas fa-trash" title="刪除衣物"></i>
-      `;
-      card.appendChild(actions);
+    gallery.appendChild(card);
 
-      gallery.appendChild(card);
+    bindItemCardEvents(card);
+  });
 
-      // 如果有事件綁定函式，也可這裡呼叫
-      bindItemCardEvents(card);
-    });
-  }
+  // 強制刷新 Grid 佈局
+  gallery.style.display = 'none';
+  gallery.offsetHeight; // trigger reflow
+  gallery.style.display = '';
+}
+
+
     async function fetchGalleryFromBackend() {
       try {
         const res = await fetch(`/linebot/view_closet/${globalUserId}/`);
@@ -550,10 +482,20 @@
       actionsEl.style.display = actionsEl.style.display === 'block' ? 'none' : 'block';
     }
 
-    function filterCategory(category) {
-      currentFilter = category;
-      renderGallery();
+function filterCategory(category) {
+  currentFilter = category;
+
+  // 更新篩選條件後，直接控制顯示與隱藏，而不是重渲染所有卡片
+  document.querySelectorAll('.item-card').forEach(card => {
+    const match = category === 'all' || card.dataset.category === category;
+    if (match) {
+      card.classList.remove('hidden');  // 顯示符合條件的卡片
+    } else {
+      card.classList.add('hidden');     // 隱藏不符合條件的卡片
     }
+  });
+}
+
 
       // === 1. 定義分類 Map ===
       const categoryMap = {
@@ -667,12 +609,20 @@
     });
 
       // === 7. 篩選功能 ===
-      document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('filter-btn')) {
-          currentFilter = e.target.dataset.category;  // 更新篩選條件
-          renderGallery();                            // 重新渲染畫面
-        }
-      });
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('filter-btn')) {
+    // 移除所有按鈕的選中狀態
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // 為當前點擊的篩選按鈕添加選中狀態
+    e.target.classList.add('active');
+
+    currentFilter = e.target.dataset.category;  // 更新篩選條件
+    renderGallery();                            // 重新渲染畫面
+  }
+});
       // === 9. 卡片事件綁定 ===
       function bindItemCardEvents(card) {
       const moreOptions = card.querySelector('.more-options');
@@ -836,5 +786,7 @@
     }
   }
   </script>
+    {% include   "components\footer.html" %}
+
   </body>
   </html>

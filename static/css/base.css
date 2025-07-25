@@ -1,0 +1,134 @@
+:root {
+  --main-color: #8C7AA9;
+  --secondary-color: #B8A9D1;
+  --accent-color: #F0EAFB;
+  --hover-main: #7B6995;
+  --hover-secondary: #9E8BC3;
+  --text-color: #4C445B;
+  --bg-color: #F9F8FC;
+  --shadow-color: rgba(140,122,169,0.25);
+  --modal-bg: rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* === 全域佈局 === */
+body {
+  margin: 0;
+  font-family: 'Noto Sans TC', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Main 預留 Header & Footer 空間 === */
+main {
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  padding: 80px 45px 20px 35px; /* 預留 Navbar 高度 */
+}
+
+/* === 固定 Footer === */
+.footer {
+  position: relative;
+  margin-top: auto; /* 這樣就能確保 Footer 始終在頁面底部 */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 40px;
+  z-index: 100;
+}
+
+/* === 固定 Header === */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: white;
+  box-shadow: 0 3px 10px var(--shadow-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 28px;
+  z-index: 100;
+  border-bottom: 3px solid var(--secondary-color);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: 1px;
+  user-select: none;
+}
+
+.logo a {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 24px;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-icons i {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.25s ease;
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.nav-icons i:hover {
+  color: var(--hover-secondary);
+  background-color: var(--accent-color);
+  transform: scale(1.15);
+}
+
+
+.closet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  max-height: 80vh;  /* 限制最大高度 */
+  overflow-y: auto;  /* 當圖片過多時，顯示垂直滾動條 */
+  gap: 18px;
+}
+
+.closet-grid-container {
+  height: 80vh;  /* 固定容器高度 */
+  overflow-y: auto;  /* 出現滾動條 */
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    height: 50px;
+    padding: 0 16px;
+  }
+  .main {
+    padding-top: 50px; /* 預留對應高度 */
+  }
+  .nav-icons {
+    gap: 16px;
+  }
+  .nav-icons i {
+    font-size: 1.3rem;
+    padding: 4px;
+  }
+  .logo {
+    font-size: 1.5rem;
+  }
+}
