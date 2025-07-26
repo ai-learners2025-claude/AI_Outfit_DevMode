@@ -7,7 +7,7 @@ django.setup()
 from django.conf import settings
 from linebot_app.models import ClosetItem
 
-def check_media_db_sync():
+def sync_media_db():
     media_root = settings.MEDIA_ROOT
     base_folder = os.path.join(media_root, 'closet')
 
@@ -27,20 +27,34 @@ def check_media_db_sync():
     # 找出資料庫有但實體檔案沒有的
     missing_files = db_paths - media_files
 
-    # 輸出檢查結果
+    # 1. 補新增的圖片到資料庫
+    for path in new_files:
+        # 從路徑取出 user_id 與 category
+        parts = path.split('/')
+        if len(parts) >= 3:
+            _, user_id, category, filename = parts[0], parts[1], parts[2], parts[-1]
+            try:
+                ClosetItem.objects.create(
+                    user_id=user_id,
+                    category=category,
+                    image=path
+                )
+                print(f"✅ 已新增至資料庫: {path}")
+            except Exception as e:
+                print(f"❌ 新增失敗 {path}: {e}")
+        else:
+            print(f"⚠ 無法解析路徑: {path}")
+
+    # 2. 刪除資料庫中多餘的紀錄
+    deleted_count, _ = ClosetItem.objects.filter(image__in=missing_files).delete()
+    for path in missing_files:
+        print(f"🗑 已刪除資料庫紀錄: {path}")
+
+    # 結果輸出
     if new_files or missing_files:
-        print("⚠ 發現不同步情況：")
-        if new_files:
-            print(f"\n資料庫缺少 {len(new_files)} 筆圖片（存在於 media 但無資料庫紀錄）：")
-            for path in new_files:
-                print(f"  - {path}")
-        if missing_files:
-            print(f"\n資料庫多出 {len(missing_files)} 筆紀錄（資料庫有但檔案不存在）：")
-            for path in missing_files:
-                print(f"  - {path}")
-        print("\n尚未進行任何修改，請確認後再決定是否要同步。")
+        print(f"\n同步完成：新增 {len(new_files)} 筆，刪除 {deleted_count} 筆。")
     else:
         print("✅ 資料庫與實體檔案完全同步，無需處理。")
 
 if __name__ == '__main__':
-    check_media_db_sync()
+    sync_media_db()
