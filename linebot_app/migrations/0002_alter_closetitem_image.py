@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='closetitem',
             name='image',
-            field=models.ImageField(upload_to=linebot_app.models.user_directory_path),
+            field=models.ImageField(upload_to=linebot_app.models.user_directory_closet_path),
         ),
     ]

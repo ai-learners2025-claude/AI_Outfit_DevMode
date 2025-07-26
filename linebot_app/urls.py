@@ -12,4 +12,4 @@ urlpatterns = [
     path('view_closet/<str:user_id>/', view_closet, name='view_closet'),
     # path('linebot/view_closet/<str:user_id>/', view_closet, name='view_closet'),
     
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # 可以讓media的圖片產生網址
