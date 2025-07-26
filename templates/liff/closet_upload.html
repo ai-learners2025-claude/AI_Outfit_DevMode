@@ -7,7 +7,7 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     .closet-title {
@@ -17,12 +17,25 @@
       padding-top: 24px;
     }
 
-    .filter-bar {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;  /* Firefox 隱藏捲軸 */
+  cursor: grab;           /* 滑鼠樣式：抓取手 */
+  user-select: none;      /* 避免拖拉時選取文字 */
+}
+
+.filter-bar::-webkit-scrollbar {
+  display: none; /* Chrome / Safari 隱藏捲軸 */
+}
+
+.filter-bar:active {
+  cursor: grabbing; /* 拖動時滑鼠變抓緊的手 */
+}
 
     .filter-btn {
       background-color: var(--accent-color);
@@ -33,6 +46,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 0.95rem;
+      white-space: nowrap; /* 文字不換行 */
     }
 
     .filter-btn:hover {
@@ -403,8 +417,13 @@
     const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
     const DEV_USER_ID = "dev_test_user_12345";
     let globalUserId = "";
+
     let images = [];
     let currentFilter = 'all';
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+    let selectedItemCard = null;
 
     const fileInput = document.getElementById('upload-input');
     const gallery = document.querySelector('.closet-grid');
@@ -413,8 +432,8 @@
     const confirmUpload = document.getElementById('confirm-upload');
     const CategorySelect = document.getElementById('upload-category');
     const editCategory = document.getElementById('edit-category');
-
-    let selectedItemCard = null;
+    const filterBar = document.getElementById('filter-bar');
+    
 
     document.addEventListener("DOMContentLoaded", async function () {
       // 初始化分類按鈕和下拉選單
@@ -796,6 +815,32 @@ fileInput.addEventListener('change', async function (event) {
         closeModal('delete-modal');
       }
     });
+
+filterBar.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  filterBar.classList.add('active');  // 若你想做樣式改變（可選）
+  startX = e.pageX - filterBar.offsetLeft;
+  scrollLeft = filterBar.scrollLeft;
+  e.preventDefault(); // 防止選取文字
+});
+
+filterBar.addEventListener('mouseleave', () => {
+  isDragging = false;
+  filterBar.classList.remove('active');
+});
+
+filterBar.addEventListener('mouseup', () => {
+  isDragging = false;
+  filterBar.classList.remove('active');
+});
+
+filterBar.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  e.preventDefault();
+  const x = e.pageX - filterBar.offsetLeft;
+  const walk = (startX - x) * 1.5; // 滾動速度調整
+  filterBar.scrollLeft = scrollLeft + walk;
+});
   </script>
   {% include "components/footer.html" %}
 </body>
