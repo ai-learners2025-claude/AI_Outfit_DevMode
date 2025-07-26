@@ -330,7 +330,6 @@
   <body>
     {% include "components/header.html" %}
 
-
   <!-- 浮動上傳按鈕 -->
   <div class="upload-section">
     <div class="upload-float-btn" id="open-upload-menu" title="新增衣物">
@@ -380,7 +379,7 @@
         </div>
       </div>
   </div>
-    
+
     </main>
     <!-- LINE LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -389,7 +388,7 @@
   <script>
     const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
     // 只靠網址參數 ?dev=1 判斷是否為開發模式
-      const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+    const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
     const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
     let globalUserId = "";
     let selectedFiles = [];

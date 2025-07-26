@@ -20,7 +20,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from django.conf import settings
 from django.shortcuts import render
-from .models import ClosetItem
+from .models import ClosetItem, MimicItem
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 
@@ -73,7 +73,7 @@ def handle_message(event):
     )
     
 
-#  去背API
+#  upload+去背API
 @csrf_exempt
 def upload_closet(request):
     if request.method == 'POST':
@@ -325,3 +325,70 @@ def edit_closet_image_category(request):
     except Exception as e:
         print(f"錯誤: {str(e)}")  # 日誌輸出
         return JsonResponse({'status': 'error', 'message': str(e)})
+    
+
+# mimic：
+
+@csrf_exempt
+def view_mimic(request, user_id):
+    items = MimicItem.objects.filter(user_id=user_id).order_by('-id')  # 最新圖片放前面
+    images = [{
+        'id': item.id,
+        'url': item.image.url,
+    } for item in items]
+    return JsonResponse({'status': 'success', 'images': images})
+
+@csrf_exempt
+def delete_mimic_images(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': '只接受 POST 請求'})
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('userId')
+        image_ids = data.get('imageIds', [])
+
+        if not user_id or not image_ids:
+            return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
+
+        items = MimicItem.objects.filter(user_id=user_id, id__in=image_ids)
+        deleted_count = 0
+        for item in items:
+            if item.image and os.path.exists(item.image.path):
+                os.remove(item.image.path)
+            item.delete()
+            deleted_count += 1
+
+        return JsonResponse({"status": "success", "deleted_count": deleted_count})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+@csrf_exempt
+def upload_mimic(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')  # 與前端 formData key 一致
+
+        f = request.FILES.get('image')  # 單張圖片 key 與前端對應
+
+        if not f:
+            return JsonResponse({'status': 'error', 'message': '沒有上傳圖片'}, status=400)
+
+        try:
+            # 直接存圖片，不做去背
+            # 用 ContentFile 包裝上傳的檔案
+            image_content = ContentFile(f.read(), name=f.name)
+
+            item = MimicItem(user_id=user_id, image=image_content)
+            item.save()
+
+            return JsonResponse({
+                'status': 'success',
+                'images': [{
+                    'id': item.id,
+                    'url': item.image.url,
+                }]
+            })
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -254,7 +254,7 @@
       margin-bottom: 24px;
     }
 
-.floating-upload-btn {
+.upload-float-btn {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -273,13 +273,13 @@
   z-index: 1000;
 }
 
-.floating-upload-btn:hover {
+.upload-float-btn:hover {
   background-color: var(--hover-main);
   transform: scale(1.1);
 }
 
 @media (max-width: 600px) {
-  .floating-upload-btn {
+  .upload-float-btn {
     width: 48px;
     height: 48px;
     font-size: 1.4rem;
@@ -322,61 +322,18 @@
       <i class="fas fa-shirt" title="衣櫃" aria-label="衣櫃"></i>
     </div>
   </nav>
-    <div class="upload-section">
-      <label for="upload-input" class="floating-upload-btn" title="上傳穿搭">
-        <i class="fas fa-plus"></i>
-      </label>
-      <input type="file" id="upload-input" accept="image/*" hidden />
-    </div>
-  <main>
-    <!-- 模仿穿搭圖片上傳區 -->
 
+  <!-- 浮動上傳按鈕 -->
+  <div class="upload-section">
+    <div class="upload-float-btn" id="open-upload-menu" title="上傳穿搭">
+      <i class="fas fa-plus"></i>
+    <input type="file" id="upload-input" accept="image/*" hidden />
+  </div>
+
+  <main>
     <h1 class="outfit-title">我喜歡的穿搭</h1>
     <section class="product-grid" aria-live="polite">
-      <article class="product-card" tabindex="0">
-        <img src="https://www.gu-global.com/tw/hmall/test/u0000000050704/main/first/561/1.jpg" alt="商品1" loading="lazy" />
-        <div class="product-info">
-          <div class="actions">
-            <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除商品1"></i>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card" tabindex="0">
-        <img src="https://www.gu-global.com/tw/hmall/test/u0000000050545/main/first/561/1.jpg" alt="商品2" loading="lazy" />
-        <div class="product-info">
-          <div class="actions">
-            <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除商品2"></i>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card" tabindex="0">
-        <img src="https://www.gu-global.com/tw/hmall/test/u0000000050705/main/first/561/1.jpg" alt="商品3" loading="lazy" />
-        <div class="product-info">
-          <div class="actions">
-            <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除商品3"></i>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card" tabindex="0">
-        <img src="https://www.gu-global.com/tw/hmall/test/u0000000050703/main/first/561/1.jpg" alt="商品4" loading="lazy" />
-        <div class="product-info">
-          <div class="actions">
-            <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除商品4"></i>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card" tabindex="0">
-        <img src="https://www.gu-global.com/tw/hmall/test/u0000000050249/main/first/1000/1.jpg" alt="商品5" loading="lazy" />
-        <div class="product-info">
-          <div class="actions">
-            <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除商品5"></i>
-          </div>
-        </div>
-      </article>
+      <!-- 動態圖片卡片會從 JS 加入這裡 -->
     </section>
   </main>
 
@@ -391,45 +348,203 @@
     </div>
   </div>
 
-<!-- Loading Modal (改成進度條) -->
-<div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="搜尋中">
-  <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
-    <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
-    <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <div class="progress-bar"></div>
+  <!-- 刪除 Modal -->
+  <div class="modal-overlay" id="delete-modal" >
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>您確定要刪除這件衣物嗎？</h3>
+        <div class="modal-buttons">
+          <button class="modal-button modal-yes" id="modal-delete-yes">確定</button>
+          <button class="modal-button btn-cancel">取消</button>
+        </div>
+      </div>
+  </div>
+
+  <!-- Loading Modal -->
+  <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="搜尋中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
+      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
     </div>
   </div>
-</div>
-<script>
 
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+  const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+  const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+  const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
+  let globalUserId = "";
+
+  const productGrid = document.querySelector('.product-grid');
+  const uploadInput = document.getElementById('upload-input');
   const modal = document.getElementById('modal');
   const btnCancel = document.getElementById('btnCancel');
   const btnConfirm = document.getElementById('btnConfirm');
+  const loadingModal = document.getElementById('loadingModal');
+  const progressBar = loadingModal.querySelector('.progress-bar');
+  const deleteModal = document.getElementById('delete-modal');
+  const uploadBtn = document.getElementById('open-upload-menu');
 
   let currentProduct = null;
+  let selectedItemCard = null;
+  let images = [];
 
-  // 點圖片 → 打開確認視窗
-  document.querySelectorAll('.product-card img').forEach(img => {
-    img.addEventListener('click', () => {
-      currentProduct = img.closest('.product-card');
-      openModal();
-    });
+  /** 初始化 LIFF 或開發模式 */
+  document.addEventListener("DOMContentLoaded", async function () {
+    if (isDevelopmentMode) {
+      console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
+      globalUserId = DEV_USER_ID;
+      await fetchGalleryFromBackend();
+    } else {
+      try {
+        await liff.init({ liffId: liffId });
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        } else {
+          const profile = await liff.getProfile();
+          globalUserId = profile.userId;
+          await fetchGalleryFromBackend();
+        }
+      } catch (err) {
+        console.error("LIFF 初始化錯誤", err);
+        alert('LIFF 初始化失敗，請重新整理');
+      }
+    }
   });
 
+  /** 從後端取得 Mimic 圖片 */
+  async function fetchGalleryFromBackend() {
+    try {
+      const res = await fetch(`/linebot/view_mimic/${globalUserId}/`);
+      const data = await res.json();
+
+      images = (data.images || []).map(item => ({
+        id: item.id,
+        url: item.url.startsWith('/') ? item.url : '/' + item.url,
+        category: item.category,
+      }));
+
+      renderGallery();
+    } catch (error) {
+      console.error("載入失敗", error);
+      alert('載入衣櫃圖片失敗');
+    }
+  }
+
+  /** 渲染 Mimic 圖片卡片 */
+  function renderGallery() {
+    productGrid.innerHTML = ''; 
+
+    images.forEach(img => {
+      const card = document.createElement('article');
+      card.className = 'product-card';
+      card.dataset.id = img.id;
+
+      card.innerHTML = `
+        <img src="${img.url}" alt="衣物圖片" loading="lazy" />
+        <div class="product-info">
+          <div class="actions">
+            <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+          </div>
+        </div>
+      `;
+
+      /** 點垃圾桶 → 開啟刪除確認 Modal */
+      card.querySelector('.fa-trash').addEventListener('click', () => {
+        selectedItemCard = card;
+        deleteModal.classList.add('active');
+      });
+
+      /** 點圖片 → 開啟搜尋 Modal */
+      card.querySelector('img').addEventListener('click', () => {
+        currentProduct = card;
+        openModal();
+      });
+
+      productGrid.appendChild(card);
+    });
+  }
+
+  /** 選擇圖片 → 上傳到後端 */
+
+
+uploadBtn.addEventListener('click', () => {
+  uploadInput.click();
+});
+
+uploadInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  await uploadAndAddNewImage(file);
+});
+
+async function uploadAndAddNewImage(file) {
+  const formData = new FormData();
+  formData.append('user_id', globalUserId);
+  formData.append('image', file);
+
+  try {
+    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+    const result = await res.json();
+    if (result.status === 'success') {
+      // 假設後端回傳的圖片資料在 result.images[0]
+      const newImage = result.images[0];
+      newImage.url = newImage.url.startsWith('/') ? newImage.url : '/' + newImage.url;
+
+      // 新圖片放前面
+      images = [newImage, ...images];
+      renderGallery();
+    } else {
+      alert(result.message || '上傳失敗');
+    }
+  } catch (error) {
+    alert('上傳發生錯誤');
+  }
+  uploadInput.value = ''; // 清空 input
+}
+
+  /** 點擊刪除確認 → 呼叫刪除 API */
+  document.getElementById('modal-delete-yes').addEventListener('click', async function () {
+    if (!selectedItemCard) return;
+    const imageId = selectedItemCard.getAttribute('data-id');
+    try {
+      const res = await fetch('/linebot/delete_mimic_images/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: globalUserId, imageIds: [Number(imageId)] }),
+      });
+      const result = await res.json();
+      if (result.status === 'success') {
+        await fetchGalleryFromBackend();
+      } else {
+        alert(result.message || '刪除失敗');
+      }
+    } catch (error) {
+      alert('刪除時發生錯誤');
+    }
+    selectedItemCard = null;
+    deleteModal.classList.remove('active');
+  });
+
+  /** 點擊刪除取消 → 關閉刪除 Modal */
+  document.querySelector('#delete-modal .btn-cancel').addEventListener('click', () => {
+    deleteModal.classList.remove('active');
+  });
+
+  /** Modal 開啟/關閉 */
   function openModal() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
-
   function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
   }
+  btnCancel.addEventListener('click', closeModal);
 
-  btnCancel.addEventListener('click', () => {
-    closeModal();
-  });
-
+  /** 搜尋確定 → 開啟 Loading */
   btnConfirm.addEventListener('click', () => {
     closeModal();
     openLoading();
@@ -440,29 +555,24 @@
     }, 3000);
   });
 
-  const loadingModal = document.getElementById('loadingModal');
-  const progressBar = loadingModal.querySelector('.progress-bar');
-
+  /** Loading Modal 開啟/關閉 + 進度條動畫 */
   function openLoading() {
     loadingModal.classList.add('active');
     document.body.style.overflow = 'hidden';
     startProgressBar();
   }
-
   function closeLoading() {
     loadingModal.classList.remove('active');
     document.body.style.overflow = '';
     resetProgressBar();
   }
-
-  // 進度條從0%增長到100%，3秒完成
   function startProgressBar() {
     let progress = 0;
     progressBar.style.width = '0%';
     progressBar.parentElement.setAttribute('aria-valuenow', 0);
 
-    const interval = 30; // 更新間隔ms
-    const totalDuration = 3000; // 3秒
+    const interval = 30;
+    const totalDuration = 3000;
     const increment = 100 / (totalDuration / interval);
 
     const timer = setInterval(() => {
@@ -475,55 +585,12 @@
       progressBar.parentElement.setAttribute('aria-valuenow', Math.floor(progress));
     }, interval);
   }
-
   function resetProgressBar() {
     progressBar.style.width = '0%';
     progressBar.parentElement.setAttribute('aria-valuenow', 0);
   }
-  const uploadInput = document.getElementById('upload-input');
-const productGrid = document.querySelector('.product-grid');
-
-uploadInput.addEventListener('change', (event) => {
-  const file = event.target.files[0];
-
-  if (!file || !file.type.startsWith('image/')) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function (e) {
-    const imageUrl = e.target.result;
-
-    const card = document.createElement('article');
-    card.className = 'product-card';
-    card.tabIndex = 0;
-
-    card.innerHTML = `
-      <img src="${imageUrl}" alt="上傳穿搭" loading="lazy" />
-      <div class="product-info">
-        <div class="actions">
-          <i class="fas fa-trash" title="刪除穿搭" role="button" aria-label="刪除穿搭"></i>
-        </div>
-      </div>
-    `;
-
-    // 點圖片觸發 Modal
-    card.querySelector('img').addEventListener('click', () => {
-      currentProduct = card;
-      openModal();
-    });
-
-    // 刪除按鈕功能
-    card.querySelector('.fa-trash').addEventListener('click', () => {
-      card.remove();
-    });
-
-    productGrid.prepend(card); // 新卡片加在最上面
-    uploadInput.value = ''; // 清空 input，讓下一次可以重新選同一張圖
-  };
-
-  reader.readAsDataURL(file); // 讀入圖片並轉成 base64
-});
 </script>
+
 
 </body>
 </html>
