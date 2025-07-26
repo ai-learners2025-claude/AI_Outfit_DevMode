@@ -606,53 +606,71 @@ function hideLoading() {
     });
 
     // 上傳圖片
-    fileInput.addEventListener('change', async function (event) {
-      const files = event.target.files;
-      if (!files.length) {
-        alert('請選擇至少一張圖片');
-      for (const file of files) {
-        if (!file.type.startsWith('image/')) return alert('僅支援圖片');
-        if (file.size > 5 * 1024 * 1024) return alert('單張圖片不可超過 5MB');
-      }
-        return;
-      }
+fileInput.addEventListener('change', async function (event) {
+  const files = event.target.files;
+  if (!files.length) {
+    alert('請選擇至少一張圖片');
+    return;
+  }
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) {
+      alert('僅支援圖片');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('單張圖片不可超過 5MB');
+      return;
+    }
+  }
 
-      if (!globalUserId) {
-        alert('用戶尚未登入，請重新整理或稍後再試');
-        return;
-      }
-      if (!CategorySelect.value) {
-        alert('請先選擇分類');
-        return;
-      }
+  if (!globalUserId) {
+    alert('用戶尚未登入，請重新整理或稍後再試');
+    return;
+  }
+  if (!CategorySelect.value) {
+    alert('請先選擇分類');
+    return;
+  }
 
-      const formData = new FormData();
-      formData.append('userId', globalUserId);
-      formData.append('category', CategorySelect.value);
-      Array.from(files).forEach(file => formData.append('images', file));
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  formData.append('category', CategorySelect.value);
+  Array.from(files).forEach(file => formData.append('images', file));
 
-      try {
-        showLoading();
-        const res = await fetch('/linebot/upload_closet/', {
-          method: 'POST',
-          body: formData
-        });
-        hideLoading();
-
-        const result = await res.json();
-
-        if (result.status === 'success') {
-          alert('圖片上傳成功');
-          await fetchGalleryFromBackend();
-          fileInput.value = '';  // 清空 input
-        } else {
-          alert('圖片上傳失敗');
-        }
-      } catch (err) {
-        console.error('上傳錯誤', err);
-        alert('圖片上傳失敗');
-      }
+  try {
+    showLoading();
+    const res = await fetch('/linebot/upload_closet/', {
+      method: 'POST',
+      body: formData
     });
+    hideLoading();
+
+    const result = await res.json();
+
+    if (result.status === 'success') {
+      alert('圖片上傳成功');
+
+      if (result.new_images && Array.isArray(result.new_images)) {
+        const newImgs = result.new_images.map(item => ({
+          id: item.id,
+          url: item.url.startsWith('/') ? item.url : '/' + item.url,
+          category: item.category,
+        }));
+        images = [...newImgs, ...images];  // 新圖片放最前面
+        renderGallery();
+      } else {
+        await fetchGalleryFromBackend();
+      }
+
+      fileInput.value = '';
+    } else {
+      alert('圖片上傳失敗');
+    }
+  } catch (err) {
+    console.error('上傳錯誤', err);
+    alert('圖片上傳失敗');
+  }
+});
     // item-card 綁定事件
     function bindItemCardEvents(card) {
       const moreBtn = card.querySelector('.more-options');

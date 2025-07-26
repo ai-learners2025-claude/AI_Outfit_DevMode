@@ -88,39 +88,30 @@ def upload_closet(request):
         
         for f in files:
             try:
-                # 用 Pillow 開啟圖片檔案
                 image = Image.open(f)
-                # 轉成 RGBA，確保有透明通道
                 image = image.convert("RGBA")
 
-                # 把 Pillow 物件轉成 bytes
                 img_byte_arr = io.BytesIO()
                 image.save(img_byte_arr, format='PNG')
                 img_bytes = img_byte_arr.getvalue()
 
-                # 使用 rembg 去背，輸入是 PNG bytes，輸出也是 PNG bytes
                 output_bytes = remove(img_bytes)
-
-                # 用 Pillow 開啟去背後的圖片 bytes
                 output_image = Image.open(io.BytesIO(output_bytes))
 
-                # 儲存去背圖到 BytesIO
                 output_stream = io.BytesIO()
                 output_image.save(output_stream, format='PNG')
                 output_stream.seek(0)
 
-                # 新檔名
                 filename_wo_ext = os.path.splitext(f.name)[0]
                 bgremoved_filename = f'{filename_wo_ext}_bgremoved.png'
 
-                # 用 ContentFile 包裝給 Django
                 image_content = ContentFile(output_stream.read(), name=bgremoved_filename)
 
-                # 建立 model 實例，只存去背圖片
                 item = ClosetItem(user_id=user_id, category=category, image=image_content)
                 item.save()
 
                 saved.append({
+                    'id': item.id,                # 新增 id
                     'url': item.image.url,
                     'category': item.category
                 })
@@ -128,7 +119,7 @@ def upload_closet(request):
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
 
-        return JsonResponse({'status': 'success', 'images': saved})
+        return JsonResponse({'status': 'success', 'new_images': saved})  # key 改成 new_images
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
     
