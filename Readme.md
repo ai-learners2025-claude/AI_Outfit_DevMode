@@ -16,8 +16,8 @@
 ### mimic 
 (1) 呈現結果的UI及前端。    
 (2) 小螢幕(手機) RWD及所有功能測試。  
-(3) 姿勢轉正模組API。  
-(4) 相似度比對API。  
+(3) 姿勢轉正模組API 及 loading條前後端。  
+(4) 相似度比對API 及 loading條前後端。  
 
 ### closet
 (1) 上傳圖片後的loading條需串後端API。
