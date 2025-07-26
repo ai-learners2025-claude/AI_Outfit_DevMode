@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <title>MyStylist - 隨身設計師</title>
   <style>
     body, html {
@@ -73,41 +74,49 @@
     .hero > .hero-content {
       position: relative; /* Ensure this is above the overlay */
       z-index: 2;
+      max-width: 900px;
+      width: 90%;
+      margin: 0 auto;
     }
 
     .hero h1 {
-      font-size: 48px;
+      font-size: clamp(2rem, 5vw, 3rem);
       margin-bottom: 20px;
       font-weight: bold;
     }
 
     .hero p {
-      font-size: 20px;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
       margin-bottom: 20px;
     }
 
     .btn-region {
-      width: 100%; /* 讓按鈕區域填滿父元素 */
+      width: 50%; /* 讓按鈕區域填滿父元素 */
       display: flex; /* 啟用 flexbox */
+      margin: 35px auto 0;
       justify-content: center;
-      gap: 20px; /* 設定按鈕間距 */
       margin-top: 35px;
     }
 
-    .btn-hero {
-      display: block; /* 讓按鈕變為塊級元素 */
-      background-color: var(--text-color);
-      color: white;
-      padding: 12px 30px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 50px;
-      transition: background-color 0.8s ease, transform 0.8s ease;
-      opacity: 0; /* 初始不可見 */
-      animation: fadeIn 1.8s ease-out forwards;
-      animation-delay: 0.5s;
-      width: 42%; /* 按鈕的寬度設為 48%，讓兩個按鈕平分空間 */
-    }
+.btn-hero {
+  display: inline-block;
+  padding: 12px 30px;   /* 上下12px，左右30px */
+  background-color: var(--text-color);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background-color 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  animation: fadeIn 1.8s ease-out forwards;
+  animation-delay: 0.5s;
+  white-space: nowrap; /* 不換行 */
+  width: auto;         /* 寬度自適應文字 */
+  max-width: 280px;    /* 設定最大寬度，避免過長 */
+  text-align: center;
+  box-sizing: border-box;
+}
+
 
     .btn-hero:hover {
       background-color: var(--hover-color);
@@ -190,7 +199,7 @@
       background-color: var(--accent-color);
       border-radius: 5px;
       padding: 5px;
-      width: 220px;
+      width: clamp(180px, 20vw, 220px);
       box-shadow: 0 4px 12px var(--shadow-color);
       transition: transform 0.3s, box-shadow 0.3s;
       text-align: center;
@@ -224,6 +233,94 @@
         transform: translateY(0);
       }
     }
+
+
+
+/* 小於 768px（手機）時調整 */
+@media (max-width: 767px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+  .hero p {
+    font-size: 16px;
+  }
+
+  .btn-region {
+    flex-direction: column; /* 按鈕堆疊 */
+    gap: 12px;
+  }
+
+  .btn-hero {
+    width: 100%; /* 按鈕全寬 */
+  }
+
+  .team-members {
+    flex-wrap: wrap; /* 允許換行 */
+    justify-content: center; /* 置中排列 */
+    gap: 10px; /* 卡片間距稍微縮小 */
+    padding: 20px 10px; /* 適當內距 */
+  }
+
+  .team-member {
+    flex: 1 1 calc(50% - 20px); /* 兩欄並排，減去gap空間 */
+    max-width: calc(50% - 20px);
+    box-sizing: border-box;
+    margin-bottom: 15px; /* 卡片間垂直間距 */
+  }
+}
+
+/* 中等裝置 768px - 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero h1 {
+    font-size: 40px;
+  }
+  .hero p {
+    font-size: 18px;
+  }
+
+  .btn-region {
+    gap: 15px;
+  }
+
+  .btn-hero {
+    max-width: 280px; /* 在中尺寸螢幕時限制更小寬度 */
+    padding: 10px 24px; /* 略微減少padding */
+    font-size: 1rem; /* 保持字型適中 */
+  }
+
+  .team-members {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .team-member {
+    width: 45%;
+    margin-bottom: 20px;
+  }
+}
+
+/* 大螢幕維持原本設定 */
+@media (min-width: 992px) {
+  .hero h1 {
+    font-size: 48px;
+  }
+  .hero p {
+    font-size: 20px;
+  }
+
+  .btn-region {
+    gap: 20px;
+  }
+
+  .btn-hero {
+    width: 42%;
+  }
+
+  .team-member {
+    width: 220px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -234,7 +331,7 @@
       <h1>MyStylist</h1>
       <p>妳想成為的樣子，我們一起穿出來</p>
       <div class="btn-region">
-        <a href="/liff/mimic/" class="btn-hero">開始體驗</a>
+        <a href="/liff/mimic/?dev=1" class="btn-hero">開始體驗</a>
       </div>
     </div>
     <!-- 向下滾動的箭頭 -->

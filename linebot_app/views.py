@@ -325,7 +325,13 @@ def edit_closet_image_category(request):
     except Exception as e:
         print(f"錯誤: {str(e)}")  # 日誌輸出
         return JsonResponse({'status': 'error', 'message': str(e)})
-    
+
+# {
+#   "userId": "使用者ID",
+#   "imageId": 123,
+#   "newCategory": "新分類",
+#   "newURL": "新的圖片網址"  // 這是可選參數，可以不帶
+# }
 
 # mimic：
 
