@@ -574,3 +574,55 @@ django.db.utils.OperationalError: no such table: linebot_app_closetitem
 2025-07-27 19:09:41,241 [ERROR] django.server "GET /linebot/view_closet/dev_test_user_12345/ HTTP/1.1" 500 136139
 2025-07-27 19:11:46,847 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
 2025-07-27 19:11:46,849 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 109
+2025-07-27 19:35:28,042 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 401, in upload_mimic
+    if not user_id or not category or not files:
+                          ^^^^^^^^
+NameError: name 'category' is not defined
+2025-07-27 19:35:28,048 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 73725
+2025-07-27 19:36:46,304 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:36:46,305 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:37:25,606 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:37:25,607 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:39:58,198 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:39:58,198 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:40:13,376 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:40:13,376 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:40:14,882 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+          ~~~~~~~~~^~~~~~~~
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-27 19:40:14,886 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 82981
+2025-07-27 19:40:58,210 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:40:58,210 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:41:07,869 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:41:07,870 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 20:10:53,703 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 20:10:53,704 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 104
