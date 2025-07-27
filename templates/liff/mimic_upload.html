@@ -8,15 +8,17 @@
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" /> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    .product-grid {
+    .item-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 26px;
     }
-    .product-card {
-      background: white;
+    .item-card {
       border-radius: 12px;
       box-shadow: 0 6px 15px var(--shadow-color);
       overflow: hidden;
@@ -25,12 +27,12 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 1.5px solid transparent;
     }
-    .product-card:hover {
+    .item-card:hover {
       transform: translateY(-8px);
       box-shadow: 0 14px 25px var(--shadow-color);
       border-color: var(--main-color);
     }
-    .product-card img {
+    .item-card img {
       width: 100%;
       max-width: 100%;
       height: auto;
@@ -40,7 +42,7 @@
       user-select: none;
       cursor: pointer;
     }
-    .product-info {
+    .item-info {
       padding: 2px 2px;
       flex-grow: 1;
       display: flex;
@@ -48,6 +50,7 @@
       justify-content: flex-end;
     }
     .actions {
+      background-color: white;
       display: flex;
       gap: 20px;
       align-items: center;
@@ -65,22 +68,7 @@
     .actions i:hover {
       background-color: var(--accent-color);
     }
-    /* Modal 樣式 */
 
-
-    .modal {
-      background: white;
-      border-radius: 12px;
-      padding: 28px 32px;
-      max-width: 380px;
-      width: 90%;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-      text-align: center;
-      font-size: 1.1rem;
-      color: var(--text-color);
-      user-select: none;
-      position: relative;
-    }
     .modal-buttons {
       display: flex;
       justify-content: center;
@@ -111,18 +99,115 @@
       background-color: var(--hover-secondary);
       color: white;
     }
+.SearchResultModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); /* 半透明背景 */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.SearchResultModal-title {
+  background: #fff;
+  width: 90%;            /* 幾乎滿版 */
+  height: 90%;           /* 幾乎滿版 */
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.SearchResultModal.show .SearchResultModal-title {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 內文文字 */
+.SearchResultModal-title p {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 40px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 關閉按鈕 */
+#SearchResult_close {
+  align-self: center;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--main-color);
+  color: white;
+  cursor: pointer;
+}
+#SearchResult_close:hover {
+      background-color: var(--hover-main);
+}
+
+.SearchResultModal-title {
+  width: 90vw;
+  height: 90vh;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-body {
+  display: flex;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.modal-left {
+  flex: 1;
+  background: #f7f7f7;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.modal-left img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modal-right {
+  flex: 1;
+  /* 先留空，之後放三張圖片 */
+}
+
+
     @media (max-width: 600px) {
-      .product-grid {
+      .item-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 18px;
       }
-      .product-card img {
+      .item-card img {
         aspect-ratio: 3 / 4;
       }
 
     }
     @media (max-width: 360px) {
-      .product-grid {
+      .item-grid {
         grid-template-columns: 1fr;
         gap: 14px;
       }
@@ -218,17 +303,17 @@
         bottom: 16px;
         right: 16px;
       }
-      .product-grid {
+      .item-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
       }
-      .product-card img {
+      .item-card img {
         aspect-ratio: 3 / 4;
       }
-      .product-card {
+      .item-card {
         border-radius: 8px;
       }
-      .product-info {
+      .item-info {
         padding: 4px;
       }
       .actions i {
@@ -252,11 +337,11 @@
       <h1>我喜歡的穿搭</h1>
       <p>點擊圖片以搜尋衣櫃裡的衣服</p>
     </div>
-    <section class="product-grid" aria-live="polite">
+    <section class="item-grid" aria-live="polite">
       <!-- 動態圖片卡片會從 JS 加入這裡 -->
     </section>
   </main>
-  <!-- Modal HTML -->
+  <!--search modal -->
   <div class="modal-overlay" id="modal">
     <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <h3>是否要搜尋衣櫃裡的衣服？</h3>
@@ -277,7 +362,7 @@
     </div>
   </div>
   <!-- Loading Modal -->
-  <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="搜尋中">
+  <div class="modal-overlay" id="search_loading" aria-live="polite" aria-label="搜尋中">
     <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
       <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
       <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -285,24 +370,56 @@
       </div>
     </div>
   </div>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+   <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
+      <div class="progress-bar-container" aria-label="上傳進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+<div id="SearchResultModal" class="SearchResultModal">
+  <div class="SearchResultModal-title">
+    <div class="modal-body">
+      <!-- 左側：原圖 -->
+      <div class="modal-left">
+        <img id="search-original-img" src="" alt="原始圖片" />
+      </div>
+      <!-- 右側預留空白 -->
+      <div class="modal-right"></div>
+    </div>
+    <button id="SearchResult_close">關閉</button>
+  </div>
+</div>
+
+ 
   <script>
     const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
     const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
     const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
     let globalUserId = "";
-    const productGrid = document.querySelector('.product-grid');
+    const itemGrid = document.querySelector('.item-grid');
     const uploadInput = document.getElementById('upload-input');
     const modal = document.getElementById('modal');
     const btnCancel = document.getElementById('btnCancel');
     const btnConfirm = document.getElementById('btnConfirm');
-    const loadingModal = document.getElementById('loadingModal');
-    const progressBar = loadingModal.querySelector('.progress-bar');
+    const search_loading = document.getElementById('search_loading');
+    const progressBar = search_loading.querySelector('.progress-bar');
     const deleteModal = document.getElementById('delete-modal');
     const uploadBtn = document.getElementById('open-upload-menu');
-    let currentProduct = null;
+const SearchResultModal = document.getElementById('SearchResultModal');
+const SearchResultClose = document.getElementById('SearchResult_close');
+
+    let currentitem = null;
     let selectedItemCard = null;
     let images = [];
+
+
+    function closeModal() { console.log('closeModal called'); }
+    function showLoading() { console.log('showLoading called'); }
+    function closeLoading() { console.log('closeLoading called'); }
+
+
     /** 初始化 LIFF 或開發模式 */
     document.addEventListener("DOMContentLoaded", async function () {
       if (isDevelopmentMode) {
@@ -333,7 +450,6 @@
         images = (data.images || []).map(item => ({
           id: item.id,
           url: item.url.startsWith('/') ? item.url : '/' + item.url,
-          category: item.category,
         }));
         renderGallery();
       } catch (error) {
@@ -341,58 +457,60 @@
         alert('載入衣櫃圖片失敗');
       }
     }
-/** 渲染 Mimic 圖片卡片 */
-function renderGallery() {
-  productGrid.innerHTML = '';
-  images.forEach(img => {
-    const card = document.createElement('article');
-    card.className = 'product-card';
-    card.dataset.id = img.id;
-    card.innerHTML = `
-      <img src="${img.url}" alt="衣物圖片" loading="lazy" />
-      <div class="product-info">
-        <div class="actions">
-          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
-        </div>
-      </div>
-    `;
-
-    /** 點垃圾桶 → 開啟刪除確認 Modal */
-    card.querySelector('.fa-trash').addEventListener('click', () => {
-      selectedItemCard = card;
-      deleteModal.classList.add('active');
-    });
-
-    /** 點圖片 → 開啟搜尋 Modal */
-    card.querySelector('img').addEventListener('click', () => {
-      currentProduct = card;
-      openModal();
-    });
-
-    productGrid.appendChild(card);
-  });
-}
+    /** 渲染 Mimic 圖片卡片 */
+    function renderGallery() {
+      itemGrid.innerHTML = '';
+      images.forEach(img => {
+        const card = document.createElement('article');
+        card.className = 'item-card';
+        card.dataset.id = img.id;
+        card.innerHTML = `
+          <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+          <div class="item-info">
+            <div class="actions">
+              <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+            </div>
+          </div>
+        `;
+        
+        /** 點垃圾桶 → 開啟刪除確認 Modal */
+        card.querySelector('.fa-trash').addEventListener('click', () => {
+          selectedItemCard = card;
+          deleteModal.classList.add('active');
+        });
+      
+        /** 點圖片 → 開啟搜尋 Modal */
+        card.querySelector('.clickable-img').addEventListener('click', () => {
+          currentitem = card;
+          openModal();
+        });
+      
+        itemGrid.appendChild(card);
+      });
+    }
     /** 點選上傳按鈕觸發檔案選擇 */
     uploadBtn.addEventListener('click', () => {
       uploadInput.click();
     });
     /** 選擇檔案後上傳 */
     uploadInput.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file || !file.type.startsWith('image/')) return;
-      await uploadAndAddNewImage(file);
+      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+      if (files.length === 0) return;
+      await uploadAndAddNewImages(files);
     });
-    async function uploadAndAddNewImage(file) {
+    async function uploadAndAddNewImages(files) {
       const formData = new FormData();
-      formData.append('user_id', globalUserId);
-      formData.append('image', file);
+      formData.append('userId', globalUserId);
+      files.forEach(file => formData.append('images', file));  // 多張圖片
       try {
         const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
         const result = await res.json();
         if (result.status === 'success') {
-          const newImage = result.images[0];
-          newImage.url = newImage.url.startsWith('/') ? newImage.url : '/' + newImage.url;
-          images = [newImage, ...images];
+          const newImages = result.new_images.map(img => ({
+            ...img,
+            url: img.url.startsWith('/') ? img.url : '/' + img.url
+          }));
+          images = [...newImages, ...images];
           renderGallery();
         } else {
           alert(result.message || '上傳失敗');
@@ -437,28 +555,50 @@ function renderGallery() {
     }
     btnCancel.addEventListener('click', closeModal);
     /** 搜尋確定 → 開啟 Loading */
-    btnConfirm.addEventListener('click', () => {
-      closeModal();
-      openLoading();
-      setTimeout(() => {
-        closeLoading();
-        alert('搜尋完成！(你可以改成真正的搜尋行為)');
-      }, 3000);
-    });
+btnConfirm.addEventListener('click', () => {
+  closeModal();
+  showLoading();
+  setTimeout(() => {
+    closeLoading();
+    // 先顯示，再加動畫 class
+    SearchResultModal.style.display = 'flex';
+    setTimeout(() => SearchResultModal.classList.add('show'), 10);
+  }, 3000);
+});
+
+// 關閉 Modal
+SearchResultClose.addEventListener('click', () => {
+  SearchResultModal.classList.remove('show');
+  setTimeout(() => SearchResultModal.style.display = 'none', 300);
+});
+
+card.querySelector('.clickable-img').addEventListener('click', () => {
+  const clickedImgSrc = card.querySelector('img').src;  // 取得該張圖片的 URL
+  document.getElementById('search-original-img').src = clickedImgSrc;  // 帶入 modal 左邊圖片
+
+  // 打開你的搜尋 modal（假設 openModal 是顯示搜尋 modal）
+  openModal();
+
+  // 或你也可以直接顯示 SearchResultModal
+  SearchResultModal.style.display = 'flex';
+  setTimeout(() => SearchResultModal.classList.add('show'), 10);
+});
+
+
     /** Loading Modal 開啟/關閉 + 進度條動畫 */
-    function openLoading() {
-      loadingModal.classList.add('active');
+    function showLoading() {
+      search_loading.classList.add('active');
       startProgressBar();
     }
     function closeLoading() {
-      loadingModal.classList.remove('active');
+      search_loading.classList.remove('active');
       document.body.style.overflow = '';
       resetProgressBar();
     }
     function startProgressBar() {
       let progress = 0;
       progressBar.style.width = '0%';
-      loadingModal.setAttribute('aria-valuenow', 0);
+      search_loading.setAttribute('aria-valuenow', 0);
       const interval = setInterval(() => {
         progress += 2;
         if (progress > 100) {
@@ -466,13 +606,16 @@ function renderGallery() {
           return;
         }
         progressBar.style.width = progress + '%';
-        loadingModal.setAttribute('aria-valuenow', progress);
+        search_loading.setAttribute('aria-valuenow', progress);
       }, 50);
     }
     function resetProgressBar() {
       progressBar.style.width = '0%';
-      loadingModal.setAttribute('aria-valuenow', 0);
+      search_loading.setAttribute('aria-valuenow', 0);
     }
+
+
+
   </script>
   {% include "components/footer.html" %}
 </body>
