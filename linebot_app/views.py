@@ -71,7 +71,7 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=reply)
     )
-    
+
 
 #  upload+去背API
 @csrf_exempt

@@ -1,5 +1,4 @@
 # Django #
-*.log
 *.pot
 *.pyc
 __pycache__
@@ -100,6 +99,7 @@ celerybeat-schedule.*
 # Environments 
 .env 
 .venv 
+vm/
 env/ 
 venv/ 
 ENV/ 
