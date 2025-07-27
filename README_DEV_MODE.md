@@ -14,13 +14,13 @@
 http://127.0.0.1:8000/liff/closet/?dev=1
 ```
 ### 步驟：
-(1) 建立虛擬環境：python -m venv vm
-(2) 進入虛擬環境：vm\Scripts\activate
-(3) 下載所需套件：pip install -r requirements.txt
-(4) 建立資料庫：python manage.py makemigrations
-               python manage.py migrate
-(5) 將實體照片同步至資料庫：python SyncMediaToDb.py
-(6) 開始進入測試環境：python manage.py runserver
+(1) 建立虛擬環境：python -m venv vm  
+(2) 進入虛擬環境：vm\Scripts\activate  
+(3) 下載所需套件：pip install -r requirements.txt  
+(4) 建立資料庫：python manage.py makemigrations  
+               python manage.py migrate  
+(5) 將實體照片同步至資料庫：python SyncMediaToDb.py  
+(6) 開始進入測試環境：python manage.py runserver  
 
 ## 開發模式功能
 
