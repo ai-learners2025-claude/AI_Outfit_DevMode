@@ -359,31 +359,28 @@ def delete_mimic_images(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
 
+
 @csrf_exempt
 def upload_mimic(request):
     if request.method == 'POST':
-        user_id = request.POST.get('user_id')  # 與前端 formData key 一致
+        user_id = request.POST.get('userId')  # key 要和前端 formData 裡的一致，這邊是 'userId'
 
-        f = request.FILES.get('image')  # 單張圖片 key 與前端對應
-
-        if not f:
+        files = request.FILES.getlist('images')  # 多張圖片用 getlist
+        if not files:
             return JsonResponse({'status': 'error', 'message': '沒有上傳圖片'}, status=400)
 
+        saved_images = []
         try:
-            # 直接存圖片，不做去背
-            # 用 ContentFile 包裝上傳的檔案
-            image_content = ContentFile(f.read(), name=f.name)
-
-            item = MimicItem(user_id=user_id, image=image_content)
-            item.save()
-
-            return JsonResponse({
-                'status': 'success',
-                'images': [{
+            for f in files:
+                image_content = ContentFile(f.read(), name=f.name)
+                item = MimicItem(user_id=user_id, image=image_content)
+                item.save()
+                saved_images.append({
                     'id': item.id,
                     'url': item.image.url,
-                }]
-            })
+                })
+
+            return JsonResponse({'status': 'success', 'new_images': saved_images})
 
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)

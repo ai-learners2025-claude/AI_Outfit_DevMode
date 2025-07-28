@@ -48,6 +48,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      background-color: white;
     }
     .actions {
       background-color: white;
@@ -142,18 +143,15 @@
 }
 
 /* 關閉按鈕 */
-#SearchResult_close {
-  align-self: center;
-  padding: 12px 24px;
-  font-size: 1.2rem;
+.close-btn {
+  position: absolute; /* 讓按鈕浮在標題區右上角 */
+  top: 8px;
+  right: 8px;
+  background: transparent;
   border: none;
-  border-radius: 8px;
-  background-color: var(--main-color);
-  color: white;
+  font-size: 36px;
   cursor: pointer;
-}
-#SearchResult_close:hover {
-      background-color: var(--hover-main);
+  line-height: 1;
 }
 
 .SearchResultModal-title {
@@ -167,35 +165,66 @@
   justify-content: space-between;
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
-
 .modal-body {
   display: flex;
-  gap: 20px;
   flex-grow: 1;
+  gap: 20px;
+  align-items: center; /* 交叉軸垂直置中 */
+  height: 100vh; /* 方便示範填滿高度，可調整或移除 */
 }
 
-.modal-left {
-  flex: 1;
-  background: #f7f7f7;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+/* 大螢幕：水平排列，left/right 各半 */
+@media (min-width: 768px) {
+  .modal-body {
+    flex-direction: row;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+  }
+
+  .modal-left, .modal-right {
+    flex: 1 1 50%; /* 各占一半寬度 */
+    height: 100%;  /* 撐滿modal-body高度 */
+  }
+
+  .modal-left {
+    max-width: none; /* 取消最大寬度限制 */
+  }
+
+  .modal-left img {
+    width: 100%;     /* 取消寬度限制 */
+    height: 100%;    /* 高度撐滿父容器 */
+    object-fit: contain;
+  }
 }
 
-.modal-left img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+/* 小螢幕：垂直排列，left 40%，right 60% */
+@media (max-width: 767px) {
+  .modal-body {
+    flex-direction: column;
+    gap: 10px;
+    height: auto; /* 讓高度跟內容適應 */
+  }
+
+  .modal-left {
+    flex: 0 0 40%;  /* 高度佔40% */
+    width: 100%;
+    max-width: 100%;
+    height: 40vh; /* 也可用視窗高度40% */
+  }
+
+  .modal-right {
+    flex: 0 0 60%;  /* 高度佔60% */
+    width: 100%;
+    height: 60vh; /* 高度為視窗高度60% */
+  }
+
+  .modal-left img {
+    width: 100%;    /* 手機時圖片寬度撐滿 */
+    height: 100%;   /* 高度撐滿 */
+    object-fit: contain;
+  }
 }
-
-.modal-right {
-  flex: 1;
-  /* 先留空，之後放三張圖片 */
-}
-
-
     @media (max-width: 600px) {
       .item-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -321,6 +350,8 @@
         padding: 6px;
       }
     }
+
+
   </style>
 </head>
 <body>
@@ -388,11 +419,10 @@
       <!-- 右側預留空白 -->
       <div class="modal-right"></div>
     </div>
-    <button id="SearchResult_close">關閉</button>
+    <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
   </div>
 </div>
 
- 
   <script>
     const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
     const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
@@ -407,18 +437,12 @@
     const progressBar = search_loading.querySelector('.progress-bar');
     const deleteModal = document.getElementById('delete-modal');
     const uploadBtn = document.getElementById('open-upload-menu');
-const SearchResultModal = document.getElementById('SearchResultModal');
-const SearchResultClose = document.getElementById('SearchResult_close');
+    const SearchResultModal = document.getElementById('SearchResultModal');
+    const SearchResultClose = document.getElementById('SearchResult_close');
 
     let currentitem = null;
     let selectedItemCard = null;
     let images = [];
-
-
-    function closeModal() { console.log('closeModal called'); }
-    function showLoading() { console.log('showLoading called'); }
-    function closeLoading() { console.log('closeLoading called'); }
-
 
     /** 初始化 LIFF 或開發模式 */
     document.addEventListener("DOMContentLoaded", async function () {
@@ -481,10 +505,10 @@ const SearchResultClose = document.getElementById('SearchResult_close');
       
         /** 點圖片 → 開啟搜尋 Modal */
         card.querySelector('.clickable-img').addEventListener('click', () => {
+
           currentitem = card;
           openModal();
         });
-      
         itemGrid.appendChild(card);
       });
     }
@@ -560,7 +584,19 @@ btnConfirm.addEventListener('click', () => {
   showLoading();
   setTimeout(() => {
     closeLoading();
-    // 先顯示，再加動畫 class
+
+    if (!currentitem) {
+      alert('找不到目前選中的圖片');
+      return;
+    }
+
+    // 找當前 card 裡的圖片 URL
+    const clickedImgSrc = currentitem.querySelector('img').src;
+
+    // 設定左側圖片
+    document.getElementById('search-original-img').src = clickedImgSrc;
+
+    // 顯示 SearchResultModal
     SearchResultModal.style.display = 'flex';
     setTimeout(() => SearchResultModal.classList.add('show'), 10);
   }, 3000);
@@ -571,19 +607,6 @@ SearchResultClose.addEventListener('click', () => {
   SearchResultModal.classList.remove('show');
   setTimeout(() => SearchResultModal.style.display = 'none', 300);
 });
-
-card.querySelector('.clickable-img').addEventListener('click', () => {
-  const clickedImgSrc = card.querySelector('img').src;  // 取得該張圖片的 URL
-  document.getElementById('search-original-img').src = clickedImgSrc;  // 帶入 modal 左邊圖片
-
-  // 打開你的搜尋 modal（假設 openModal 是顯示搜尋 modal）
-  openModal();
-
-  // 或你也可以直接顯示 SearchResultModal
-  SearchResultModal.style.display = 'flex';
-  setTimeout(() => SearchResultModal.classList.add('show'), 10);
-});
-
 
     /** Loading Modal 開啟/關閉 + 進度條動畫 */
     function showLoading() {
@@ -613,8 +636,6 @@ card.querySelector('.clickable-img').addEventListener('click', () => {
       progressBar.style.width = '0%';
       search_loading.setAttribute('aria-valuenow', 0);
     }
-
-
 
   </script>
   {% include "components/footer.html" %}
