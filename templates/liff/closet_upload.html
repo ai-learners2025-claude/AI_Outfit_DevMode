@@ -18,25 +18,25 @@
       padding-top: 24px;
     }
 
-.filter-bar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;  /* Firefox 隱藏捲軸 */
-  cursor: grab;           /* 滑鼠樣式：抓取手 */
-  user-select: none;      /* 避免拖拉時選取文字 */
-}
-
-.filter-bar::-webkit-scrollbar {
-  display: none; /* Chrome / Safari 隱藏捲軸 */
-}
-
-.filter-bar:active {
-  cursor: grabbing; /* 拖動時滑鼠變抓緊的手 */
-}
+    .filter-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;  /* Firefox 隱藏捲軸 */
+      cursor: grab;           /* 滑鼠樣式：抓取手 */
+      user-select: none;      /* 避免拖拉時選取文字 */
+    }
+    
+    .filter-bar::-webkit-scrollbar {
+      display: none; /* Chrome / Safari 隱藏捲軸 */
+    }
+    
+    .filter-bar:active {
+      cursor: grabbing; /* 拖動時滑鼠變抓緊的手 */
+    }
 
     .filter-btn {
       background-color: var(--accent-color);
@@ -414,18 +414,15 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <script>
-    const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+    const liffId = "2007741127-KXgn38Dn";
     const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
     const DEV_USER_ID = "dev_test_user_12345";
     let globalUserId = "";
-
     let images = [];
     let currentFilter = 'all';
-    let isDragging = false;
-    let startX;
-    let scrollLeft;
-    let selectedItemCard = null;
+    let isDragging = false, startX, scrollLeft, selectedItemCard = null;
 
+    // === DOM 元素 ===
     const fileInput = document.getElementById('upload-input');
     const gallery = document.querySelector('.closet-grid');
     const uploadBtn = document.getElementById('open-upload-menu');
@@ -434,19 +431,18 @@
     const CategorySelect = document.getElementById('upload-category');
     const editCategory = document.getElementById('edit-category');
     const filterBar = document.getElementById('filter-bar');
-    
 
+    // === 頁面載入 ===
     document.addEventListener("DOMContentLoaded", async function () {
-      // 初始化分類按鈕和下拉選單
       initCategoryButtonsAndSelects();
-
+    
       if (isDevelopmentMode) {
         console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
         globalUserId = DEV_USER_ID;
         await fetchGalleryFromBackend('closet');
       } else {
         try {
-          await liff.init({ liffId: liffId });
+          await liff.init({ liffId });
           if (!liff.isLoggedIn()) {
             liff.login();
           } else {
@@ -462,8 +458,8 @@
       }
     });
 
+    // === 初始化分類與選單 ===
     function initCategoryButtonsAndSelects() {
-      // 定義分類
       const categoryMap = {
         top: '上衣',
         bottom: '下身',
@@ -472,16 +468,15 @@
         skirt: '裙子',
         outwear: '外搭衣'
       };
-
-      // 篩選按鈕
-      const filterBar = document.getElementById('filter-bar');
+    
+      // 建立篩選按鈕
       filterBar.innerHTML = '';
       const allBtn = document.createElement('button');
       allBtn.className = 'filter-btn active';
       allBtn.textContent = '全部';
       allBtn.dataset.category = 'all';
       filterBar.appendChild(allBtn);
-
+    
       for (const [key, label] of Object.entries(categoryMap)) {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
@@ -489,74 +484,67 @@
         btn.dataset.category = key;
         filterBar.appendChild(btn);
       }
-
-      // 上傳分類下拉
+    
+      // 上傳與編輯下拉選單
       CategorySelect.innerHTML = `<option value="" disabled selected>選擇分類</option>`;
-      // 編輯分類下拉
       editCategory.innerHTML = '';
-
       for (const [key, label] of Object.entries(categoryMap)) {
-        const option1 = document.createElement('option');
-        option1.value = key;
-        option1.textContent = label;
-        CategorySelect.appendChild(option1);
-
-        const option2 = document.createElement('option');
-        option2.value = key;
-        option2.textContent = label;
-        editCategory.appendChild(option2);
+        const opt1 = document.createElement('option');
+        opt1.value = key;
+        opt1.textContent = label;
+        CategorySelect.appendChild(opt1);
+      
+        const opt2 = document.createElement('option');
+        opt2.value = key;
+        opt2.textContent = label;
+        editCategory.appendChild(opt2);
       }
     }
 
-// 渲染圖片
-function renderGallery() {
-  gallery.innerHTML = '';
+    // === 圖片渲染 ===
+    function renderGallery() {
+      gallery.innerHTML = '';
+      let visibleCount = 0;
+    
+      images.forEach(img => {
+        if (currentFilter !== 'all' && img.category !== currentFilter) return;
+        visibleCount++;
+      
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.dataset.id = img.id;
+        card.dataset.category = img.category;
+      
+        const imgEl = document.createElement('img');
+        imgEl.src = img.url;
+        imgEl.alt = '衣物';
+        card.appendChild(imgEl);
+      
+        const moreBtn = document.createElement('div');
+        moreBtn.className = 'more-options';
+        moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+        card.appendChild(moreBtn);
+      
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+        actions.innerHTML = `
+          <i class="fas fa-edit" title="編輯衣物"></i>
+          <i class="fas fa-trash" title="刪除衣物"></i>
+        `;
+        card.appendChild(actions);
+        gallery.appendChild(card);
+      
+        bindItemCardEvents(card);
+      });
+    
+      document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
+    
+      gallery.style.display = 'none';
+      gallery.offsetHeight;
+      gallery.style.display = '';
+    }
 
-  let visibleCount = 0;  // 計算顯示的圖片數
-
-  images.forEach(img => {
-    if (currentFilter !== 'all' && img.category !== currentFilter) return;
-
-    visibleCount++; // 每顯示一張圖片就加 1
-
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.setAttribute('data-id', img.id);
-    card.setAttribute('data-category', img.category);
-
-    const imgEl = document.createElement('img');
-    imgEl.src = img.url;
-    imgEl.alt = '衣物';
-    card.appendChild(imgEl);
-
-    const moreBtn = document.createElement('div');
-    moreBtn.className = 'more-options';
-    moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-    card.appendChild(moreBtn);
-
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-    actions.innerHTML = `
-      <i class="fas fa-edit" title="編輯衣物"></i>
-      <i class="fas fa-trash" title="刪除衣物"></i>
-    `;
-    card.appendChild(actions);
-
-    gallery.appendChild(card);
-
-    bindItemCardEvents(card);
-  });
-
-  // 更新標題
-  document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
-
-  // 強制刷新 Grid 佈局
-  gallery.style.display = 'none';
-  gallery.offsetHeight; // trigger reflow
-  gallery.style.display = '';
-}
-
-    // 篩選切換事件
+    // === 篩選按鈕點擊 ===
     document.addEventListener('click', function (e) {
       if (e.target.classList.contains('filter-btn')) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -566,39 +554,22 @@ function renderGallery() {
       }
     });
 
-    // 浮動按鈕切換上傳彈窗
+    // === 上傳按鈕與彈窗控制 ===
     uploadBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       const isOpen = uploadPopup.style.display === 'flex';
       uploadPopup.style.display = isOpen ? 'none' : 'flex';
-      if (!isOpen) {
-        CategorySelect.value = '';
+      if (!isOpen) CategorySelect.value = '';
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!uploadPopup.contains(e.target) && e.target !== uploadBtn) {
+        uploadPopup.style.display = 'none';
       }
     });
 
-// 點擊頁面任意位置關閉上傳彈窗
-document.addEventListener('click', function (e) {
-  if (!uploadPopup.contains(e.target) && e.target !== uploadBtn) {
-    uploadPopup.style.display = 'none';
-  }
-});
-
-// 點擊空白處關閉所有 item-actions
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.more-options') && !e.target.closest('.item-actions')) {
-    document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
-  }
-});
-function showLoading() {
-  document.getElementById('loadingModal').style.display = 'flex';
-}
-function hideLoading() {
-  document.getElementById('loadingModal').style.display = 'none';
-}
-
-
-    // 選擇分類後開啟檔案選擇
-    confirmUpload.addEventListener('click', function () {
+    // === 確認上傳選擇分類 ===
+    confirmUpload.addEventListener('click', () => {
       if (!CategorySelect.value) {
         alert('請先選擇分類');
         return;
@@ -607,108 +578,81 @@ function hideLoading() {
       fileInput.click();
     });
 
-    // 上傳圖片
-fileInput.addEventListener('change', async function (event) {
-  const files = event.target.files;
-  if (!files.length) {
-    alert('請選擇至少一張圖片');
-    return;
-  }
-  for (const file of files) {
-    if (!file.type.startsWith('image/')) {
-      alert('僅支援圖片');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      alert('單張圖片不可超過 5MB');
-      return;
-    }
-  }
-
-  if (!globalUserId) {
-    alert('用戶尚未登入，請重新整理或稍後再試');
-    return;
-  }
-  if (!CategorySelect.value) {
-    alert('請先選擇分類');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('userId', globalUserId);
-  formData.append('category', CategorySelect.value);
-  Array.from(files).forEach(file => formData.append('images', file));
-
-  try {
-    showLoading();
-    const res = await fetch('/linebot/upload_closet/', {
-      method: 'POST',
-      body: formData
-    });
-    hideLoading();
-
-    const result = await res.json();
-
-    if (result.status === 'success') {
-      alert('圖片上傳成功');
-
-      if (result.new_images && Array.isArray(result.new_images)) {
-        const newImgs = result.new_images.map(item => ({
-          id: item.id,
-          url: item.url.startsWith('/') ? item.url : '/' + item.url,
-          category: item.category,
-        }));
-        images = [...newImgs, ...images];  // 新圖片放最前面
-        renderGallery();
-      } else {
-        await fetchGalleryFromBackend('closet');
+    // === 上傳圖片 ===
+    fileInput.addEventListener('change', async function (event) {
+      const files = event.target.files;
+      if (!files.length) return alert('請選擇至少一張圖片');
+    
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) return alert('僅支援圖片');
+        if (file.size > 5 * 1024 * 1024) return alert('單張圖片不可超過 5MB');
       }
+    
+      if (!globalUserId) return alert('用戶尚未登入');
+      if (!CategorySelect.value) return alert('請先選擇分類');
+    
+      const formData = new FormData();
+      formData.append('userId', globalUserId);
+      formData.append('category', CategorySelect.value);
+      Array.from(files).forEach(file => formData.append('images', file));
+    
+      try {
+        showLoading();
+        const res = await fetch('/linebot/upload_closet/', { method: 'POST', body: formData });
+        hideLoading();
+        const result = await res.json();
+      
+        if (result.status === 'success') {
+          alert('圖片上傳成功');
+          if (result.new_images?.length) {
+            const newImgs = result.new_images.map(item => ({
+              id: item.id,
+              url: item.url.startsWith('/') ? item.url : '/' + item.url,
+              category: item.category,
+            }));
+            images = [...newImgs, ...images];
+            renderGallery();
+          } else {
+            await fetchGalleryFromBackend('closet');
+          }
+          fileInput.value = '';
+        } else {
+          alert('圖片上傳失敗');
+        }
+      } catch (err) {
+        console.error('上傳錯誤', err);
+        alert('圖片上傳失敗');
+      }
+    });
 
-      fileInput.value = '';
-    } else {
-      alert('圖片上傳失敗');
-    }
-  } catch (err) {
-    console.error('上傳錯誤', err);
-    alert('圖片上傳失敗');
-  }
-});
-    // item-card 綁定事件
+    // === item-card 功能 ===
     function bindItemCardEvents(card) {
       const moreBtn = card.querySelector('.more-options');
       const actions = card.querySelector('.item-actions');
-
+    
       moreBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        // 先關閉所有其他 actions
         document.querySelectorAll('.item-actions').forEach(act => {
           if (act !== actions) act.style.display = 'none';
         });
-
         actions.style.display = actions.style.display === 'block' ? 'none' : 'block';
       });
-
-      // 編輯按鈕
-      const editBtn = actions.querySelector('.fa-edit');
-      editBtn.addEventListener('click', function () {
+    
+      actions.querySelector('.fa-edit').addEventListener('click', () => {
         selectedItemCard = card;
         openModal('edit-modal');
-        // 設定目前選中的分類
-        const currentCategory = card.getAttribute('data-category');
-        editCategory.value = currentCategory;
+        editCategory.value = card.dataset.category;
         actions.style.display = 'none';
       });
-
-      // 刪除按鈕
-      const deleteBtn = actions.querySelector('.fa-trash');
-      deleteBtn.addEventListener('click', function () {
+    
+      actions.querySelector('.fa-trash').addEventListener('click', () => {
         selectedItemCard = card;
         openModal('delete-modal');
         actions.style.display = 'none';
       });
     }
 
-    // Modal 開啟與關閉
+    // === Modal 控制 ===
     function openModal(id) {
       const modal = document.getElementById(id);
       if (modal) {
@@ -716,7 +660,6 @@ fileInput.addEventListener('change', async function (event) {
         document.body.style.overflow = 'hidden';
       }
     }
-
     function closeModal(id) {
       const modal = document.getElementById(id);
       if (modal) {
@@ -725,22 +668,15 @@ fileInput.addEventListener('change', async function (event) {
       }
     }
 
-    // 編輯 Modal 取消
     document.getElementById('btnCancelEdit').addEventListener('click', () => closeModal('edit-modal'));
+    document.getElementById('btnCancelDelete').addEventListener('click', () => closeModal('delete-modal'));
 
-    // 編輯 Modal 儲存
+    // === 儲存編輯分類 ===
     document.getElementById('modal-edit-save').addEventListener('click', async () => {
-      if (!selectedItemCard) {
-        alert('未選擇衣物');
-        closeModal('edit-modal');
-        return;
-      }
-
+      if (!selectedItemCard) return alert('未選擇衣物');
       const newCategory = editCategory.value;
-      if (!newCategory) {
-        alert('請選擇類別');
-        return;
-      }
+      if (!newCategory) return alert('請選擇類別');
+    
       try {
         const res = await fetch('/linebot/edit_closet_image_category/', {
           method: 'POST',
@@ -748,7 +684,7 @@ fileInput.addEventListener('change', async function (event) {
           body: JSON.stringify({
             userId: globalUserId,
             imageId: Number(selectedItemCard.dataset.id),
-            newCategory: newCategory
+            newCategory
           })
         });
         const result = await res.json();
@@ -758,24 +694,17 @@ fileInput.addEventListener('change', async function (event) {
         } else {
           alert('類別更新失敗');
         }
-      } catch (err) {
+      } catch {
         alert('類別更新錯誤');
       } finally {
         closeModal('edit-modal');
       }
     });
 
-    // 刪除 Modal 取消
-    document.getElementById('btnCancelDelete').addEventListener('click', () => closeModal('delete-modal'));
-
-    // 刪除 Modal 確定
+    // === 確認刪除圖片 ===
     document.getElementById('modal-delete-yes').addEventListener('click', async () => {
-      if (!selectedItemCard) {
-        alert('未選擇衣物');
-        closeModal('delete-modal');
-        return;
-      }
-
+      if (!selectedItemCard) return alert('未選擇衣物');
+    
       try {
         const res = await fetch('/linebot/delete_closet_images/', {
           method: 'POST',
@@ -792,38 +721,44 @@ fileInput.addEventListener('change', async function (event) {
         } else {
           alert('刪除失敗');
         }
-      } catch (err) {
+      } catch {
         alert('刪除錯誤');
       } finally {
         closeModal('delete-modal');
       }
     });
 
-filterBar.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  filterBar.classList.add('active');  // 若你想做樣式改變（可選）
-  startX = e.pageX - filterBar.offsetLeft;
-  scrollLeft = filterBar.scrollLeft;
-  e.preventDefault(); // 防止選取文字
-});
+    // === Loading 顯示/隱藏 ===
+    function showLoading() {
+      document.getElementById('loadingModal').style.display = 'flex';
+    }
+    function hideLoading() {
+      document.getElementById('loadingModal').style.display = 'none';
+    }
 
-filterBar.addEventListener('mouseleave', () => {
-  isDragging = false;
-  filterBar.classList.remove('active');
-});
-
-filterBar.addEventListener('mouseup', () => {
-  isDragging = false;
-  filterBar.classList.remove('active');
-});
-
-filterBar.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  e.preventDefault();
-  const x = e.pageX - filterBar.offsetLeft;
-  const walk = (startX - x) * 1.5; // 滾動速度調整
-  filterBar.scrollLeft = scrollLeft + walk;
-});
+    // === filterBar 拖曳事件 ===
+    filterBar.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      filterBar.classList.add('active');
+      startX = e.pageX - filterBar.offsetLeft;
+      scrollLeft = filterBar.scrollLeft;
+      e.preventDefault();
+    });
+    filterBar.addEventListener('mouseleave', () => {
+      isDragging = false;
+      filterBar.classList.remove('active');
+    });
+    filterBar.addEventListener('mouseup', () => {
+      isDragging = false;
+      filterBar.classList.remove('active');
+    });
+    filterBar.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - filterBar.offsetLeft;
+      const walk = (startX - x) * 1.5;
+      filterBar.scrollLeft = scrollLeft + walk;
+    });
   </script>
   {% include "components/footer.html" %}
 </body>

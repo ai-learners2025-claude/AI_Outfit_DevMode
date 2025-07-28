@@ -612,7 +612,6 @@
         openModal();
       }
     });
-
     /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
     btnCancel.addEventListener('click', () => {
       closeModal(modal);
@@ -620,7 +619,7 @@
 
     /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
     btnConfirm.addEventListener('click', () => {
-      closeModal();
+      closeModal(modal);
       showLoading();
       setTimeout(() => {
         closeLoading();
