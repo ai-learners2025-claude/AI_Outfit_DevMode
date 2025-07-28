@@ -480,6 +480,15 @@
     const editCategory = document.getElementById('edit-category');
     const filterBar = document.getElementById('filter-bar');
 
+      const categoryMap = {
+        outwear: '外搭衣',
+        top: '上衣',
+        bottom: '下身',
+        dress: '洋裝',
+        skirt: '裙子',
+        shoes: '鞋子',
+      };
+
     // === 頁面載入 ===
     document.addEventListener("DOMContentLoaded", async function () {
       initCategoryButtonsAndSelects();
@@ -508,14 +517,7 @@
 
     // === 初始化分類與選單 ===
     function initCategoryButtonsAndSelects() {
-      const categoryMap = {
-        top: '上衣',
-        bottom: '下身',
-        shoes: '鞋子',
-        dress: '洋裝',
-        skirt: '裙子',
-        outwear: '外搭衣'
-      };
+
     
       // 建立篩選按鈕
       filterBar.innerHTML = '';
