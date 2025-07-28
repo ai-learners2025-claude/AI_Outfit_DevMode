@@ -450,7 +450,7 @@
   <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
     <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
       <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
-      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="progress-bar-container" aria-label="上傳進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="progress-bar"></div>
       </div>
     </div>
@@ -549,58 +549,76 @@
       }
     }
 
-    // === 圖片渲染 ===
-    function renderGallery() {
-      gallery.innerHTML = '';
-      let visibleCount = 0;
-    
-      images.forEach(img => {
-        if (currentFilter !== 'all' && img.category !== currentFilter) return;
-        visibleCount++;
-      
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.dataset.id = img.id;
-        card.dataset.category = img.category;
-      
-        const imgEl = document.createElement('img');
-        imgEl.src = img.url;
-        imgEl.alt = '衣物';
-        card.appendChild(imgEl);
-      
-        const moreBtn = document.createElement('div');
-        moreBtn.className = 'more-options';
-        moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-        card.appendChild(moreBtn);
-      
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-        actions.innerHTML = `
-          <i class="fas fa-edit" title="編輯衣物"></i>
-          <i class="fas fa-trash" title="刪除衣物"></i>
-        `;
-        card.appendChild(actions);
-        gallery.appendChild(card);
-      
-        bindItemCardEvents(card);
-      });
-    
-      document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
-    
-      gallery.style.display = 'none';
-      gallery.offsetHeight;
-      gallery.style.display = '';
-    }
+    console.log('renderGallery called, images:', images.length, 'currentFilter:', currentFilter);
 
-    // === 篩選按鈕點擊 ===
-    document.addEventListener('click', function (e) {
-      if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        currentFilter = e.target.dataset.category;
-        renderGallery();
-      }
-    });
+    // === 圖片渲染 ===
+function renderGallery() {
+  let visibleCount = 0;
+  const items = [];
+
+  images.forEach(img => {
+    if (currentFilter !== 'all' && img.category !== currentFilter) return;
+    visibleCount++;
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.dataset.id = img.id;
+    card.dataset.category = img.category;
+
+    const imgEl = document.createElement('img');
+    imgEl.loading = 'lazy';
+    imgEl.src = img.url.startsWith('/') ? img.url : '/' + img.url;
+    imgEl.alt = '衣物';
+    card.appendChild(imgEl);
+
+    const moreBtn = document.createElement('div');
+    moreBtn.className = 'more-options';
+    moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+    card.appendChild(moreBtn);
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+    actions.innerHTML = `
+      <i class="fas fa-edit" title="編輯衣物"></i>
+      <i class="fas fa-trash" title="刪除衣物"></i>
+    `;
+    card.appendChild(actions);
+
+    items.push(card);
+  });
+
+  // 用 replaceChildren 一次更新，效能比 innerHTML='' + appendChild(fragment) 好
+  gallery.replaceChildren(...items);
+
+  // 事件綁定
+  items.forEach(card => bindItemCardEvents(card));
+
+  // 更新標題
+  document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
+}
+
+//     // === 篩選按鈕點擊 ===
+// filterBar.addEventListener('click', e => {
+//   if (!e.target.classList.contains('filter-btn')) return;
+
+//   filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+//   e.target.classList.add('active');
+//   currentFilter = e.target.dataset.category;
+//   renderGallery();
+// });
+
+let filterTimeout;
+filterBar.addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+
+  clearTimeout(filterTimeout);
+  filterTimeout = setTimeout(() => {
+    filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter = e.target.dataset.category;
+    renderGallery();
+  }, 150);
+});
 
     // === 上傳按鈕與彈窗控制 ===
     uploadBtn.addEventListener('click', function (e) {
@@ -637,67 +655,83 @@
       if (!globalUserId) return alert('用戶尚未登入');
       if (!CategorySelect.value) return alert('請先選擇分類');
 
-      // 進度條與訊息元素
-      const loadingModal = document.getElementById('loadingModal');
-      const progressBar = loadingModal.querySelector('.progress-bar');
-      const progressBarContainer = loadingModal.querySelector('.progress-bar-container');
-      let progressText = loadingModal.querySelector('.progress-text');
-      if (!progressText) {
-        progressText = document.createElement('div');
-        progressText.className = 'progress-text';
-        progressText.style.textAlign = 'center';
-        progressText.style.fontSize = '1rem';
-        progressText.style.marginTop = '8px';
-        progressBarContainer.parentNode.insertBefore(progressText, progressBarContainer.nextSibling);
-      }
+    // 進度條與訊息元素
+    const loadingModal = document.getElementById('loadingModal');
+    const progressBar = loadingModal.querySelector('.progress-bar');
+    const progressBarContainer = loadingModal.querySelector('.progress-bar-container');
+    let progressText = loadingModal.querySelector('.progress-text');
+    if (!progressText) {
+      progressText = document.createElement('div');
+      progressText.className = 'progress-text';
+      progressText.style.textAlign = 'center';
+      progressText.style.fontSize = '1rem';
+      progressText.style.marginTop = '8px';
+      progressBarContainer.parentNode.insertBefore(progressText, progressBarContainer.nextSibling);
+    }
+    showLoading();
+    let successCount = 0;
+    let failCount = 0;
+    let newImgs = [];
 
-      showLoading();
-      let successCount = 0;
-      let failCount = 0;
-      let newImgs = [];
-      for (let i = 0; i < files.length; i++) {
-        progressText.textContent = `共${files.length}個圖片，正傳送第${i+1}個檔案...`;
-        progressBar.style.width = `${((i+1)/files.length)*100}%`;
-        loadingModal.setAttribute('aria-valuenow', i+1);
-
-        const file = files[i];
-        const formData = new FormData();
-        formData.append('userId', globalUserId);
-        formData.append('category', CategorySelect.value);
-        formData.append('images', file);
-        try {
-          const res = await fetch('/linebot/upload_closet/', { method: 'POST', body: formData });
-          const result = await res.json();
-          if (result.status === 'success') {
-            successCount++;
-            if (result.new_images?.length) {
-              newImgs.push(...result.new_images.map(item => ({
-                id: item.id,
-                url: item.url.startsWith('/') ? item.url : '/' + item.url,
-                category: item.category,
-              })));
-            }
-          } else {
-            failCount++;
+    for (let i = 0; i < files.length; i++) {
+      // 設定目標進度
+      const targetProgress = ((i + 1) / files.length) * 100;
+    
+      // 模擬連續流暢進度（每 50ms 微調一次）
+      let currentProgress = parseFloat(progressBar.style.width) || 0;
+      const step = (targetProgress - currentProgress) / 20; // 分20次到達
+      const interval = setInterval(() => {
+        currentProgress += step;
+        if (currentProgress >= targetProgress) {
+          currentProgress = targetProgress;
+          clearInterval(interval);
+        }
+        progressBar.style.width = `${currentProgress}%`;
+      }, 50);
+    
+      progressText.textContent = `共${files.length}個圖片，正傳送第${i + 1}個檔案...`;
+      loadingModal.setAttribute('aria-valuenow', i + 1);
+    
+      const file = files[i];
+      const formData = new FormData();
+      formData.append('userId', globalUserId);
+      formData.append('category', CategorySelect.value);
+      formData.append('images', file);
+    
+      try {
+        const res = await fetch('/linebot/upload_closet/', { method: 'POST', body: formData });
+        const result = await res.json();
+        if (result.status === 'success') {
+          successCount++;
+          if (result.new_images?.length) {
+            newImgs.push(...result.new_images.map(item => ({
+              id: item.id,
+              url: item.url.startsWith('/') ? item.url : '/' + item.url,
+              category: item.category,
+            })));
           }
-        } catch (err) {
-          failCount++;
-          console.error('上傳錯誤', err);
-        }
-      }
-      hideLoading();
-      fileInput.value = '';
-      if (successCount > 0) {
-        alert(`${successCount}張圖片上傳成功 `);
-        if (newImgs.length) {
-          images = [...newImgs, ...images];
-          renderGallery();
         } else {
-          await fetchGalleryFromBackend('closet');
+          failCount++;
         }
-      } else {
-        alert('圖片上傳失敗');
+      } catch (err) {
+        failCount++;
+        console.error('上傳錯誤', err);
       }
+    }
+
+    hideLoading();
+    fileInput.value = '';
+    if (successCount > 0) {
+      alert(`${successCount}張圖片上傳成功 `);
+      if (newImgs.length) {
+        images = [...newImgs, ...images];
+        renderGallery();
+      } else {
+        await fetchGalleryFromBackend('closet');
+      }
+    } else {
+      alert('圖片上傳失敗');
+    }
     });
 
     // === item-card 功能 ===
