@@ -23,6 +23,8 @@ from django.shortcuts import render
 from .models import ClosetItem, MimicItem
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
+from django.utils.text import get_valid_filename
+
 
 from pathlib import Path
 import json
@@ -30,6 +32,13 @@ import json
 from io import BytesIO 
 
 import logging
+
+
+
+from libraries.description_utils import generate_description_from_image_path, save_description_to_csv, load_prompt
+from libraries.description_utils_new import generate_description, load_prompt, save_description_to_csv
+from libraries.runninghub_utils import RunningHubImageProcessor
+import csv
 
 
 # 將以下設定寫入 settings.py 中
@@ -232,7 +241,7 @@ def edit_closet_image_category(request):
 # }
 
 # mimic：
-
+    
 
 @csrf_exempt
 def delete_mimic_images(request):
@@ -285,3 +294,81 @@ def upload_mimic(request):
             return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @csrf_exempt
+# def upload_mimic(request):
+#     if request.method != 'POST':
+#         return JsonResponse({'status': 'error', 'message': '僅接受 POST 請求'})
+
+#     try:
+#         user_id = request.POST.get('userId')
+#         images = request.FILES.getlist('images')  # 支援多圖
+
+#         if not user_id or not images:
+#             return JsonResponse({'status': 'error', 'message': '缺少必要參數'})
+
+#         saved_images = []  # 用來存處理好的圖片資訊
+
+#         for image in images:
+#             # 🔸 取得原始檔名並轉為合法檔名
+#             raw_filename = get_valid_filename(image.name)
+#             base_filename, _ = os.path.splitext(raw_filename)
+
+#             # 🔹 儲存原始圖為 PNG
+#             save_dir = os.path.join(settings.MEDIA_ROOT, 'mimic', user_id)
+#             os.makedirs(save_dir, exist_ok=True)
+#             original_filename = f"{base_filename}.png"
+#             original_path = os.path.join(save_dir, original_filename)
+
+#             with open(original_path, 'wb') as f:
+#                 for chunk in image.chunks():
+#                     f.write(chunk)
+
+#             # 🔥 呼叫處理器處理圖片
+#             processor = RunningHubImageProcessor()
+#             success = processor.process_image(
+#                 image_path=original_path,
+#                 output_dir=save_dir,
+#                 base_name=base_filename
+#             )
+
+#             if not success:
+#                 continue  # 跳過失敗的圖片
+
+#             # 🔎 處理後圖片路徑
+#             removed_bg_filename = f"{base_filename}_removed_bg.png"
+#             removed_bg_path = os.path.join(save_dir, removed_bg_filename)
+
+#             if not os.path.exists(removed_bg_path):
+#                 continue  # 跳過找不到的圖片
+
+#             # 產生描述
+#             prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')
+#             prompt_text = load_prompt(prompt_path)
+#             description = generate_description(removed_bg_path, prompt_text)
+
+#             # 儲存 CSV 描述
+#             csv_output_path = os.path.join(save_dir, f"{base_filename}_removed_bg.csv")
+#             save_description_to_csv(csv_output_path, removed_bg_filename, description)
+
+#             # 回傳 URL
+#             processed_url = os.path.join(settings.MEDIA_URL, 'mimic', user_id, removed_bg_filename)
+
+#             saved_images = []
+#             try:
+#                 for f in files:
+#                     image_content = ContentFile(f.read(), name=f.name)
+#                     item = MimicItem(user_id=user_id, image=image_content)
+#                     item.save()
+#                     saved_images.append({
+#                         'id': item.id,
+#                         'url': item.image.url,
+#                     })
+
+#                 return JsonResponse({'status': 'success', 'new_images': saved_images})
+
+#             except Exception as e:
+#                 return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
+
+#     except Exception as e:
+#         return JsonResponse({'status': 'error', 'message': f'處理錯誤: {str(e)}'})

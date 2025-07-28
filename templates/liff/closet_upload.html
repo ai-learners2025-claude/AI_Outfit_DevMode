@@ -70,17 +70,22 @@
       position: relative;
       height: 190px;
       max-height: 190px;
-       position: relative;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .item-card.hidden {
       visibility: hidden;
     }
 
     .item-card img {
-      width: 100%;
+      /*width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+      object-position: center;*/
+      max-height: 100%;
+      max-width: 100%;
     }
 
     .item-actions i {
@@ -343,6 +348,49 @@
     font-size: 0.95rem;
   }
 }
+#upload-category {
+  text-align: center;
+  width: 100%; /* 讓選單寬度隨容器寬度縮放 */
+  max-width: 400px; /* 最大寬度限制 */
+  margin: 0 auto; /* 置中 */
+  font-size: 1rem;
+}
+
+/* option 項目樣式 */
+#upload-category option {
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 1rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease;
+}
+
+/* 手機螢幕（最大寬度 480px）調整 */
+@media (max-width: 480px) {
+  #upload-category {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  #upload-category option {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* 平板螢幕（481px ~ 768px）調整 */
+@media (min-width: 481px) and (max-width: 768px) {
+  #upload-category {
+    font-size: 1rem;
+    padding: 10px 16px;
+  }
+
+  #upload-category option {
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
+}
   </style>
 </head>
 <body>
@@ -582,45 +630,72 @@
     fileInput.addEventListener('change', async function (event) {
       const files = event.target.files;
       if (!files.length) return alert('請選擇至少一張圖片');
-    
       for (const file of files) {
         if (!file.type.startsWith('image/')) return alert('僅支援圖片');
         if (file.size > 5 * 1024 * 1024) return alert('單張圖片不可超過 5MB');
       }
-    
       if (!globalUserId) return alert('用戶尚未登入');
       if (!CategorySelect.value) return alert('請先選擇分類');
-    
-      const formData = new FormData();
-      formData.append('userId', globalUserId);
-      formData.append('category', CategorySelect.value);
-      Array.from(files).forEach(file => formData.append('images', file));
-    
-      try {
-        showLoading();
-        const res = await fetch('/linebot/upload_closet/', { method: 'POST', body: formData });
-        hideLoading();
-        const result = await res.json();
-      
-        if (result.status === 'success') {
-          alert('圖片上傳成功');
-          if (result.new_images?.length) {
-            const newImgs = result.new_images.map(item => ({
-              id: item.id,
-              url: item.url.startsWith('/') ? item.url : '/' + item.url,
-              category: item.category,
-            }));
-            images = [...newImgs, ...images];
-            renderGallery();
+
+      // 進度條與訊息元素
+      const loadingModal = document.getElementById('loadingModal');
+      const progressBar = loadingModal.querySelector('.progress-bar');
+      const progressBarContainer = loadingModal.querySelector('.progress-bar-container');
+      let progressText = loadingModal.querySelector('.progress-text');
+      if (!progressText) {
+        progressText = document.createElement('div');
+        progressText.className = 'progress-text';
+        progressText.style.textAlign = 'center';
+        progressText.style.fontSize = '1rem';
+        progressText.style.marginTop = '8px';
+        progressBarContainer.parentNode.insertBefore(progressText, progressBarContainer.nextSibling);
+      }
+
+      showLoading();
+      let successCount = 0;
+      let failCount = 0;
+      let newImgs = [];
+      for (let i = 0; i < files.length; i++) {
+        progressText.textContent = `共${files.length}個圖片，正傳送第${i+1}個檔案...`;
+        progressBar.style.width = `${((i+1)/files.length)*100}%`;
+        loadingModal.setAttribute('aria-valuenow', i+1);
+
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('userId', globalUserId);
+        formData.append('category', CategorySelect.value);
+        formData.append('images', file);
+        try {
+          const res = await fetch('/linebot/upload_closet/', { method: 'POST', body: formData });
+          const result = await res.json();
+          if (result.status === 'success') {
+            successCount++;
+            if (result.new_images?.length) {
+              newImgs.push(...result.new_images.map(item => ({
+                id: item.id,
+                url: item.url.startsWith('/') ? item.url : '/' + item.url,
+                category: item.category,
+              })));
+            }
           } else {
-            await fetchGalleryFromBackend('closet');
+            failCount++;
           }
-          fileInput.value = '';
-        } else {
-          alert('圖片上傳失敗');
+        } catch (err) {
+          failCount++;
+          console.error('上傳錯誤', err);
         }
-      } catch (err) {
-        console.error('上傳錯誤', err);
+      }
+      hideLoading();
+      fileInput.value = '';
+      if (successCount > 0) {
+        alert(`${successCount}張圖片上傳成功 `);
+        if (newImgs.length) {
+          images = [...newImgs, ...images];
+          renderGallery();
+        } else {
+          await fetchGalleryFromBackend('closet');
+        }
+      } else {
         alert('圖片上傳失敗');
       }
     });
