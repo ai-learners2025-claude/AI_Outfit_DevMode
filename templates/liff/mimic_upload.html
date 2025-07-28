@@ -8,9 +8,9 @@
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
-  <!-- <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" /> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     .item-grid {
@@ -444,6 +444,47 @@
     let selectedItemCard = null;
     let images = [];
 
+
+    /** 搜尋中,上傳中Modal 開啟/關閉 */
+    function openModal() {
+      modal.classList.add('active');
+    }
+    function closeModal(modalElement) {
+      modalElement.classList.remove('active');
+    }
+
+      /** Loading Modal 開啟/關閉 + 進度條動畫 */
+    function showLoading() {
+      search_loading.classList.add('active');
+      startProgressBar();
+    }
+
+    function startProgressBar() {
+      let progress = 0;
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+      const interval = setInterval(() => {
+        progress += 2;
+        if (progress > 100) {
+          clearInterval(interval);
+          return;
+        }
+        progressBar.style.width = progress + '%';
+        search_loading.setAttribute('aria-valuenow', progress);
+      }, 50);
+    }
+
+    function closeLoading() {
+      search_loading.classList.remove('active');
+      document.body.style.overflow = '';
+      resetProgressBar();
+    }
+
+    function resetProgressBar() {
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+    }
+
     /** 初始化 LIFF 或開發模式 */
     document.addEventListener("DOMContentLoaded", async function () {
       if (isDevelopmentMode) {
@@ -466,25 +507,7 @@
         }
       }
     });
-    /** 從後端取得 Mimic 圖片 */
-async function fetchGalleryFromBackend(source) {
-  try {
-    const res = await fetch(`/linebot/view_images/${globalUserId}/${source}/`);
-    const data = await res.json();
-    images = (data.images || []).map(item => {
-      const img = {
-        id: item.id,
-        url: item.url.startsWith('/') ? item.url : '/' + item.url,
-      };
-      if (item.category) img.category = item.category;
-      return img;
-    });
-    renderGallery();
-  } catch (error) {
-    console.error("載入失敗", error);
-    alert('載入圖片失敗');
-  }
-}
+
     /** 渲染 Mimic 圖片卡片 */
     function renderGallery() {
       itemGrid.innerHTML = '';
@@ -500,32 +523,22 @@ async function fetchGalleryFromBackend(source) {
             </div>
           </div>
         `;
-        
-        /** 點垃圾桶 → 開啟刪除確認 Modal */
-        card.querySelector('.fa-trash').addEventListener('click', () => {
-          selectedItemCard = card;
-          deleteModal.classList.add('active');
-        });
-      
-        /** 點圖片 → 開啟搜尋 Modal */
-        card.querySelector('.clickable-img').addEventListener('click', () => {
-
-          currentitem = card;
-          openModal();
-        });
         itemGrid.appendChild(card);
       });
     }
-    /** 點選上傳按鈕觸發檔案選擇 */
+
+    /** 上傳照片 */
+    /** 上傳照片1_ 點選 + icon -> 觸發檔案選擇器 */
     uploadBtn.addEventListener('click', () => {
       uploadInput.click();
     });
-    /** 選擇檔案後上傳 */
+    /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
     uploadInput.addEventListener('change', async (event) => {
       const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
       if (files.length === 0) return;
       await uploadAndAddNewImages(files);
     });
+    /** 上傳照片3_後端API */
     async function uploadAndAddNewImages(files) {
       const formData = new FormData();
       formData.append('userId', globalUserId);
@@ -548,11 +561,20 @@ async function fetchGalleryFromBackend(source) {
       }
       uploadInput.value = '';
     }
-    /** 點擊刪除取消 → 關閉刪除 Modal */
-    document.getElementById('modal-delete-cancel').addEventListener('click', () => {
-      deleteModal.classList.remove('active');
+
+    /** 刪除照片 **/
+    /* 刪除照片_1. 點擊fa-trash -> 跳出是否確認要刪除對話框 */
+    itemGrid.addEventListener('click', e => {
+      if (e.target.classList.contains('fa-trash')) {
+        // 找到點擊的垃圾桶所在的卡片
+        const card = e.target.closest('.item-card');
+        if (!card) return;
+      
+        selectedItemCard = card;
+        deleteModal.classList.add('active');  // 顯示刪除確認 Modal
+      }
     });
-        /** 點擊刪除確認 → 呼叫刪除 API */
+    /* 刪除照片_2. 點擊確認刪除 → 呼叫刪除 API */
     document.getElementById('modal-delete-yes').addEventListener('click', async function () {
       if (!selectedItemCard) return;
       const imageId = selectedItemCard.getAttribute('data-id');
@@ -574,72 +596,57 @@ async function fetchGalleryFromBackend(source) {
       selectedItemCard = null;
       deleteModal.classList.remove('active');
     });
-    /** Modal 開啟/關閉 */
-    function openModal() {
-      modal.classList.add('active');
-    }
-    function closeModal() {
-      modal.classList.remove('active');
-    }
-    btnCancel.addEventListener('click', closeModal);
-    /** 搜尋確定 → 開啟 Loading */
-btnConfirm.addEventListener('click', () => {
-  closeModal();
-  showLoading();
-  setTimeout(() => {
-    closeLoading();
 
-    if (!currentitem) {
-      alert('找不到目前選中的圖片');
-      return;
-    }
+    /* 刪除照片_3. 點擊取消刪除 -> 關閉是否確認要刪除對話框 */
+    document.getElementById('modal-delete-cancel').addEventListener('click', () => {
+      closeModal(deleteModal);
+    });
 
-    // 找當前 card 裡的圖片 URL
-    const clickedImgSrc = currentitem.querySelector('img').src;
+    /** 搜尋比對結果 **/
+    /* 搜尋比對結果_1. 點擊itemGrid(mimic照片) -> 跳出是否要搜尋對話框 */
+    itemGrid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('clickable-img')) {
+        const card = e.target.closest('.item-card');
+        if (!card) return;
+        currentitem = card;
+        openModal();
+      }
+    });
 
-    // 設定左側圖片
-    document.getElementById('search-original-img').src = clickedImgSrc;
+    /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
+    btnCancel.addEventListener('click', () => {
+      closeModal(modal);
+    });
 
-    // 顯示 SearchResultModal
-    SearchResultModal.style.display = 'flex';
-    setTimeout(() => SearchResultModal.classList.add('show'), 10);
-  }, 3000);
-});
-
-// 關閉 Modal
-SearchResultClose.addEventListener('click', () => {
-  SearchResultModal.classList.remove('show');
-  setTimeout(() => SearchResultModal.style.display = 'none', 300);
-});
-
-    /** Loading Modal 開啟/關閉 + 進度條動畫 */
-    function showLoading() {
-      search_loading.classList.add('active');
-      startProgressBar();
-    }
-    function closeLoading() {
-      search_loading.classList.remove('active');
-      document.body.style.overflow = '';
-      resetProgressBar();
-    }
-    function startProgressBar() {
-      let progress = 0;
-      progressBar.style.width = '0%';
-      search_loading.setAttribute('aria-valuenow', 0);
-      const interval = setInterval(() => {
-        progress += 2;
-        if (progress > 100) {
-          clearInterval(interval);
+    /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
+    btnConfirm.addEventListener('click', () => {
+      closeModal();
+      showLoading();
+      setTimeout(() => {
+        closeLoading();
+      
+        if (!currentitem) {
+          alert('找不到目前選中的圖片');
           return;
         }
-        progressBar.style.width = progress + '%';
-        search_loading.setAttribute('aria-valuenow', progress);
-      }, 50);
-    }
-    function resetProgressBar() {
-      progressBar.style.width = '0%';
-      search_loading.setAttribute('aria-valuenow', 0);
-    }
+
+        // 找當前 card 裡的圖片 URL
+        const clickedImgSrc = currentitem.querySelector('img').src;
+      
+        // 設定左側圖片
+        document.getElementById('search-original-img').src = clickedImgSrc;
+      
+        // 顯示 SearchResultModal
+        SearchResultModal.style.display = 'flex';
+        setTimeout(() => SearchResultModal.classList.add('show'), 10);
+      }, 3000);
+    });
+
+    /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
+    SearchResultClose.addEventListener('click', () => {
+      SearchResultModal.classList.remove('show');
+      setTimeout(() => SearchResultModal.style.display = 'none', 300);
+    });
 
   </script>
   {% include "components/footer.html" %}

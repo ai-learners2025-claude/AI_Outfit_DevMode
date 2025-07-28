@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
   <style>
     .closet-title {
       font-size: 1.8rem;
@@ -476,7 +477,7 @@
       if (isDevelopmentMode) {
         console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
         globalUserId = DEV_USER_ID;
-        await fetchGalleryFromBackend();
+        await fetchGalleryFromBackend('closet');
       } else {
         try {
           await liff.init({ liffId: liffId });
@@ -486,7 +487,7 @@
             const profile = await liff.getProfile();
             globalUserId = profile.userId;
             console.log("LINE UserId:", globalUserId);
-            await fetchGalleryFromBackend();
+            await fetchGalleryFromBackend('closet');
           }
         } catch (err) {
           console.error("LIFF 初始化錯誤", err);
@@ -606,23 +607,6 @@ function renderGallery() {
   // 更新標題顯示數量
   document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
 }
-    async function fetchGalleryFromBackend() {
-      try {
-        const res = await fetch(`/linebot/view_closet/${globalUserId}/`);
-        const data = await res.json();
-
-        images = (data.images || []).map(item => ({
-          id: item.id,
-          url: item.url.startsWith('/') ? item.url : '/' + item.url,
-          category: item.category,
-        }));
-
-        renderGallery();
-      } catch (error) {
-        console.error("載入失敗", error);
-        alert('載入衣櫃圖片失敗');
-      }
-    }
 
     // 篩選切換事件
     document.addEventListener('click', function (e) {
@@ -727,7 +711,7 @@ fileInput.addEventListener('change', async function (event) {
         images = [...newImgs, ...images];  // 新圖片放最前面
         renderGallery();
       } else {
-        await fetchGalleryFromBackend();
+        await fetchGalleryFromBackend('closet');
       }
 
       fileInput.value = '';
@@ -820,7 +804,7 @@ fileInput.addEventListener('change', async function (event) {
         const result = await res.json();
         if (result.status === 'success') {
           alert('類別更新成功');
-          await fetchGalleryFromBackend();
+          await fetchGalleryFromBackend('closet');
         } else {
           alert('類別更新失敗');
         }
@@ -854,7 +838,7 @@ fileInput.addEventListener('change', async function (event) {
         const result = await res.json();
         if (result.status === 'success') {
           alert('刪除成功');
-          await fetchGalleryFromBackend();
+          await fetchGalleryFromBackend('closet');
         } else {
           alert('刪除失敗');
         }

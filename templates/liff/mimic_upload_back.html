@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
   <style>
     .product-grid {
       display: grid;
@@ -273,7 +275,7 @@
       </div>
     </div>
   </div>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
   <script>
     const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
     const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
@@ -296,7 +298,7 @@
       if (isDevelopmentMode) {
         console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
         globalUserId = DEV_USER_ID;
-        await fetchGalleryFromBackend();
+        await fetchGalleryFromBackend('mimic');
       } else {
         try {
           await liff.init({ liffId: liffId });
@@ -305,7 +307,7 @@
           } else {
             const profile = await liff.getProfile();
             globalUserId = profile.userId;
-            await fetchGalleryFromBackend();
+            await fetchGalleryFromBackend('mimic');
           }
         } catch (err) {
           console.error("LIFF 初始化錯誤", err);
@@ -313,22 +315,7 @@
         }
       }
     });
-    /** 從後端取得 Mimic 圖片 */
-    async function fetchGalleryFromBackend() {
-      try {
-        const res = await fetch(`/linebot/view_mimic/${globalUserId}/`);
-        const data = await res.json();
-        images = (data.images || []).map(item => ({
-          id: item.id,
-          url: item.url.startsWith('/') ? item.url : '/' + item.url,
-          category: item.category,
-        }));
-        renderGallery();
-      } catch (error) {
-        console.error("載入失敗", error);
-        alert('載入衣櫃圖片失敗');
-      }
-    }
+
 /** 渲染 Mimic 圖片卡片 */
 function renderGallery() {
   productGrid.innerHTML = '';
@@ -406,7 +393,7 @@ function renderGallery() {
         });
         const result = await res.json();
         if (result.status === 'success') {
-          await fetchGalleryFromBackend();
+          await fetchGalleryFromBackend('mimic');
         } else {
           alert(result.message || '刪除失敗');
         }

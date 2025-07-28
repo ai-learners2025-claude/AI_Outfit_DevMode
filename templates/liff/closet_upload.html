@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
   <style>
     .closet-title {
       font-size: 1.8rem;
@@ -553,25 +554,6 @@ function renderGallery() {
   gallery.style.display = 'none';
   gallery.offsetHeight; // trigger reflow
   gallery.style.display = '';
-}
-
-async function fetchGalleryFromBackend(source) {
-  try {
-    const res = await fetch(`/linebot/view_images/${globalUserId}/${source}/`);
-    const data = await res.json();
-    images = (data.images || []).map(item => {
-      const img = {
-        id: item.id,
-        url: item.url.startsWith('/') ? item.url : '/' + item.url,
-      };
-      if (item.category) img.category = item.category;
-      return img;
-    });
-    renderGallery();
-  } catch (error) {
-    console.error("載入失敗", error);
-    alert('載入圖片失敗');
-  }
 }
 
     // 篩選切換事件

@@ -713,3 +713,5 @@ Traceback (most recent call last):
     return super().execute(query, params)
 django.db.utils.OperationalError: no such table: linebot_app_mimicitem
 2025-07-28 10:26:57,070 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137937
+2025-07-28 13:56:50,270 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-28 13:56:50,271 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 86
