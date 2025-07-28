@@ -135,13 +135,16 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = '/media/'  # 用戶在瀏覽器中訪問上傳檔案時所用的 網址前綴
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# BASE_URL = 'https://brianoxox.learnai2025.com'
+# MEDIA_ROOT = '/home/babomomo26/AIOutfit/media/closet'  GCP實體照片存放位置
+
 MEDIA_ROOT_CLOSET = os.path.join(BASE_DIR, 'media/closet')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_CLOSET_PARTIAL_PATH = 'media/closet'
-BASE_URL = 'https://brianoxox.learnai2025.com'
+
 LIFF_CLOSET_ID = '2007741127-KXgn38Dn'
 LIFF_MIMIC_ID = '2007741127-w29Nj1aN'
 LIFF_RECOMMEND_ID = '2007741127-V0Y2QDd2'
@@ -149,7 +152,6 @@ LIFF_RECOMMEND_ID = '2007741127-V0Y2QDd2'
 LINE_CHANNEL_ACCESS_TOKEN = 'cMmRHEkKdOaJWv9LdQk1RIedv5DX3qKpg8O7SIXqiIi3yp0jcdXy6xJtlM7eBqV0HigKhWoWkKb85hArSFwalPguOoig6KwqCI7dYasf/hUxOEMVugV/snhSltG1msJ6bcE1kl61lSOqE1/wiV8XOQdB04t89/1O/w1cDnyilFU='
 LINE_CHANNEL_SECRET = '93ec1dfd2a32b6c2819eda90cc28d485' 
 
-import os
 
 LOGGING = {
     'version': 1,

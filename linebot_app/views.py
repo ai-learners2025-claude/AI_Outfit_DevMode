@@ -73,6 +73,27 @@ def handle_message(event):
     )
 
 
+@csrf_exempt
+def view_images(request, user_id, source):
+    if source == 'closet':
+        items = ClosetItem.objects.filter(user_id=user_id)
+        images = [{
+            'id': item.id,
+            'url': item.image.url,
+            'category': item.category
+        } for item in items]
+    elif source == 'mimic':
+        items = MimicItem.objects.filter(user_id=user_id).order_by('-id')
+        images = [{
+            'id': item.id,
+            'url': item.image.url,
+        } for item in items]
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid source'}, status=400)
+
+    return JsonResponse({'status': 'success', 'images': images})
+
+
 #  upload+去背API
 @csrf_exempt
 def upload_closet(request):
@@ -85,7 +106,7 @@ def upload_closet(request):
 
         if not user_id or not category or not files:
             return JsonResponse({'status': 'error', 'message': '缺少參數'}, status=400)
-        
+
         for f in files:
             try:
                 image = Image.open(f)
@@ -120,121 +141,7 @@ def upload_closet(request):
                 return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
 
         return JsonResponse({'status': 'success', 'new_images': saved})  # key 改成 new_images
-    
     return JsonResponse({'error': 'Invalid request'}, status=400)
-    
-
-# def view_closet(request, user_id):
-#     images = ClosetItem.objects.filter(user_id=user_id)
-
-#     image_list = []
-#     for image in images:
-#         image_list.append({
-#             "url": f"{settings.MEDIA_URL}{image.image.name}",
-#             "category": image.category
-#         })
-
-#     return JsonResponse({"images": image_list})
-
-# def view_closet(request, user_id):
-#     folder_path = Path(f'{settings.MEDIA_ROOT}/{user_id}')
-#     files = [f for f in folder_path if f.is_file()]
-    
-#     urls = []
-#     for f in files:
-#         url = {
-#                 'url': f,
-#                 'category': ""
-#             }
-#         urls.append(url)
-    
-#     return JsonResponse({'images': urls})
-
-
-# def view_closet(request, user_id):
-#     url = request.path
-    
-#     user_id = url.rstrip('/').split('/')[-1]
-#     # user_id = request.POST.get('userId')
-#     # category = request.POST.get('category')
-#     files = request.FILES.getlist('images')
-    
-#     folder_path = Path(f'{settings.MEDIA_ROOT_CLOSET}/{user_id}')
-#     files = [
-#         f'{settings.MEDIA_CLOSET_PARTIAL_PATH}/{user_id}/{f}' for f in os.listdir(folder_path)
-#         if os.path.isfile(os.path.join(folder_path, f))
-#     ]
-#     # items = ClosetItem(user_id=user_id, category=category, image=f)
- 
-#     return JsonResponse({'images': files})
-
-# def view_closet(request, user_id):
-#     base_path = Path(f'{settings.MEDIA_ROOT}/closet/{user_id}')
-#     images = []
-
-#     if base_path.exists():
-#         for category_dir in base_path.iterdir():
-#             if category_dir.is_dir():
-#                 category = category_dir.name
-#                 for f in category_dir.iterdir():
-#                     if f.is_file():
-#                         images.append({
-#                             'url': f"{settings.MEDIA_URL}closet/{user_id}/{category}/{f.name}",
-#                             'category': category
-#                         })
-
-#     return JsonResponse({'images': images})
-# def view_closet(request, user_id):
-#     base_path = os.path.join(settings.MEDIA_ROOT, 'closet', user_id)
-#     if not os.path.exists(base_path):
-#         return JsonResponse({'images': []})
-
-#     result = []
-#     for category in os.listdir(base_path):
-#         category_path = os.path.join(base_path, category)
-#         if os.path.isdir(category_path):
-#             for filename in os.listdir(category_path):
-#                 image_url = f"/media/closet/{user_id}/{category}/{filename}"
-#                 result.append({'category': category, 'url': image_url})
-
-#     return JsonResponse({'images': result})
-
-
-# def view_closet(request, user_id):
-#     media_root = '/home/babomomo26/AIOutfit/media/closet'  # ✅ 實體儲存目錄根路徑
-#     base_url = 'media/closet'  # ✅ 網頁可訪問的URL前綴
-
-#     # 如果為開發模式從本機儲存目錄讀取
-#     if settings.DEBUG:
-#         media_root = settings.MEDIA_ROOT_CLOSET
-#         base_url = settings.MEDIA_CLOSET_PARTIAL_PATH
-
-#     user_path = os.path.join(media_root, user_id)
-#     image_data = []
-
-#     if os.path.exists(user_path):
-#         for category in os.listdir(user_path):
-#             category_path = os.path.join(user_path, category)
-#             if os.path.isdir(category_path):
-#                 for filename in os.listdir(category_path):
-#                     if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
-#                         image_url = f"{base_url}/{user_id}/{category}/{filename}"
-#                         image_data.append({
-#                             "url": image_url,
-#                             "category": category
-#                         })
-
-#     return JsonResponse({"images": image_data})
-
-@csrf_exempt
-def view_closet(request, user_id):
-    items = ClosetItem.objects.filter(user_id=user_id)
-    images = [{
-        'id': item.id,
-        'url': item.image.url,
-        'category': item.category
-    } for item in items]
-    return JsonResponse({'images': images})
 
 
 @csrf_exempt
@@ -326,14 +233,6 @@ def edit_closet_image_category(request):
 
 # mimic：
 
-@csrf_exempt
-def view_mimic(request, user_id):
-    items = MimicItem.objects.filter(user_id=user_id).order_by('-id')  # 最新圖片放前面
-    images = [{
-        'id': item.id,
-        'url': item.image.url,
-    } for item in items]
-    return JsonResponse({'status': 'success', 'images': images})
 
 @csrf_exempt
 def delete_mimic_images(request):

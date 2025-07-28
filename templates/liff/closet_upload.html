@@ -442,7 +442,7 @@
       if (isDevelopmentMode) {
         console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
         globalUserId = DEV_USER_ID;
-        await fetchGalleryFromBackend();
+        await fetchGalleryFromBackend('closet');
       } else {
         try {
           await liff.init({ liffId: liffId });
@@ -452,7 +452,7 @@
             const profile = await liff.getProfile();
             globalUserId = profile.userId;
             console.log("LINE UserId:", globalUserId);
-            await fetchGalleryFromBackend();
+            await fetchGalleryFromBackend('closet');
           }
         } catch (err) {
           console.error("LIFF 初始化錯誤", err);
@@ -555,23 +555,24 @@ function renderGallery() {
   gallery.style.display = '';
 }
 
-    async function fetchGalleryFromBackend() {
-      try {
-        const res = await fetch(`/linebot/view_closet/${globalUserId}/`);
-        const data = await res.json();
-
-        images = (data.images || []).map(item => ({
-          id: item.id,
-          url: item.url.startsWith('/') ? item.url : '/' + item.url,
-          category: item.category,
-        }));
-
-        renderGallery();
-      } catch (error) {
-        console.error("載入失敗", error);
-        alert('載入衣櫃圖片失敗');
-      }
-    }
+async function fetchGalleryFromBackend(source) {
+  try {
+    const res = await fetch(`/linebot/view_images/${globalUserId}/${source}/`);
+    const data = await res.json();
+    images = (data.images || []).map(item => {
+      const img = {
+        id: item.id,
+        url: item.url.startsWith('/') ? item.url : '/' + item.url,
+      };
+      if (item.category) img.category = item.category;
+      return img;
+    });
+    renderGallery();
+  } catch (error) {
+    console.error("載入失敗", error);
+    alert('載入圖片失敗');
+  }
+}
 
     // 篩選切換事件
     document.addEventListener('click', function (e) {
@@ -678,7 +679,7 @@ fileInput.addEventListener('change', async function (event) {
         images = [...newImgs, ...images];  // 新圖片放最前面
         renderGallery();
       } else {
-        await fetchGalleryFromBackend();
+        await fetchGalleryFromBackend('closet');
       }
 
       fileInput.value = '';
@@ -771,7 +772,7 @@ fileInput.addEventListener('change', async function (event) {
         const result = await res.json();
         if (result.status === 'success') {
           alert('類別更新成功');
-          await fetchGalleryFromBackend();
+          await fetchGalleryFromBackend('closet');
         } else {
           alert('類別更新失敗');
         }
@@ -805,7 +806,7 @@ fileInput.addEventListener('change', async function (event) {
         const result = await res.json();
         if (result.status === 'success') {
           alert('刪除成功');
-          await fetchGalleryFromBackend();
+          await fetchGalleryFromBackend('closet');
         } else {
           alert('刪除失敗');
         }
