@@ -637,6 +637,12 @@
         });
         actions.style.display = actions.style.display === 'block' ? 'none' : 'block';
       });
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.more-options') && !e.target.closest('.item-actions')) {
+    document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
+  }
+});
     
       actions.querySelector('.fa-edit').addEventListener('click', () => {
         selectedItemCard = card;
