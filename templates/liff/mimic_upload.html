@@ -350,11 +350,8 @@
 /* 內容區塊 */
 .tab-content {
   padding: 20px;
-  background: #fff;
   border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
 
 /* RWD：小螢幕全寬排列 */
 @media (max-width: 767px) {
@@ -425,20 +422,13 @@
       </div>
     </div>
   </div>
-<div id="SearchResultModal" class="SearchResultModal">
-  <div class="SearchResultModal-title">
-    <div class="modal-body">
-      <!-- 左側：原圖 -->
-      <div class="modal-left">
-        <img id="search-original-img" src="" alt="原始圖片" />
+<div id="SearchResultModal" class="SearchResultModal" style="display:none; justify-content:center; align-items:center;">
+  <div class="SearchResultModal-title" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
+    <div class="modal-body" style="display:flex; gap:20px; flex-direction: column; width:100%; max-width: 600px;">
+      <div class="modal-left" style="width:100%; height:40vh;">
+        <img id="search-original-img" src="" alt="原始圖片" style="width:100%; height:100%; object-fit: contain;" />
       </div>
-      <!-- 右側預留空白 -->
-        <div class="custom-tabs">
-          <button class="tab-btn active" data-target="tops">上衣</button>
-          <button class="tab-btn" data-target="pants">褲子</button>
-          <button class="tab-btn" data-target="jackets">外套</button>
-          <button class="tab-btn" data-target="accessories">配件</button>
-        </div>
+      <div id="tabs-container"></div> <!-- 動態建立 tabs 與內容 -->
     </div>
     <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
   </div>
@@ -624,64 +614,170 @@
       closeModal(deleteModal);
     });
 
-    /** 搜尋比對結果 **/
-    /* 搜尋比對結果_1. 點擊itemGrid(mimic照片) -> 跳出是否要搜尋對話框 */
-    itemGrid.addEventListener('click', (e) => {
-      if (e.target.classList.contains('clickable-img')) {
-        const card = e.target.closest('.item-card');
-        if (!card) return;
-        currentitem = card;
-        openModal();
-      }
-    });
-    /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
-    btnCancel.addEventListener('click', () => {
-      closeModal(modal);
-    });
-
-    /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
-    btnConfirm.addEventListener('click', () => {
-      closeModal(modal);
-      showLoading();
-      setTimeout(() => {
-        closeLoading();
-      
-        if (!currentitem) {
-          alert('找不到目前選中的圖片');
-          return;
+      /** 搜尋比對結果 **/
+      /* 搜尋比對結果_1. 點擊itemGrid(mimic照片) -> 跳出是否要搜尋對話框 */
+      itemGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('clickable-img')) {
+          const card = e.target.closest('.item-card');
+          if (!card) return;
+          currentitem = card;
+          openModal();
         }
+      });
+      /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
+      btnCancel.addEventListener('click', () => {
+        closeModal(modal);
+      });
 
-        // 找當前 card 裡的圖片 URL
-        const clickedImgSrc = currentitem.querySelector('img').src;
-      
-        // 設定左側圖片
-        document.getElementById('search-original-img').src = clickedImgSrc;
-      
-        // 顯示 SearchResultModal
-        SearchResultModal.style.display = 'flex';
-        setTimeout(() => SearchResultModal.classList.add('show'), 10);
-      }, 3000);
-    });
+      /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
+  btnConfirm.addEventListener('click', async () => {
+    closeModal(modal);
+    showLoading();
 
-    /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
-    SearchResultClose.addEventListener('click', () => {
-      SearchResultModal.classList.remove('show');
-      setTimeout(() => SearchResultModal.style.display = 'none', 300);
-    });
-  const tabs = document.querySelectorAll(".tab-btn");
+    if (!currentitem) {
+      alert('找不到目前選中的圖片');
+      closeLoading();
+      return;
+    }
 
+    const clickedImgSrc = currentitem.querySelector('img').src;
 
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      // 移除其他 active
-      tabs.forEach(t => t.classList.remove("active"));
+    // 模擬等待
+    await new Promise(r => setTimeout(r, 1500));
 
+    await fetchSearchResults(clickedImgSrc);
 
-      // 啟用當前
-      tab.classList.add("active");
-      document.getElementById(tab.dataset.target).classList.add("active");
-    });
+    // 設定原圖
+    document.getElementById('search-original-img').src = clickedImgSrc;
+
+    closeLoading();
+    SearchResultModal.style.display = 'flex';
+    setTimeout(() => SearchResultModal.classList.add('show'), 10);
   });
+
+      /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
+      SearchResultClose.addEventListener('click', () => {
+        SearchResultModal.classList.remove('show');
+        setTimeout(() => SearchResultModal.style.display = 'none', 300);
+      });
+    const tabs = document.querySelectorAll(".tab-btn");
+
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        // 移除其他 active
+        tabs.forEach(t => t.classList.remove("active"));
+
+
+        // 啟用當前
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.target).classList.add("active");
+      });
+    });
+
+
+  async function fetchSearchResults(imageUrl) {
+    try {
+      const res = await fetch('/linebot/get_search_results/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: globalUserId, imageUrl: imageUrl })
+      });
+      const result = await res.json();
+      if (result.status !== 'success') {
+        alert(result.message || '搜尋失敗');
+        return;
+      }
+      renderSearchTabs(result.categories);
+    } catch (err) {
+      alert('取得搜尋結果失敗');
+    }
+  }
+
+  /** 動態生成 Tabs + 內容 */
+  function renderSearchTabs(categories) {
+    const container = document.getElementById('tabs-container');
+    container.innerHTML = '';  // 清空
+
+    // 建立 tabs 按鈕區
+    const tabBtnsDiv = document.createElement('div');
+    tabBtnsDiv.className = 'custom-tabs';
+    tabBtnsDiv.style.display = 'flex';
+    tabBtnsDiv.style.justifyContent = 'center';
+    tabBtnsDiv.style.gap = '8px';
+    tabBtnsDiv.style.borderBottom = '2px solid #eee';
+    tabBtnsDiv.style.padding = '0 10px';
+
+    // 建立內容區
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'tab-content';
+    contentDiv.style.padding = '20px';
+    contentDiv.style.background = '#fff';
+    contentDiv.style.borderRadius = '0 0 12px 12px';
+    contentDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+
+    categories.forEach((cat, index) => {
+      // 建立 tab 按鈕
+      const tabBtn = document.createElement('button');
+      tabBtn.className = 'tab-btn' + (index === 0 ? ' active' : '');
+      tabBtn.dataset.target = cat.id;
+      tabBtn.textContent = cat.name;
+      tabBtn.style.background = index === 0 ? '#c8c1d3' : '#f8f8f8';
+      tabBtn.style.color = index === 0 ? '#fff' : '#555';
+      tabBtn.style.border = '1px solid #ddd';
+      tabBtn.style.borderRadius = '8px 8px 0 0';
+      tabBtn.style.padding = '10px 20px';
+      tabBtn.style.fontSize = '16px';
+      tabBtn.style.fontWeight = '500';
+      tabBtn.style.cursor = 'pointer';
+
+      tabBtnsDiv.appendChild(tabBtn);
+
+      // 建立 tab 內容面板
+      const tabPanel = document.createElement('div');
+      tabPanel.id = cat.id;
+      tabPanel.className = 'tab-panel';
+      tabPanel.style.display = index === 0 ? 'grid' : 'none';
+      tabPanel.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
+      tabPanel.style.gap = '10px';
+
+      cat.images.forEach(imgUrl => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = cat.name;
+        img.style.width = '100%';
+        img.style.borderRadius = '8px';
+        img.loading = 'lazy';
+        tabPanel.appendChild(img);
+      });
+
+      contentDiv.appendChild(tabPanel);
+    });
+
+    container.appendChild(tabBtnsDiv);
+    container.appendChild(contentDiv);
+
+    // 綁定切換事件
+    const tabButtons = tabBtnsDiv.querySelectorAll('.tab-btn');
+    tabButtons.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 切換按鈕 active 樣式
+        tabButtons.forEach(t => {
+          t.classList.remove('active');
+          t.style.background = '#f8f8f8';
+          t.style.color = '#555';
+        });
+        tab.classList.add('active');
+        tab.style.background = '#c8c1d3';
+        tab.style.color = '#fff';
+
+        // 顯示對應內容，隱藏其他
+        contentDiv.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.style.display = (panel.id === tab.dataset.target) ? 'grid' : 'none';
+        });
+      });
+    });
+  }
   </script>
   {% include "components/footer.html" %}
 </body>

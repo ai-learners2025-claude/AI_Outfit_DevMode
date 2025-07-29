@@ -372,3 +372,51 @@ def upload_mimic(request):
 
 #     except Exception as e:
 #         return JsonResponse({'status': 'error', 'message': f'處理錯誤: {str(e)}'})
+
+
+@csrf_exempt
+def get_search_results(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            userId = data.get('userId')
+            imageUrl = data.get('imageUrl')
+
+            # 回傳固定假資料
+            response = {
+                "status": "success",
+                "categories": [
+                    {
+                        "name": "上衣",
+                        "id": "top",
+                        "images": [
+                            "/media/closet/dev_test_user_12345/top/PXL_20250727_111210375.MP2_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/top/PXL_20250727_111236442_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/top/PXL_20250727_111323404.MP2_bgremoved.png"
+                        ]
+                    },
+                    {
+                        "name": "褲子",
+                        "id": "bottoms",
+                        "images": [
+                            "/media/closet/dev_test_user_12345/bottom/PXL_20250727_110601137.MP2_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/bottom/PXL_20250727_110635816.MP2_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/bottom/PXL_20250727_110716262.MP2_bgremoved.png"
+                        ]
+                    },
+                    {
+                        "name": "外套",
+                        "id": "outwear",
+                        "images": [
+                            "/media/closet/dev_test_user_12345/outwear/PXL_20250727_112110655_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/outwear/PXL_20250727_112135360.MP2_bgremoved.png",
+                            "/media/closet/dev_test_user_12345/outwear/PXL_20250727_112205412.MP2_bgremoved.png",
+                        ]
+                    }
+                ]
+            }
+            return JsonResponse(response)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+    else:
+        return JsonResponse({"status": "error", "message": "只接受 POST 請求"})

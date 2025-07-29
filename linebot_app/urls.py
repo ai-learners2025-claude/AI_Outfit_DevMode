@@ -11,5 +11,6 @@ urlpatterns = [
     path('delete_mimic_images/', views.delete_mimic_images, name='delete_mimic_images'),
     path('upload_mimic/', views.upload_mimic, name='upload_mimic'),
     path('view_images/<str:user_id>/<str:source>/', views.view_images, name='view_images'),
+    path('get_search_results/', views.get_search_results, name='get_search_results'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # 可以讓media的圖片產生網址
