@@ -170,11 +170,7 @@
   max-width: 100%;
 }
 
-.modal-right {
-  width: 100%;
-  height: 50%; /* 60% 高度，依父容器 .modal-body */
-  box-sizing: border-box;
-}
+
 
 .modal-left img {
   width: 100%;
@@ -190,7 +186,7 @@
     height: 100%;
   }
 
-  .modal-left, .modal-right {
+  .modal-left, {
     flex: none; /* 或者依需求改成上下用的設定 */
     width: 100%; /* 改成寬度 100% */
     height: auto; /* 高度自適應 */
@@ -201,9 +197,6 @@
     height: 40vh;    /* 可以設定比例 */
   }
 
-  .modal-right {
-    height: 60vh;    /* 可以設定比例 */
-  }
 
   .modal-left img {
     width: 100%;
@@ -362,13 +355,6 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.tab-panel {
-  display: none;
-}
-
-.tab-panel.active {
-  display: block;
-}
 
 /* RWD：小螢幕全寬排列 */
 @media (max-width: 767px) {
@@ -447,14 +433,12 @@
         <img id="search-original-img" src="" alt="原始圖片" />
       </div>
       <!-- 右側預留空白 -->
-      <div class="modal-right">
         <div class="custom-tabs">
           <button class="tab-btn active" data-target="tops">上衣</button>
           <button class="tab-btn" data-target="pants">褲子</button>
           <button class="tab-btn" data-target="jackets">外套</button>
           <button class="tab-btn" data-target="accessories">配件</button>
         </div>
-      </div>
     </div>
     <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
   </div>
@@ -514,7 +498,8 @@
     function closeLoading() {
       search_loading.classList.remove('active');
       document.body.style.overflow = '';
-      resetProgressBar();
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
     }
 
     function resetProgressBar() {
@@ -684,13 +669,13 @@
       setTimeout(() => SearchResultModal.style.display = 'none', 300);
     });
   const tabs = document.querySelectorAll(".tab-btn");
-  const panels = document.querySelectorAll(".tab-panel");
+
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
       // 移除其他 active
       tabs.forEach(t => t.classList.remove("active"));
-      panels.forEach(p => p.classList.remove("active"));
+
 
       // 啟用當前
       tab.classList.add("active");
