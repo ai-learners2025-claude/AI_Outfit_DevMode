@@ -30,6 +30,7 @@
       user-select: none;      /* 避免拖拉時選取文字 */
     }
     
+    
     .filter-bar::-webkit-scrollbar {
       display: none; /* Chrome / Safari 隱藏捲軸 */
     }
@@ -311,7 +312,6 @@
 @media (max-width: 375px) {
   .closet-title {
     font-size: 1.2rem;
-    text-align: center;
   }
 
   .filter-bar {
@@ -391,6 +391,58 @@
     font-size: 1rem;
   }
 }
+/* 手機螢幕（最大寬度 480px）調整 */
+@media (max-width: 480px) {
+  /* 標題字型大小 */
+  .closet-title {
+    font-size: 1.2rem;
+  }
+
+  /* 過濾條狀態 */
+  .filter-bar {
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  /* 過濾按鈕樣式 */
+  .filter-btn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  /* 設置圖片卡片的排列，讓它顯示為兩列 */
+  .closet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* 調整每個圖片卡片的大小 */
+  .item-card {
+    height: 180px;         /* 固定高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .item-card img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;   /* 保持比例 */
+  }
+
+  .upload-popup {
+    bottom: 80px;  /* 上移彈出框 */
+    right: 12px;
+    width: 140px;  /* 調整彈出框寬度 */
+    padding: 8px;
+  }
+
+}
+
   </style>
 </head>
 <body>
@@ -405,7 +457,7 @@
 
   <!-- 彈出的小框 -->
   <div class="upload-popup" id="upload-popup">
-    <select id="upload-category">
+    <select size="5" id="upload-category" >
       <option value="" disabled selected>選擇分類</option>
     </select>
     <button id="confirm-upload" class="confirm-upload-btn">選擇圖片</button>
