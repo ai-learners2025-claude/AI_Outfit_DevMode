@@ -111,21 +111,6 @@
   z-index: 2000;
 }
 
-.SearchResultModal-title {
-  background: #fff;
-  width: 90%;            /* 幾乎滿版 */
-  height: 90%;           /* 幾乎滿版 */
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transform: scale(0.9);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
 .SearchResultModal.show .SearchResultModal-title {
   transform: scale(1);
   opacity: 1;
@@ -135,7 +120,7 @@
 .SearchResultModal-title p {
   font-size: 1.5rem;
   text-align: center;
-  margin-top: 40px;
+  margin-top: 20px;
   flex: 1;
   display: flex;
   align-items: center;
@@ -155,8 +140,10 @@
 }
 
 .SearchResultModal-title {
-  width: 90vw;
-  height: 90vh;
+  width: 50vw;
+  max-width: 600px;
+  height: 80vh;
+  max-height: 700px;
   background: white;
   border-radius: 16px;
   padding: 24px;
@@ -164,64 +151,63 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  transition: width 0.3s ease, height 0.3s ease;
 }
+
 .modal-body {
   display: flex;
   flex-grow: 1;
   gap: 20px;
-  align-items: center; /* 交叉軸垂直置中 */
-  height: 100vh; /* 方便示範填滿高度，可調整或移除 */
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;  /* 從 100vh 改成 100% */
 }
 
-/* 大螢幕：水平排列，left/right 各半 */
+.modal-left {
+  width: 100%;
+  height: 50%; /* 40% 高度，依父容器 .modal-body */
+  max-width: 100%;
+}
+
+.modal-right {
+  width: 100%;
+  height: 50%; /* 60% 高度，依父容器 .modal-body */
+  box-sizing: border-box;
+}
+
+.modal-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 移除或註解掉大螢幕的 flex-direction: row */
 @media (min-width: 768px) {
   .modal-body {
-    flex-direction: row;
     width: 100%;
     max-width: 100%;
     height: 100%;
   }
 
   .modal-left, .modal-right {
-    flex: 1 1 50%; /* 各占一半寬度 */
-    height: 100%;  /* 撐滿modal-body高度 */
+    flex: none; /* 或者依需求改成上下用的設定 */
+    width: 100%; /* 改成寬度 100% */
+    height: auto; /* 高度自適應 */
   }
 
   .modal-left {
-    max-width: none; /* 取消最大寬度限制 */
-  }
-
-  .modal-left img {
-    width: 100%;     /* 取消寬度限制 */
-    height: 100%;    /* 高度撐滿父容器 */
-    object-fit: contain;
-  }
-}
-
-/* 小螢幕：垂直排列，left 40%，right 60% */
-@media (max-width: 767px) {
-  .modal-body {
-    flex-direction: column;
-    gap: 10px;
-    height: auto; /* 讓高度跟內容適應 */
-  }
-
-  .modal-left {
-    flex: 0 0 40%;  /* 高度佔40% */
-    width: 100%;
-    max-width: 100%;
-    height: 40vh; /* 也可用視窗高度40% */
+    max-width: 100%; /* 取消最大寬度限制 */
+    height: 40vh;    /* 可以設定比例 */
   }
 
   .modal-right {
-    flex: 0 0 60%;  /* 高度佔60% */
-    width: 100%;
-    height: 60vh; /* 高度為視窗高度60% */
+    height: 60vh;    /* 可以設定比例 */
   }
 
   .modal-left img {
-    width: 100%;    /* 手機時圖片寬度撐滿 */
-    height: 100%;   /* 高度撐滿 */
+    width: 100%;
+    height: 100%;
     object-fit: contain;
   }
 }
@@ -241,24 +227,7 @@
         gap: 14px;
       }
     }
-    /* Loading dots 動畫 */
-    .loading-dots {
-      display: flex;
-      gap: 8px;
-    }
-    .dot {
-      width: 14px;
-      height: 14px;
-      background-color: var(--main-color);
-      border-radius: 50%;
-      animation: bounce 1.4s infinite ease-in-out both;
-    }
-    .dot:nth-child(1) {
-      animation-delay: -0.32s;
-    }
-    .dot:nth-child(2) {
-      animation-delay: -0.16s;
-    }
+
     @keyframes bounce {
       0%, 80%, 100% {
         transform: scale(0);
@@ -351,7 +320,68 @@
       }
     }
 
+/* Tabs 容器 */
+.custom-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  border-bottom: 2px solid #eee;
+  padding: 0 10px;
+}
 
+/* Tab 按鈕 */
+.tab-btn {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  background: #eae6f3;
+  border-color: #c8c1d3;
+}
+
+.tab-btn.active {
+  background: #c8c1d3;
+  color: #fff;
+  border-color: #c8c1d3;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+}
+
+/* 內容區塊 */
+.tab-content {
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* RWD：小螢幕全寬排列 */
+@media (max-width: 767px) {
+  .custom-tabs {
+    flex-direction: column;
+    align-items: stretch;
+    border-bottom: none;
+  }
+  .tab-btn {
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+}
   </style>
 </head>
 <body>
@@ -417,7 +447,14 @@
         <img id="search-original-img" src="" alt="原始圖片" />
       </div>
       <!-- 右側預留空白 -->
-      <div class="modal-right"></div>
+      <div class="modal-right">
+        <div class="custom-tabs">
+          <button class="tab-btn active" data-target="tops">上衣</button>
+          <button class="tab-btn" data-target="pants">褲子</button>
+          <button class="tab-btn" data-target="jackets">外套</button>
+          <button class="tab-btn" data-target="accessories">配件</button>
+        </div>
+      </div>
     </div>
     <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
   </div>
@@ -646,7 +683,20 @@
       SearchResultModal.classList.remove('show');
       setTimeout(() => SearchResultModal.style.display = 'none', 300);
     });
+  const tabs = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".tab-panel");
 
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      // 移除其他 active
+      tabs.forEach(t => t.classList.remove("active"));
+      panels.forEach(p => p.classList.remove("active"));
+
+      // 啟用當前
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.target).classList.add("active");
+    });
+  });
   </script>
   {% include "components/footer.html" %}
 </body>
