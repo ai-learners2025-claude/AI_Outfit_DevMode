@@ -153,24 +153,53 @@
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
   transition: width 0.3s ease, height 0.3s ease;
 }
+@media (max-width: 767px) {
+  .SearchResultModal-title {
+    width: 95vw;       /* 貼近全寬 */
+    height: 95vh;      /* 貼近全高 */
+    max-width: none;   /* 移除桌機限制 */
+    max-height: none;
+    border-radius: 8px; /* 小螢幕圓角稍小 */
+    padding: 16px;
+  }
+}
+
+/* 平板：放寬到 70% */
+@media (max-width: 1024px) {
+  .SearchResultModal-title {
+    width: 70vw;
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* 手機：幾乎全螢幕 */
+@media (max-width: 600px) {
+  .SearchResultModal-title {
+    width: 80vw;        /* 幾乎滿版 */
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 8px;  /* 手機上圓角小一點 */
+    padding: 16px;
+  }
+}
 
 .modal-body {
   display: flex;
-  flex-grow: 1;
+  flex: 1;
   gap: 20px;
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 100%;  /* 從 100vh 改成 100% */
+  height: 100%;
+  overflow: hidden;
 }
 
 .modal-left {
-  width: 100%;
-  height: 50%; /* 40% 高度，依父容器 .modal-body */
-  max-width: 100%;
+  flex: 0 0 40%;  
 }
-
-
 
 .modal-left img {
   width: 100%;
@@ -316,10 +345,12 @@
 /* Tabs 容器 */
 .custom-tabs {
   display: flex;
-  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* 手機滑順 */
   gap: 8px;
-  border-bottom: 2px solid #eee;
   padding: 0 10px;
+  border-bottom: 2px solid #eee;
 }
 
 /* Tab 按鈕 */
@@ -333,30 +364,46 @@
   color: #555;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .tab-btn:hover {
   background: #eae6f3;
   border-color: #c8c1d3;
 }
-
-.tab-btn.active {
-  background: #c8c1d3;
-  color: #fff;
-  border-color: #c8c1d3;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+.tab-content {
+  height: 40vh;         /* 你原本的固定高度 */
+  overflow-y: auto;     /* 內容超出可垂直捲動 */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-/* 內容區塊 */
-.tab-content {
-  padding: 20px;
-  border-radius: 0 0 12px 12px;
+.tab-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 大螢幕三欄 */
+  gap: 12px;
+  justify-content: center;  /* 置中整體 grid */
+  overflow-y: auto;
+  height: 100%; /* 滿高撐滿 tab-content */
+  padding: 4px;
+}
+
+/* 顯示中 */
+.tab-panel.active {
+  display: flex;
+}
+.tab-panel img {
+  width: 100%;
+  height: auto;           /* 高度依比例 */
+  aspect-ratio: 1 / 1;    /* 保持正方形 */
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 /* RWD：小螢幕全寬排列 */
 @media (max-width: 767px) {
   .custom-tabs {
-    flex-direction: column;
     align-items: stretch;
     border-bottom: none;
   }
