@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyStylist</title>
+  {% load static %}
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
+  <style>
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 26px;
+    }
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px var(--shadow-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1.5px solid transparent;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 14px 25px var(--shadow-color);
+      border-color: var(--main-color);
+    }
+    .product-card img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+      aspect-ratio: 4 / 5;
+      border-bottom: 1px solid var(--accent-color);
+      user-select: none;
+      cursor: pointer;
+    }
+    .product-info {
+      padding: 2px 2px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .actions i {
+      font-size: 1.4rem;
+      color: var(--main-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .actions i:hover {
+      background-color: var(--accent-color);
+    }
+    /* Modal 樣式 */
+
+
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+    .modal-button {
+      padding: 10px 28px;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .btn-confirm {
+      background-color: var(--main-color);
+      color: white;
+    }
+    .btn-confirm:hover {
+      background-color: var(--hover-main);
+    }
+    .btn-cancel {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+    }
+    .btn-cancel:hover {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+    @media (max-width: 600px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      .product-card img {
+        aspect-ratio: 3 / 4;
+      }
+
+    }
+    @media (max-width: 360px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+    /* Loading dots 動畫 */
+    .loading-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 14px;
+      height: 14px;
+      background-color: var(--main-color);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .dot:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    .dot:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.7;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Mimic upload section */
+    .upload-section {
+      margin-bottom: 24px;
+    }
+    .upload-label {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--main-color);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .upload-label:hover {
+      background-color: var(--hover-main);
+    }
+    .upload-label i {
+      margin-right: 8px;
+    }
+    .outfit-title h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .outfit-title p {
+      font-size: 14px;
+      margin-top: 0px;
+      margin-bottom: 24px;
+      color: var(--border-color);
+    }
+    .upload-float-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background-color: var(--main-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.6rem;
+      box-shadow: 0 6px 12px var(--shadow-color);
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.25s ease;
+      z-index: 1000;
+    }
+    .upload-float-btn:hover {
+      background-color: var(--hover-main);
+      transform: scale(1.1);
+    }
+    @media (max-width: 600px) {
+      .upload-float-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+        bottom: 16px;
+        right: 16px;
+      }
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .product-card img {
+        aspect-ratio: 3 / 4;
+      }
+      .product-card {
+        border-radius: 8px;
+      }
+      .product-info {
+        padding: 4px;
+      }
+      .actions i {
+        font-size: 1.2rem;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  {% include "components/header.html" %}
+  <!-- 浮動上傳按鈕 -->
+  <div class="upload-section">
+    <div class="upload-float-btn" id="open-upload-menu" title="上傳穿搭">
+      <i class="fas fa-plus"></i>
+      <input type="file" id="upload-input" accept="image/*" multiple hidden />
+    </div>
+  </div>
+  <main>
+    <div class="outfit-title">
+      <h1>我喜歡的穿搭</h1>
+      <p>點擊圖片以搜尋衣櫃裡的衣服</p>
+    </div>
+    <section class="product-grid" aria-live="polite">
+      <!-- 動態圖片卡片會從 JS 加入這裡 -->
+    </section>
+  </main>
+  <!-- Modal HTML -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3>是否要搜尋衣櫃裡的衣服？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="btnCancel">取消</button>
+        <button class="modal-button btn-confirm" id="btnConfirm">確定</button>
+      </div>
+    </div>
+  </div>
+  <!-- 刪除 Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>您確定要刪除這件衣物嗎？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="modal-delete-yes">確定</button>
+        <button class="modal-button btn-confirm" id="modal-delete-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+  <!-- Loading Modal -->
+  <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="搜尋中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
+      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+    const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+    const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
+    let globalUserId = "";
+    const productGrid = document.querySelector('.product-grid');
+    const uploadInput = document.getElementById('upload-input');
+    const modal = document.getElementById('modal');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnConfirm = document.getElementById('btnConfirm');
+    const loadingModal = document.getElementById('loadingModal');
+    const progressBar = loadingModal.querySelector('.progress-bar');
+    const deleteModal = document.getElementById('delete-modal');
+    const uploadBtn = document.getElementById('open-upload-menu');
+    let currentProduct = null;
+    let selectedItemCard = null;
+    let images = [];
+    /** 初始化 LIFF 或開發模式 */
+    document.addEventListener("DOMContentLoaded", async function () {
+      if (isDevelopmentMode) {
+        console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
+        globalUserId = DEV_USER_ID;
+        await fetchGalleryFromBackend('mimic');
+      } else {
+        try {
+          await liff.init({ liffId: liffId });
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          } else {
+            const profile = await liff.getProfile();
+            globalUserId = profile.userId;
+            await fetchGalleryFromBackend('mimic');
+          }
+        } catch (err) {
+          console.error("LIFF 初始化錯誤", err);
+          alert('LIFF 初始化失敗，請重新整理');
+        }
+      }
+    });
+
+/** 渲染 Mimic 圖片卡片 */
+function renderGallery() {
+  productGrid.innerHTML = '';
+  images.forEach(img => {
+    const card = document.createElement('article');
+    card.className = 'product-card';
+    card.dataset.id = img.id;
+    card.innerHTML = `
+      <img src="${img.url}" alt="衣物圖片" loading="lazy" />
+      <div class="product-info">
+        <div class="actions">
+          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+        </div>
+      </div>
+    `;
+
+    /** 點垃圾桶 → 開啟刪除確認 Modal */
+    card.querySelector('.fa-trash').addEventListener('click', () => {
+      selectedItemCard = card;
+      deleteModal.classList.add('active');
+    });
+
+    /** 點圖片 → 開啟搜尋 Modal */
+    card.querySelector('img').addEventListener('click', () => {
+      currentProduct = card;
+      openModal();
+    });
+
+    productGrid.appendChild(card);
+  });
+}
+    /** 點選上傳按鈕觸發檔案選擇 */
+    uploadBtn.addEventListener('click', () => {
+      uploadInput.click();
+    });
+    /** 選擇檔案後上傳 */
+    uploadInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      await uploadAndAddNewImage(file);
+    });
+    async function uploadAndAddNewImage(file) {
+      const formData = new FormData();
+      formData.append('user_id', globalUserId);
+      formData.append('image', file);
+      try {
+        const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+        const result = await res.json();
+        if (result.status === 'success') {
+          const newImage = result.images[0];
+          newImage.url = newImage.url.startsWith('/') ? newImage.url : '/' + newImage.url;
+          images = [newImage, ...images];
+          renderGallery();
+        } else {
+          alert(result.message || '上傳失敗');
+        }
+      } catch (error) {
+        alert('上傳發生錯誤');
+      }
+      uploadInput.value = '';
+    }
+    /** 點擊刪除取消 → 關閉刪除 Modal */
+    document.getElementById('modal-delete-cancel').addEventListener('click', () => {
+      deleteModal.classList.remove('active');
+    });
+        /** 點擊刪除確認 → 呼叫刪除 API */
+    document.getElementById('modal-delete-yes').addEventListener('click', async function () {
+      if (!selectedItemCard) return;
+      const imageId = selectedItemCard.getAttribute('data-id');
+      try {
+        const res = await fetch('/linebot/delete_mimic_images/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: globalUserId, imageIds: [Number(imageId)] }),
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          await fetchGalleryFromBackend('mimic');
+        } else {
+          alert(result.message || '刪除失敗');
+        }
+      } catch (error) {
+        alert('刪除時發生錯誤');
+      }
+      selectedItemCard = null;
+      deleteModal.classList.remove('active');
+    });
+    /** Modal 開啟/關閉 */
+    function openModal() {
+      modal.classList.add('active');
+    }
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+    btnCancel.addEventListener('click', closeModal);
+    /** 搜尋確定 → 開啟 Loading */
+    btnConfirm.addEventListener('click', () => {
+      closeModal();
+      openLoading();
+      setTimeout(() => {
+        closeLoading();
+        alert('搜尋完成！(你可以改成真正的搜尋行為)');
+      }, 3000);
+    });
+    /** Loading Modal 開啟/關閉 + 進度條動畫 */
+    function openLoading() {
+      loadingModal.classList.add('active');
+      startProgressBar();
+    }
+    function closeLoading() {
+      loadingModal.classList.remove('active');
+      document.body.style.overflow = '';
+      resetProgressBar();
+    }
+    function startProgressBar() {
+      let progress = 0;
+      progressBar.style.width = '0%';
+      loadingModal.setAttribute('aria-valuenow', 0);
+      const interval = setInterval(() => {
+        progress += 2;
+        if (progress > 100) {
+          clearInterval(interval);
+          return;
+        }
+        progressBar.style.width = progress + '%';
+        loadingModal.setAttribute('aria-valuenow', progress);
+      }, 50);
+    }
+    function resetProgressBar() {
+      progressBar.style.width = '0%';
+      loadingModal.setAttribute('aria-valuenow', 0);
+    }
+  </script>
+  {% include "components/footer.html" %}
+</body>
+</html>

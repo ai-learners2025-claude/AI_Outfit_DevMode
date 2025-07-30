@@ -1,0 +1,31 @@
+.upload-section {
+  margin-bottom: 24px;
+}
+.upload-float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background-color: var(--main-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  box-shadow: 0 6px 12px var(--shadow-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.25s ease;
+  z-index: 1000;
+}
+.upload-float-btn:hover {
+  background-color: var(--hover-main);
+  transform: scale(1.1);
+}
+@media (max-width: 600px) {
+  .item-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}

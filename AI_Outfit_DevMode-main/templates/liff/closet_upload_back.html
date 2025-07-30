@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>我的衣櫃 - MyStylist</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
+  <style>
+    .closet-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 24px;
+      padding-top: 24px;
+    }
+
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;  /* Firefox 隱藏捲軸 */
+  cursor: grab;           /* 滑鼠樣式：抓取手 */
+  user-select: none;      /* 避免拖拉時選取文字 */
+}
+
+.filter-bar::-webkit-scrollbar {
+  display: none; /* Chrome / Safari 隱藏捲軸 */
+}
+
+.filter-bar:active {
+  cursor: grabbing; /* 拖動時滑鼠變抓緊的手 */
+}
+
+    .filter-btn {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      white-space: nowrap; /* 文字不換行 */
+    }
+
+    .filter-btn:hover {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+
+    .filter-btn.active {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+    .item-card.hidden {
+      visibility: hidden;
+    }
+    .item-actions i {
+      padding: 6px;
+      border-radius: 50%;
+      color: var(--main-color);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .item-actions i:hover {
+      background-color: var(--accent-color);
+    }
+.more-options {
+  position: absolute;
+  top: 8px;      /* 距離上方 8px */
+  right: 8px;    /* 距離右方 8px */
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 10;
+}
+.more-options:hover, .more-options:hover i {
+  color: var(--border-color);
+}
+    .item-actions {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      z-index: 10;
+      padding: 10px;
+      z-index: 20;
+    }
+    .item-actions button {
+      background: var(--bg-color);
+      border: none;
+      padding: 8px 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .item-actions button:hover {
+      background-color: var(--accent-color);
+    }
+    /* 隐藏水平滚动条，但仍然可以滚动 */
+#closet-gallery {
+  overflow-x: hidden;
+  white-space: nowrap; /* 确保内容在同一行显示 */
+  cursor: grab; /* 给拖动区域一个手型的光标 */
+}
+    @media (max-width: 600px) {
+      .closet-title {
+        font-size: 1.4rem;
+      }
+    }
+    .upload-label {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--main-color);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .upload-label:hover {
+      background-color: var(--hover-main);
+    }
+    .upload-label i {
+      margin-right: 8px;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 24px; 
+    }
+    .modal-button {
+      padding: 10px 28px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .modal-yes {
+      background-color: var(--main-color);
+      color: white;
+    }
+    .modal-yes:hover {
+      background-color: var(--hover-main);
+    }
+    .btn-cancel {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+      border-radius: 20px;
+    }
+    .btn-cancel:hover {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+    .modal-title select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 1rem;
+      border: 1px solid var(--secondary-color);
+      border-radius: 8px;
+      background: var(--accent-color);
+      color: var(--text-color);
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .upload-float-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--main-color);
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 16px var(--shadow-color);
+      z-index: 1000;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .upload-float-btn:hover {
+      background-color: var(--hover-main);
+      transform: scale(1.1);
+    }
+
+    /* 上傳彈出框 */
+    .upload-popup {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      background: white;
+      border: 1px solid var(--secondary-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1100;
+      width: 160px;
+    }
+
+    .upload-popup select {
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid var(--secondary-color);
+      font-size: 0.95rem;
+    }
+
+    .confirm-upload-btn {
+      background-color: var(--main-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .confirm-upload-btn:hover {
+      background-color: var(--hover-main);
+    }
+
+    #upload-category {
+      text-align: center;
+    }
+
+    /* option 項目樣式 */
+    #upload-category option {
+      text-align: center;
+      padding: 12px 20px;
+      font-size: 1rem;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s ease;
+    }
+
+/* 更新 .closet-gallery 样式 */
+.closet-gallery-container {
+  width: 100%;
+  overflow-x: auto;   /* 启用水平滚动 */
+  padding: 10px 0;    /* 上下边距 */
+}
+
+.closet-gallery {
+  display: flex;      /* 使用 flex 布局 */
+  flex-wrap: nowrap;   /* 禁止换行 */
+  gap: 15px;           /* 每个卡片之间的间隔 */
+  padding: 10px;
+  align-items: center; /* 垂直居中排列 */
+}
+
+.item-card {
+  flex: 0 0 auto;      /* 保证每个卡片宽度固定 */
+  width: 200px;        /* 每个卡片的宽度 */
+  height: 300px;       /* 每个卡片的高度 */
+  background-color: #f4f4f4;  /* 背景色 */
+  border-radius: 10px; /* 圆角 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影 */
+  transition: transform 0.3s ease;
+}
+
+.item-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* 让图片填满卡片 */
+  border-radius: 10px;
+}
+
+/* 滚动条样式（可选） */
+.closet-gallery-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.closet-gallery-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.closet-gallery-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+.closet-section {
+  margin-bottom: 32px;
+}
+
+.category-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.draggable-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  padding-bottom: 10px;
+}
+
+.draggable-row::-webkit-scrollbar {
+  display: none;
+}
+
+.draggable-row:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 375px) {
+  .closet-title {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .filter-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .item-card {
+    height: 220px;  /* 提高卡片高度 */
+  }
+
+  .upload-popup {
+    bottom: 80px;   /* 往上移一點 */
+    right: 12px;
+    width: 140px;   /* 縮小寬度 */
+    padding: 8px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
+  </style>
+</head>
+<body>
+  {% include "components/header.html" %}
+  <!-- 浮動上傳按鈕 -->
+  <div class="upload-section">
+    <div class="upload-float-btn" id="open-upload-menu" title="新增衣物">
+      <i class="fas fa-plus"></i>
+    </div>
+  </div>
+  <!-- 彈出的小框 -->
+  <div class="upload-popup" id="upload-popup">
+    <select id="upload-category">
+      <option value="" disabled selected>選擇分類</option>
+    </select>
+    <button id="confirm-upload" class="confirm-upload-btn">選擇圖片</button>
+  </div>
+  <!-- 隱藏的檔案輸入 -->
+  <input type="file" id="upload-input" accept="image/*" multiple hidden />
+  <main>
+    <h1 class="closet-title">我的衣櫃</h1>
+    <div class="filter-bar" id="filter-bar"></div>
+
+    <div class="closet-gallery-container">
+      <div class="closet-gallery" id="closet-gallery">
+        <!-- Gallery items will go here -->
+      </div>
+    </div>
+    <!-- 編輯 Modal -->
+    <div class="modal-overlay" id="edit-modal" style="display:none;">
+      <div class="modal-title">
+        <h3>選擇新的衣物類別</h3>
+        <select id="edit-category"></select>
+
+        <div class="modal-buttons">
+          <button class="modal-button modal-yes" id="modal-edit-save">儲存</button>
+          <button class="modal-button btn-cancel" id="btnCancelEdit">取消</button>
+        </div>
+      </div>
+    </div>
+    <!-- 刪除 Modal -->
+    <div class="modal-overlay" id="delete-modal" style="display:none;">
+      <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h3>您確定要刪除這件衣物嗎？</h3>
+        <div class="modal-buttons">
+          <button class="modal-button btn-cancel" id="modal-delete-yes">確定</button>
+          <button class="modal-button modal-yes" id="btnCancelDelete">取消</button>
+        </div>
+      </div>
+    </div>
+  <!-- Loading Modal -->
+  <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
+      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  </main>
+  <!-- LINE LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+    const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+    const DEV_USER_ID = "dev_test_user_12345";
+    let globalUserId = "";
+
+    let images = [];
+    let currentFilter = 'all';
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+    let selectedItemCard = null;
+
+    const fileInput = document.getElementById('upload-input');
+    const gallery = document.querySelector('.closet-grid');
+    const uploadBtn = document.getElementById('open-upload-menu');
+    const uploadPopup = document.getElementById('upload-popup');
+    const confirmUpload = document.getElementById('confirm-upload');
+    const CategorySelect = document.getElementById('upload-category');
+    const editCategory = document.getElementById('edit-category');
+    const filterBar = document.getElementById('filter-bar');
+    const galleryContainer = document.getElementById('closet-gallery');
+    
+    document.addEventListener("DOMContentLoaded", async function () {
+      // 初始化分類按鈕和下拉選單
+      initCategoryButtonsAndSelects();
+
+      if (isDevelopmentMode) {
+        console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
+        globalUserId = DEV_USER_ID;
+        await fetchGalleryFromBackend('closet');
+      } else {
+        try {
+          await liff.init({ liffId: liffId });
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          } else {
+            const profile = await liff.getProfile();
+            globalUserId = profile.userId;
+            console.log("LINE UserId:", globalUserId);
+            await fetchGalleryFromBackend('closet');
+          }
+        } catch (err) {
+          console.error("LIFF 初始化錯誤", err);
+          alert('LIFF 初始化失敗，請重新整理');
+        }
+      }
+    });
+    function initCategoryButtonsAndSelects() {
+      // 定義分類
+      const categoryMap = {
+        top: '上衣',
+        bottom: '下身',
+        shoes: '鞋子',
+        dress: '洋裝',
+        skirt: '裙子',
+        outwear: '外搭衣'
+      };
+      // 篩選按鈕
+      const filterBar = document.getElementById('filter-bar');
+      filterBar.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn active';
+      allBtn.textContent = '全部';
+      allBtn.dataset.category = 'all';
+      filterBar.appendChild(allBtn);
+
+      for (const [key, label] of Object.entries(categoryMap)) {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = label;
+        btn.dataset.category = key;
+        filterBar.appendChild(btn);
+      }
+      // 上傳分類下拉
+      CategorySelect.innerHTML = `<option value="" disabled selected>選擇分類</option>`;
+      // 編輯分類下拉
+      editCategory.innerHTML = '';
+
+      for (const [key, label] of Object.entries(categoryMap)) {
+        const option1 = document.createElement('option');
+        option1.value = key;
+        option1.textContent = label;
+        CategorySelect.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = key;
+        option2.textContent = label;
+        editCategory.appendChild(option2);
+      }
+    }
+// 渲染圖片
+function renderGallery() {
+  const galleryContainer = document.querySelector('.closet-gallery-container');
+  galleryContainer.innerHTML = ''; // 清空
+
+  // 取出當前要顯示的分類（或全部）
+  const categories = currentFilter === 'all'
+    ? [...new Set(images.map(img => img.category))]
+    : [currentFilter];
+
+  let visibleCount = 0;
+
+  categories.forEach(category => {
+    // 分類標題
+    const section = document.createElement('div');
+    section.className = 'closet-section';
+
+    const title = document.createElement('h2');
+    title.textContent = getCategoryLabel(category); // 自訂函數把 key 轉中文
+    title.className = 'category-title';
+    section.appendChild(title);
+
+    // 分類的橫向照片廊
+    const row = document.createElement('div');
+    row.className = 'closet-gallery draggable-row';  // 每一列可拖曳
+    row.dataset.category = category;
+
+    images.forEach(img => {
+      if (img.category !== category) return;
+
+      visibleCount++;
+
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.setAttribute('data-id', img.id);
+      card.setAttribute('data-category', img.category);
+
+      const imgEl = document.createElement('img');
+      imgEl.src = img.url;
+      imgEl.alt = '衣物';
+      card.appendChild(imgEl);
+
+      const moreBtn = document.createElement('div');
+      moreBtn.className = 'more-options';
+      moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+      card.appendChild(moreBtn);
+
+      const actions = document.createElement('div');
+      actions.className = 'item-actions';
+      actions.innerHTML = `
+        <i class="fas fa-edit" title="編輯衣物"></i>
+        <i class="fas fa-trash" title="刪除衣物"></i>
+      `;
+      card.appendChild(actions);
+
+      row.appendChild(card);
+      bindItemCardEvents(card);
+    });
+
+    section.appendChild(row);
+    galleryContainer.appendChild(section);
+
+    // 綁定每一排的拖曳事件
+    bindRowDragEvents(row);
+  });
+
+  // 更新標題顯示數量
+  document.querySelector('.closet-title').textContent = `我的衣櫃 (${visibleCount})`;
+}
+
+    // 篩選切換事件
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        currentFilter = e.target.dataset.category;
+        renderGallery();
+      }
+    });
+
+    // 浮動按鈕切換上傳彈窗
+    uploadBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const isOpen = uploadPopup.style.display === 'flex';
+      uploadPopup.style.display = isOpen ? 'none' : 'flex';
+      if (!isOpen) {
+        CategorySelect.value = '';
+      }
+    });
+
+// 點擊頁面任意位置關閉上傳彈窗
+document.addEventListener('click', function (e) {
+  if (!uploadPopup.contains(e.target) && e.target !== uploadBtn) {
+    uploadPopup.style.display = 'none';
+  }
+});
+
+// 點擊空白處關閉所有 item-actions
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.more-options') && !e.target.closest('.item-actions')) {
+    document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
+  }
+});
+function showLoading() {
+  document.getElementById('loadingModal').style.display = 'flex';
+}
+function hideLoading() {
+  document.getElementById('loadingModal').style.display = 'none';
+}
+    // 選擇分類後開啟檔案選擇
+    confirmUpload.addEventListener('click', function () {
+      if (!CategorySelect.value) {
+        alert('請先選擇分類');
+        return;
+      }
+      uploadPopup.style.display = 'none';
+      fileInput.click();
+    });
+
+    // 上傳圖片
+fileInput.addEventListener('change', async function (event) {
+  const files = event.target.files;
+  if (!files.length) {
+    alert('請選擇至少一張圖片');
+    return;
+  }
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) {
+      alert('僅支援圖片');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('單張圖片不可超過 5MB');
+      return;
+    }
+  }
+
+  if (!globalUserId) {
+    alert('用戶尚未登入，請重新整理或稍後再試');
+    return;
+  }
+  if (!CategorySelect.value) {
+    alert('請先選擇分類');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  formData.append('category', CategorySelect.value);
+  Array.from(files).forEach(file => formData.append('images', file));
+
+  try {
+    showLoading();
+    const res = await fetch('/linebot/upload_closet/', {
+      method: 'POST',
+      body: formData
+    });
+    hideLoading();
+
+    const result = await res.json();
+
+    if (result.status === 'success') {
+      alert('圖片上傳成功');
+
+      if (result.new_images && Array.isArray(result.new_images)) {
+        const newImgs = result.new_images.map(item => ({
+          id: item.id,
+          url: item.url.startsWith('/') ? item.url : '/' + item.url,
+          category: item.category,
+        }));
+        images = [...newImgs, ...images];  // 新圖片放最前面
+        renderGallery();
+      } else {
+        await fetchGalleryFromBackend('closet');
+      }
+
+      fileInput.value = '';
+    } else {
+      alert('圖片上傳失敗');
+    }
+  } catch (err) {
+    console.error('上傳錯誤', err);
+    alert('圖片上傳失敗');
+  }
+});
+    // item-card 綁定事件
+    function bindItemCardEvents(card) {
+      const moreBtn = card.querySelector('.more-options');
+      const actions = card.querySelector('.item-actions');
+
+      moreBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        // 先關閉所有其他 actions
+        document.querySelectorAll('.item-actions').forEach(act => {
+          if (act !== actions) act.style.display = 'none';
+        });
+
+        actions.style.display = actions.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // 編輯按鈕
+      const editBtn = actions.querySelector('.fa-edit');
+      editBtn.addEventListener('click', function () {
+        selectedItemCard = card;
+        openModal('edit-modal');
+        // 設定目前選中的分類
+        const currentCategory = card.getAttribute('data-category');
+        editCategory.value = currentCategory;
+        actions.style.display = 'none';
+      });
+
+      // 刪除按鈕
+      const deleteBtn = actions.querySelector('.fa-trash');
+      deleteBtn.addEventListener('click', function () {
+        selectedItemCard = card;
+        openModal('delete-modal');
+        actions.style.display = 'none';
+      });
+    }
+
+    // Modal 開啟與關閉
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    // 編輯 Modal 取消
+    document.getElementById('btnCancelEdit').addEventListener('click', () => closeModal('edit-modal'));
+
+    // 編輯 Modal 儲存
+    document.getElementById('modal-edit-save').addEventListener('click', async () => {
+      if (!selectedItemCard) {
+        alert('未選擇衣物');
+        closeModal('edit-modal');
+        return;
+      }
+
+      const newCategory = editCategory.value;
+      if (!newCategory) {
+        alert('請選擇類別');
+        return;
+      }
+      try {
+        const res = await fetch('/linebot/edit_closet_image_category/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: globalUserId,
+            imageId: Number(selectedItemCard.dataset.id),
+            newCategory: newCategory
+          })
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          alert('類別更新成功');
+          await fetchGalleryFromBackend('closet');
+        } else {
+          alert('類別更新失敗');
+        }
+      } catch (err) {
+        alert('類別更新錯誤');
+      } finally {
+        closeModal('edit-modal');
+      }
+    });
+
+    // 刪除 Modal 取消
+    document.getElementById('btnCancelDelete').addEventListener('click', () => closeModal('delete-modal'));
+
+    // 刪除 Modal 確定
+    document.getElementById('modal-delete-yes').addEventListener('click', async () => {
+      if (!selectedItemCard) {
+        alert('未選擇衣物');
+        closeModal('delete-modal');
+        return;
+      }
+
+      try {
+        const res = await fetch('/linebot/delete_closet_images/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: globalUserId,
+            imageIds: [Number(selectedItemCard.dataset.id)]
+          })
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          alert('刪除成功');
+          await fetchGalleryFromBackend('closet');
+        } else {
+          alert('刪除失敗');
+        }
+      } catch (err) {
+        alert('刪除錯誤');
+      } finally {
+        closeModal('delete-modal');
+      }
+    });
+
+filterBar.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  filterBar.classList.add('active');  // 若你想做樣式改變（可選）
+  startX = e.pageX - filterBar.offsetLeft;
+  scrollLeft = filterBar.scrollLeft;
+  e.preventDefault(); // 防止選取文字
+});
+
+filterBar.addEventListener('mouseleave', () => {
+  isDragging = false;
+  filterBar.classList.remove('active');
+});
+
+filterBar.addEventListener('mouseup', () => {
+  isDragging = false;
+  filterBar.classList.remove('active');
+});
+
+filterBar.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  e.preventDefault();
+  const x = e.pageX - filterBar.offsetLeft;
+  const walk = (startX - x) * 1.5; // 滾動速度調整
+  filterBar.scrollLeft = scrollLeft + walk;
+});
+
+// 鼠标按下开始拖动
+galleryContainer.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  startX = e.pageX - galleryContainer.offsetLeft;
+  scrollLeft = galleryContainer.scrollLeft;
+  galleryContainer.style.cursor = 'grabbing';  // 改变光标
+  e.preventDefault();  // 防止选择文本
+});
+
+// 鼠标移动拖动
+galleryContainer.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;  // 如果没有开始拖动则跳过
+  e.preventDefault();
+  const x = e.pageX - galleryContainer.offsetLeft;  // 获取当前鼠标位置
+  const walk = (x - startX) * 2;  // 控制滚动速度，数值越大滚动越快
+  galleryContainer.scrollLeft = scrollLeft - walk;
+});
+
+// 鼠标松开停止拖动
+galleryContainer.addEventListener('mouseup', () => {
+  isDragging = false;
+  galleryContainer.style.cursor = 'grab';  // 恢复光标
+});
+
+// 鼠标离开停止拖动
+galleryContainer.addEventListener('mouseleave', () => {
+  isDragging = false;
+  galleryContainer.style.cursor = 'grab';  // 恢复光标
+});
+
+function getCategoryLabel(key) {
+  const categoryMap = {
+    top: '上衣',
+    bottom: '下身',
+    shoes: '鞋子',
+    dress: '洋裝',
+    skirt: '裙子',
+    outwear: '外搭衣'
+  };
+  return categoryMap[key] || '其他';
+}
+function bindRowDragEvents(row) {
+  let isDragging = false;
+  let startX, scrollLeft;
+
+  row.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.pageX - row.offsetLeft;
+    scrollLeft = row.scrollLeft;
+    row.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+
+  row.addEventListener('mouseleave', () => {
+    isDragging = false;
+    row.style.cursor = 'grab';
+  });
+
+  row.addEventListener('mouseup', () => {
+    isDragging = false;
+    row.style.cursor = 'grab';
+  });
+
+  row.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - row.offsetLeft;
+    const walk = (x - startX) * 2; // 控制速度
+    row.scrollLeft = scrollLeft - walk;
+  });
+}
+  </script>
+  {% include "components/footer.html" %}
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyStylist</title>
+  {% load static %}
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/upload_btn.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/page_title.css' %}" />
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
+  <script src="{% static 'js/header_active.js' %}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 26px;
+    }
+    .item-card {
+      border-radius: 12px;
+      box-shadow: 0 6px 15px var(--shadow-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1.5px solid transparent;
+    }
+    .item-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 14px 25px var(--shadow-color);
+      border-color: var(--main-color);
+    }
+    .item-card img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-bottom: 1px solid var(--accent-color);
+      user-select: none;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .item-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      .item-card img {
+        aspect-ratio: 3 / 4;
+      }
+
+    }
+    @media (max-width: 360px) {
+      .item-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.7;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .item-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .item-card img {
+        aspect-ratio: 3 / 4;
+      }
+      .item-card {
+        border-radius: 8px;
+      }
+      .item-info {
+        padding: 4px;
+      }
+      .actions i {
+        font-size: 1.2rem;
+        padding: 6px;
+      }
+    }
+    .item-info {
+      padding: 2px 2px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background-color: white;
+    }
+    .actions {
+      background-color: white;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .actions i {
+      font-size: 1.4rem;
+      color: var(--main-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .actions i:hover {
+      background-color: var(--accent-color);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+    .modal-button {
+      padding: 10px 28px;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .btn-confirm {
+      background-color: var(--main-color);
+      color: white;
+    }
+    .btn-confirm:hover {
+      background-color: var(--hover-main);
+    }
+    .btn-cancel {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+    }
+    .btn-cancel:hover {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+
+
+.tab-content {
+  height: 40vh;         /* 你原本的固定高度 */
+  overflow-y: auto;     /* 內容超出可垂直捲動 */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* 顯示中 */
+.tab-panel.active {
+  display: flex;
+}
+.tab-panel img {
+  width: 100%;
+  height: auto;           /* 高度依比例 */
+  aspect-ratio: 5/5;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* RWD：小螢幕全寬排列 */
+@media (max-width: 767px) {
+  .custom-tabs {
+    align-items: stretch;
+    border-bottom: none;
+  }
+  .tab-btn {
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+}
+@media (min-width: 768px) {
+  .modal-body {
+    flex-direction: row;       /* 左右排列 */
+    align-items: stretch;      /* 撐滿高度 */
+    gap: 20px;
+  }
+
+  .modal-left {
+    flex: 0 0 50%;             /* 左側圖片固定一半 */
+    height: auto;
+  }
+
+  #tabs-container {
+    flex: 1;                   /* 右側填滿 */
+    display: flex;
+    flex-direction: row;       /* Tabs + 內容橫向 */
+    gap: 12px;
+    height: 100%;
+  }
+
+  /* Tabs 改垂直 */
+  .custom-tabs {
+    flex: 0 0 150px;           /* 固定寬度 */
+    display: flex;
+    flex-direction: column;    /* 垂直排列 */
+    border-bottom: none;
+    border-right: 2px solid #eee;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  /* Tab 按鈕填滿寬度 */
+  .tab-btn {
+    width: 100%;
+    border-radius: 8px 0 0 8px;  /* 左側直排圓角 */
+    text-align: left;            /* 文字靠左 */
+  }
+
+  /* Tab 內容在右側 */
+  .tab-content {
+    height: 40vh;
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+}
+/* 顯示中 */
+.tab-panel.active {
+  display: grid; /* 小螢幕改 grid，才可捲動 */
+}
+
+/* 大螢幕再改成 flex 以左右排 */
+@media (min-width: 768px) {
+  .tab-panel.active {
+    display: flex;   /* 大螢幕改 flex */
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
+  .tab-content {
+    height: 100%;         /* 大螢幕撐滿右側 */
+  }
+}
+.SearchResultModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.SearchResultModal.show .SearchResultModal-title {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 內文文字 */
+.SearchResultModal-title p {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Tabs 容器 */
+.custom-tabs {
+  flex-direction: row;
+  padding: 0 8px;
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* 手機滑順 */
+  gap: 8px;
+  padding: 0 10px;
+  border-bottom: 2px solid #eee;
+}
+
+/* Tab 按鈕 */
+.tab-btn {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 內容 */
+.tab-content { flex: 1; overflow-y: auto; padding: 8px; }
+
+
+.tab-panel img {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; border-radius: 8px;
+}
+
+/* --- 大螢幕: 左右 layout + 垂直 tabs --- */
+@media (min-width: 768px) {
+  .modal-body { flex-direction: row; gap: 20px; }
+  .modal-left { flex: 0 0 50%; height: auto; }
+  #tabs-container { flex: 1; flex-direction: row; gap: 12px; }
+
+  .custom-tabs {
+    flex: 0 0 150px;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid #eee;
+    overflow-y: auto;
+  }
+  .tab-btn {
+    width: 100%;
+    border-radius: 8px 0 0 8px;
+    text-align: left;
+  }
+  .tab-content { flex: 1; height: 100%; overflow-y: auto; }
+  .tab-panel { display: flex; flex-wrap: wrap; gap: 12px; }
+}
+.SearchResultModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.SearchResultModal-title {
+  width: 90vw;
+  max-width: 600px;
+  height: 90vh;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  /* box-shadow: 0 5px 20px rgba(0,0,0,0.3); */
+  position: relative;
+}
+
+/* 關閉按鈕 */
+.close-btn {
+  position: absolute; /* 讓按鈕浮在標題區右上角 */
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 36px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  align-items: center;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-left {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 40vh;
+  display: flex;                /* 置中 */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-left img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+#tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* tabs 橫向可滑 */
+.custom-tabs {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  border-bottom: 2px solid #eee;
+  padding: 0 8px;
+}
+
+/* Tab 按鈕 */
+.tab-btn {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: #eae6f3;
+  border-color: #c8c1d3;
+}
+/* 內容 */
+.tab-content { flex: 1; overflow-y: auto; padding: 8px; }
+
+.tab-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+  gap: 12px;
+  justify-content: center;  /* 置中整體 grid */
+  overflow-y: auto;
+  height: 100%; /* 滿高撐滿 tab-content */
+  padding: 4px;
+  align-items: center;
+
+}
+.tab-panel img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* --- 大螢幕: 左右 layout + 垂直 tabs --- */
+@media (min-width: 768px) {
+  .modal-body { flex-direction: row; gap: 20px; }
+  .modal-left { flex: 0 0 50%; height: auto; }
+  #tabs-container { flex: 1; flex-direction: row; gap: 12px; }
+
+  .custom-tabs {
+    flex: 0 0 150px;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid #eee;
+    overflow-y: auto;
+  }
+  .tab-btn {
+    width: 100%;
+    border-radius: 8px 0 0 8px;
+    text-align: left;
+  }
+  .tab-content { flex: 1; height: 100%; overflow-y: auto; }
+  .tab-panel { display: flex; flex-wrap: wrap; gap: 12px; }
+}
+
+
+@media (max-width: 767px) {
+  .SearchResultModal-title {
+    width: 95vw;       /* 貼近全寬 */
+    height: 95vh;      /* 貼近全高 */
+    max-width: none;   /* 移除桌機限制 */
+    max-height: none;
+    border-radius: 8px; /* 小螢幕圓角稍小 */
+    padding: 16px;
+  }
+}
+
+/* 平板：放寬到 70% */
+@media (max-width: 1024px) {
+  .SearchResultModal-title {
+    width: 70vw;
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* 手機：幾乎全螢幕 */
+@media (max-width: 600px) {
+  .SearchResultModal-title {
+    width: 80vw;        /* 幾乎滿版 */
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 8px;  /* 手機上圓角小一點 */
+    padding: 16px;
+  }
+}
+  </style>
+</head>
+<body>
+  {% include "components/header.html" %}
+  {% include "components/upload_btn.html" %}
+  <main>
+    <div class="page-title">
+      <!-- <h1>我喜歡的穿搭</h1> -->
+      <p>點擊圖片以搜尋衣櫃裡的衣服</p>
+    </div>
+    <section class="item-grid" aria-live="polite">
+      <!-- 動態圖片卡片會從 JS 加入這裡 -->
+    </section>
+  </main>
+  <!--search modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3>是否要搜尋衣櫃裡的衣服？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="btnCancel">取消</button>
+        <button class="modal-button btn-confirm" id="btnConfirm">確定</button>
+      </div>
+    </div>
+  </div>
+  <!-- 刪除 Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>您確定要刪除這件衣物嗎？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="modal-delete-yes">確定</button>
+        <button class="modal-button btn-confirm" id="modal-delete-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+  <!-- Loading Modal -->
+  <div class="modal-overlay" id="search_loading" aria-live="polite" aria-label="搜尋中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
+      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+   <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
+      <div class="progress-bar-container" aria-label="上傳進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+<div id="SearchResultModal" class="SearchResultModal" style="display:none; justify-content:center; align-items:center;">
+  <div class="SearchResultModal-title" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
+    <div class="modal-body" style="display:flex; gap:20px; flex-direction: column; width:100%; max-width: 600px;">
+      <div class="modal-left" style="width:100%; height:40vh;">
+        <img id="search-original-img" src="" alt="原始圖片" style="width:100%; height:100%; object-fit: contain;" />
+      </div>
+      <div id="tabs-container"></div> <!-- 動態建立 tabs 與內容 -->
+    </div>
+    <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
+  </div>
+</div>
+
+  <script>
+    const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+    const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+    const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
+    let globalUserId = "";
+    const itemGrid = document.querySelector('.item-grid');
+    const uploadInput = document.getElementById('upload-input');
+    const modal = document.getElementById('modal');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnConfirm = document.getElementById('btnConfirm');
+    const search_loading = document.getElementById('search_loading');
+    const progressBar = search_loading.querySelector('.progress-bar');
+    const deleteModal = document.getElementById('delete-modal');
+    const uploadBtn = document.getElementById('open-upload-menu');
+    const SearchResultModal = document.getElementById('SearchResultModal');
+    const SearchResultClose = document.getElementById('SearchResult_close');
+
+    let currentitem = null;
+    let selectedItemCard = null;
+    let images = [];
+
+
+    /** 搜尋中,上傳中Modal 開啟/關閉 */
+    function openModal() {
+      modal.classList.add('active');
+    }
+    function closeModal(modalElement) {
+      modalElement.classList.remove('active');
+    }
+
+      /** Loading Modal 開啟/關閉 + 進度條動畫 */
+    function showLoading() {
+      search_loading.classList.add('active');
+      startProgressBar();
+    }
+
+    function startProgressBar() {
+      let progress = 0;
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+      const interval = setInterval(() => {
+        progress += 2;
+        if (progress > 100) {
+          clearInterval(interval);
+          return;
+        }
+        progressBar.style.width = progress + '%';
+        search_loading.setAttribute('aria-valuenow', progress);
+      }, 50);
+    }
+
+    function closeLoading() {
+      search_loading.classList.remove('active');
+      document.body.style.overflow = '';
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+    }
+
+    function resetProgressBar() {
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+    }
+
+    /** 初始化 LIFF 或開發模式 */
+    document.addEventListener("DOMContentLoaded", async function () {
+      if (isDevelopmentMode) {
+        console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
+        globalUserId = DEV_USER_ID;
+        await fetchGalleryFromBackend('mimic');
+      } else {
+        try {
+          await liff.init({ liffId: liffId });
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          } else {
+            const profile = await liff.getProfile();
+            globalUserId = profile.userId;
+            await fetchGalleryFromBackend('mimic');
+          }
+        } catch (err) {
+          console.error("LIFF 初始化錯誤", err);
+          alert('LIFF 初始化失敗，請重新整理');
+        }
+      }
+    });
+
+    /** 渲染 Mimic 圖片卡片 */
+    function renderGallery() {
+      itemGrid.innerHTML = '';
+      images.forEach(img => {
+        const card = document.createElement('article');
+        card.className = 'item-card';
+        card.dataset.id = img.id;
+        card.innerHTML = `
+          <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+          <div class="item-info">
+            <div class="actions">
+              <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+            </div>
+          </div>
+        `;
+        itemGrid.appendChild(card);
+      });
+    }
+
+    /** 上傳照片 */
+    /** 上傳照片1_ 點選 + icon -> 觸發檔案選擇器 */
+    uploadBtn.addEventListener('click', () => {
+      uploadInput.click();
+    });
+    /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
+    uploadInput.addEventListener('change', async (event) => {
+      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+      if (files.length === 0) return;
+      await uploadAndAddNewImages(files);
+    });
+    /** 上傳照片3_後端API */
+    async function uploadAndAddNewImages(files) {
+      const formData = new FormData();
+      formData.append('userId', globalUserId);
+      files.forEach(file => formData.append('images', file));  // 多張圖片
+      try {
+        const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+        const result = await res.json();
+        if (result.status === 'success') {
+          const newImages = result.new_images.map(img => ({
+            ...img,
+            url: img.url.startsWith('/') ? img.url : '/' + img.url
+          }));
+          images = [...newImages, ...images];
+          renderGallery();
+        } else {
+          alert(result.message || '上傳失敗');
+        }
+      } catch (error) {
+        alert('上傳發生錯誤');
+      }
+      uploadInput.value = '';
+    }
+
+    /** 刪除照片 **/
+    /* 刪除照片_1. 點擊fa-trash -> 跳出是否確認要刪除對話框 */
+    itemGrid.addEventListener('click', e => {
+      if (e.target.classList.contains('fa-trash')) {
+        // 找到點擊的垃圾桶所在的卡片
+        const card = e.target.closest('.item-card');
+        if (!card) return;
+      
+        selectedItemCard = card;
+        deleteModal.classList.add('active');  // 顯示刪除確認 Modal
+      }
+    });
+    /* 刪除照片_2. 點擊確認刪除 → 呼叫刪除 API */
+    document.getElementById('modal-delete-yes').addEventListener('click', async function () {
+      if (!selectedItemCard) return;
+      const imageId = selectedItemCard.getAttribute('data-id');
+      try {
+        const res = await fetch('/linebot/delete_mimic_images/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: globalUserId, imageIds: [Number(imageId)] }),
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          await fetchGalleryFromBackend('mimic');
+        } else {
+          alert(result.message || '刪除失敗');
+        }
+      } catch (error) {
+        alert('刪除時發生錯誤');
+      }
+      selectedItemCard = null;
+      deleteModal.classList.remove('active');
+    });
+
+    /* 刪除照片_3. 點擊取消刪除 -> 關閉是否確認要刪除對話框 */
+    document.getElementById('modal-delete-cancel').addEventListener('click', () => {
+      closeModal(deleteModal);
+    });
+
+      /** 搜尋比對結果 **/
+      /* 搜尋比對結果_1. 點擊itemGrid(mimic照片) -> 跳出是否要搜尋對話框 */
+      itemGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('clickable-img')) {
+          const card = e.target.closest('.item-card');
+          if (!card) return;
+          currentitem = card;
+          openModal();
+        }
+      });
+      /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
+      btnCancel.addEventListener('click', () => {
+        closeModal(modal);
+      });
+
+      /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
+  btnConfirm.addEventListener('click', async () => {
+    closeModal(modal);
+    showLoading();
+
+    if (!currentitem) {
+      alert('找不到目前選中的圖片');
+      closeLoading();
+      return;
+    }
+
+    const clickedImgSrc = currentitem.querySelector('img').src;
+
+    // 模擬等待
+    await new Promise(r => setTimeout(r, 1500));
+
+    await fetchSearchResults(clickedImgSrc);
+
+    // 設定原圖
+    document.getElementById('search-original-img').src = clickedImgSrc;
+
+    closeLoading();
+    SearchResultModal.style.display = 'flex';
+    setTimeout(() => SearchResultModal.classList.add('show'), 10);
+  });
+
+      /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
+      SearchResultClose.addEventListener('click', () => {
+        SearchResultModal.classList.remove('show');
+        setTimeout(() => SearchResultModal.style.display = 'none', 300);
+      });
+    const tabs = document.querySelectorAll(".tab-btn");
+
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        // 移除其他 active
+        tabs.forEach(t => t.classList.remove("active"));
+
+
+        // 啟用當前
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.target).classList.add("active");
+      });
+    });
+
+
+  async function fetchSearchResults(imageUrl) {
+    try {
+      const res = await fetch('/linebot/get_search_results/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: globalUserId, imageUrl: imageUrl })
+      });
+      const result = await res.json();
+      if (result.status !== 'success') {
+        alert(result.message || '搜尋失敗');
+        return;
+      }
+      renderSearchTabs(result.categories);
+    } catch (err) {
+      alert('取得搜尋結果失敗');
+    }
+  }
+
+  /** 動態生成 Tabs + 內容 */
+  function renderSearchTabs(categories) {
+    const container = document.getElementById('tabs-container');
+    container.innerHTML = '';  // 清空
+
+    // 建立 tabs 按鈕區
+    const tabBtnsDiv = document.createElement('div');
+    tabBtnsDiv.className = 'custom-tabs';
+    tabBtnsDiv.style.display = 'flex';
+    tabBtnsDiv.style.justifyContent = 'center';
+    tabBtnsDiv.style.gap = '8px';
+    tabBtnsDiv.style.borderBottom = '2px solid #eee';
+    tabBtnsDiv.style.padding = '0 10px';
+
+    // 建立內容區
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'tab-content';
+    contentDiv.style.padding = '20px';
+    contentDiv.style.background = '#fff';
+    contentDiv.style.borderRadius = '0 0 12px 12px';
+    contentDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+
+    categories.forEach((cat, index) => {
+      // 建立 tab 按鈕
+      const tabBtn = document.createElement('button');
+      tabBtn.className = 'tab-btn' + (index === 0 ? ' active' : '');
+      tabBtn.dataset.target = cat.id;
+      tabBtn.textContent = cat.name;
+      tabBtn.style.background = index === 0 ? '#c8c1d3' : '#f8f8f8';
+      tabBtn.style.color = index === 0 ? '#fff' : '#555';
+      tabBtn.style.border = '1px solid #ddd';
+      tabBtn.style.borderRadius = '8px 8px 0 0';
+      tabBtn.style.padding = '10px 20px';
+      tabBtn.style.fontSize = '16px';
+      tabBtn.style.fontWeight = '500';
+      tabBtn.style.cursor = 'pointer';
+
+      tabBtnsDiv.appendChild(tabBtn);
+
+      // 建立 tab 內容面板
+      const tabPanel = document.createElement('div');
+      tabPanel.id = cat.id;
+      tabPanel.className = 'tab-panel';
+      tabPanel.style.display = index === 0 ? 'grid' : 'none';
+      tabPanel.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
+      tabPanel.style.gap = '10px';
+
+      cat.images.forEach(imgUrl => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = cat.name;
+        img.style.width = '100%';
+        img.style.borderRadius = '8px';
+        img.loading = 'lazy';
+        tabPanel.appendChild(img);
+      });
+
+      contentDiv.appendChild(tabPanel);
+    });
+
+    container.appendChild(tabBtnsDiv);
+    container.appendChild(contentDiv);
+
+    // 綁定切換事件
+    const tabButtons = tabBtnsDiv.querySelectorAll('.tab-btn');
+    tabButtons.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 切換按鈕 active 樣式
+        tabButtons.forEach(t => {
+          t.classList.remove('active');
+          t.style.background = '#f8f8f8';
+          t.style.color = '#555';
+        });
+        tab.classList.add('active');
+        tab.style.background = '#c8c1d3';
+        tab.style.color = '#fff';
+
+        // 顯示對應內容，隱藏其他
+        contentDiv.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.style.display = (panel.id === tab.dataset.target) ? 'grid' : 'none';
+        });
+      });
+    });
+  }
+
+  </script>
+  {% include "components/footer.html" %}
+</body>
+</html>

@@ -1,0 +1,239 @@
+:root {
+  --main-color: #8C7AA9;
+  --secondary-color: #B8A9D1;
+  --accent-color: #F0EAFB;
+  --hover-main: #7B6995;
+  --hover-secondary: #9E8BC3;
+  --text-color: #4C445B;
+  --bg-color: #F9F8FC;
+  --shadow-color: rgba(140,122,169,0.3);
+  --modal-bg: rgba(0, 0, 0, 0.4);
+  --border-color: #858589;
+}
+
+/* === 全域佈局 === */
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Main 預留 Header & Footer 空間 === */
+main {
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 35px 20px; 
+  overflow-y: visible !important;
+}
+
+.closet-grid,
+.closet-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 18px;
+}
+
+.closet-grid {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.closet-grid-container {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+/* === 固定 Footer === */
+.footer {
+  position: relative;
+  margin-top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 40px;
+  z-index: 100;
+}
+
+/* === Navbar Container === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-color);
+  padding: 10px 35px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  width: 100%;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* Nav Icons Container */
+.nav-icons {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  align-items: center;
+  justify-content: center; /* 預設情況下居中 */
+  flex-grow: 1; /* 讓導航按鈕在中間 */
+}
+
+/* Nav Links: 水平排列圖標和文字 */
+.nav-icons a,
+.logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: color 0.3s ease, transform 0.2s ease;
+  justify-content: center;
+}
+
+.nav-icons a.active {
+  color: rgba(0, 0, 0, 0.971); 
+  font-weight: 1000; 
+  transition: font-weight 0.3s ease;
+}
+
+.nav-icons a:hover,
+.nav-icons i:hover,
+.nav-icons a:focus,
+.logo a:hover {
+  color: var(--hover-main);
+  transform: scale(1.05);
+}
+
+/* Icon Styling */
+.nav-icons i {
+  font-size: 1.3rem;
+  transition: color 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+/* Text Label */
+.nav-icons p {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  user-select: none;
+}
+
+/* === RWD: Mobile, Tablet, etc. === */
+@media (max-width: 900px) {
+  .nav-icons {
+    gap: 1.75rem;
+    justify-content: center; /* 保持中間對齊 */
+  }
+
+  .nav-icons a {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .nav-icons i {
+    font-size: 1.4rem;
+  }
+
+  .nav-icons p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .nav-icons {
+    flex-direction: row; /* 保持水平排列 */
+    gap: 1rem;
+    align-items: center; /* 垂直置中 */
+    flex-wrap: wrap; /* 空間不足時換行 */
+    justify-content: flex-end; /* 只在手機尺寸時圖標和文字靠右對齊 */
+  }
+
+  .nav-icons a {
+    width: auto;
+    justify-content: center;
+  }
+
+  .nav-icons i {
+    font-size: 1.3rem;
+  }
+
+  .nav-icons p {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+}
+
+/* === 平板尺寸 (768px ~ 1023px) === */
+@media (min-width: 768px) and (max-width: 1023px) {
+  main {
+    padding: 0 45px 20px;
+  }
+
+  .navbar {
+    padding: 20px 45px 10px;
+    
+  }
+
+  .nav-icons {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center; /* 保持中間對齊 */
+  }
+}
+
+/* === 筆記型電腦 (1024px ~ 1366px) === */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  main {
+    padding: 0 60px 20px;
+  }
+
+  .navbar {
+    padding: 20px 60px 10px;
+  }
+
+  .nav-icons {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center; /* 保持中間對齊 */
+  }
+}
+
+/* === 桌機 (1367px 以上) === */
+@media (min-width: 1367px) {
+  main {
+    padding: 0 100px 20px;
+  }
+
+  .navbar {
+    padding: 30px 100px 20px;
+  }
+
+  .nav-icons {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
