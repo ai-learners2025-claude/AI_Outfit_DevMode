@@ -727,38 +727,88 @@
       uploadInput.click();
     });
     /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
-    uploadInput.addEventListener('change', async (event) => {
-      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
-      if (files.length === 0) return;
+uploadInput.addEventListener('change', async (event) => {
+  const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+  if (files.length === 0) return;
 
-      // 先顯示圖片預覽並加上遮罩
-      const previewImages = files.map(file => {
-        const img = URL.createObjectURL(file);
-        return {
-          file,
-          url: img,
-          status: 'processing',  // 狀態為處理中
-        };
-      });
+  // 先顯示圖片預覽並加上處理中的遮罩
+  const previewImages = files.map(file => {
+    const img = URL.createObjectURL(file);
+    return {
+      file,
+      url: img,
+      status: 'processing',  // 狀態為處理中
+    };
+  });
 
-      // 將這些預覽圖片加到畫面上，並顯示遮罩
-      previewImages.forEach(img => {
-        const card = document.createElement('article');
-        card.className = 'item-card';
-        card.innerHTML = `
-          <div class="item-image-container" style="position: relative;">
-            <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
-            <div class="processing-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); color: white; display: flex; justify-content: center; align-items: center;">
-              處理中...
-            </div>
-          </div>
-        `;
-        itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
-      });
+  // 創建圖片預覽卡片，並插入到最前面
+  previewImages.forEach(img => {
+    const card = document.createElement('article');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div class="item-image-container" style="position: relative;">
+        <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+        <div class="processing-overlay">處理中...</div>
+      </div>
+      <div class="item-info">
+        <div class="actions">
+          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+        </div>
+      </div>
+    `;
+    itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
+  });
+
+  // 上傳並處理圖片
+  await uploadAndAddNewImages(files, previewImages);
+});
+
+/** 上傳並添加新圖片 */
+async function uploadAndAddNewImages(files, previewImages) {
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  files.forEach(file => formData.append('images', file));  // 多張圖片
+
+  try {
+    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+    const result = await res.json();
     
-      // 上傳並更新圖片
-      await uploadAndAddNewImages(files, previewImages);
-    });
+    if (result.status === 'success') {
+      // 從後端返回新圖片的列表，逐一更新每張圖片
+      const newImages = result.new_images.map((img, index) => ({
+        ...img,
+        url: img.url.startsWith('/') ? img.url : '/' + img.url,
+        status: 'done'  // 預設為已處理
+      }));
+
+      // 更新圖片卡片，逐一移除處理中的遮罩
+      previewImages.forEach((previewImg, index) => {
+        const card = itemGrid.querySelector(`img[src="${previewImg.url}"]`).closest('.item-card');
+        if (card) {
+          const overlay = card.querySelector('.processing-overlay');
+          if (overlay) {
+            if (newImages[index]) {
+              // 如果這張圖片已處理完成，移除處理中的遮罩
+              overlay.textContent = '處理完成';
+              overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+            }
+          }
+        }
+      });
+
+      // 將新圖片添加到前端
+      images = [...newImages, ...images];
+      renderGallery();
+    } else {
+      alert(result.message || '上傳失敗');
+    }
+  } catch (error) {
+    alert('上傳發生錯誤');
+  }
+  
+  // 重置上傳輸入框
+  uploadInput.value = '';
+}
     /** 上傳照片3_後端API */
 async function uploadAndAddNewImages(files, previewImages) {
   const formData = new FormData();
