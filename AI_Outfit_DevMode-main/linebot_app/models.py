@@ -11,6 +11,7 @@ class ClosetItem(models.Model):
     user_id = models.CharField(max_length=64)
     category = models.CharField(max_length=32, blank=True, null=True)
     image = models.ImageField(upload_to=user_directory_closet_path)  # ImageField 自帶一個 url 屬性，它會根據 Django 設定的 MEDIA_URL 拼出完整 URL
+    backend_item = models.ForeignKey('MimicBackendItem', null=True, blank=True, on_delete=models.SET_NULL, related_name='mimic_items')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -26,6 +27,21 @@ class MimicItem(models.Model):
     user_id = models.CharField(max_length=64)
     image = models.ImageField(upload_to=user_directory_mimic_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    backend_path = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f'{self.user_id} - {self.image.name}'
+
+
+# mimic_backend：
+def backend_upload_path(instance, filename):
+    return f'Mimic_backend/{instance.user_id}/{filename}'
+
+
+class MimicBackendItem(models.Model):
+    user_id = models.CharField(max_length=64)
+    image = models.ImageField(upload_to=backend_upload_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user_id} - BackendItem {self.id}'

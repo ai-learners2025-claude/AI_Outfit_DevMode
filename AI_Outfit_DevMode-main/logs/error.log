@@ -803,3 +803,45 @@ Traceback (most recent call last):
     url = self.url % kwargs
 TypeError: unsupported operand type(s) for %: 'list' and 'dict'
 2025-07-30 10:30:30,665 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84830
+2025-07-30 13:01:59,289 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:01:59,289 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 13:02:51,742 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:02:51,743 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 13:03:21,106 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:03:21,106 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 14:25:53,013 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 14:25:53,014 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 130
+2025-07-30 14:26:04,189 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 14:26:04,189 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 130
+2025-07-30 14:44:33,823 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-30 14:44:33,825 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84838
+2025-07-30 14:44:35,402 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-30 14:44:35,402 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84838

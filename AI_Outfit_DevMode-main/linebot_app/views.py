@@ -20,7 +20,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from django.conf import settings
 from django.shortcuts import render
-from .models import ClosetItem, MimicItem
+from .models import ClosetItem, MimicItem,MimicBackendItem
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.utils.text import get_valid_filename
@@ -284,65 +284,208 @@ def delete_mimic_images(request):
         return JsonResponse({'status': 'error', 'message': str(e)})
 
 
+# @csrf_exempt
+# def upload_mimic(request):
+#     if request.method == 'POST':
+#         user_id = request.POST.get('userId')  # key 要和前端 formData 裡的一致，這邊是 'userId'
+
+#         files = request.FILES.getlist('images')  # 多張圖片用 getlist
+#         if not files:
+#             return JsonResponse({'status': 'error', 'message': '沒有上傳圖片'}, status=400)
+
+#         saved_images = []
+#         try:
+#             for f in files:
+#                 image_content = ContentFile(f.read(), name=f.name)
+#                 item = MimicItem(user_id=user_id, image=image_content)
+#                 item.save()
+#                 saved_images.append({
+#                     'id': item.id,
+#                     'url': item.image.url,
+#                 })
+
+#                 # 20250729
+#                 # 🔸 取得原始檔名（如 try3.jpg）並轉換為合法檔名
+#                 raw_filename = get_valid_filename(f.name)  # try3.jpg
+#                 base_filename, _ = os.path.splitext(raw_filename)  # try3
+
+#                 # 🔥 呼叫處理器處理圖片，並傳入 base_filename
+#                 processor = RunningHubImageProcessor()
+#                 print(f"raw_filename: {f.name}")  # 日誌輸出
+#                 print(f"base_filename: {base_filename}")  # 日誌輸出
+#                 print(f"Processing image: {item.image.path}")  # 日誌輸出
+#                 print(f"Image path: {item.image.path}")  # 日誌輸出
+#                 success = processor.process_image(
+#                     image_path= item.image.path,  # 🔸 這是原始圖片的路徑
+#                     output_dir=os.path.dirname(item.image.path),
+#                     base_name=base_filename  # 🔸 這是你要改進 process_image() 支援的參數
+#                 )
+
+#                 if not success:
+#                     return JsonResponse({'status': 'error', 'message': '圖片處理失敗'})
+
+#                 # 🔎 組出處理後檔案名稱
+#                 removed_bg_filename = f"{base_filename}_removed_bg.png"
+#                 removed_bg_path = os.path.join(os.path.dirname(item.image.path), removed_bg_filename)
+
+#                 if not os.path.exists(removed_bg_path):
+#                     return JsonResponse({'status': 'error', 'message': '找不到處理後圖片'})
+
+                # # 產生描述
+                # prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')
+                # print(f"Prompt path: {prompt_path}")  # 日誌輸出
+                # print(f"Removed background image path: {removed_bg_path}")  # 日誌輸
+                # prompt_text = load_prompt(prompt_path)
+                # description = generate_description(removed_bg_path, prompt_text)
+                # print(f"Generated description: {description}")  # 日誌輸出
+
+
+#             return JsonResponse({'status': 'success', 'new_images': saved_images})
+
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
+
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 @csrf_exempt
 def upload_mimic(request):
     if request.method == 'POST':
-        user_id = request.POST.get('userId')  # key 要和前端 formData 裡的一致，這邊是 'userId'
+        user_id = request.POST.get('userId')
+        if not user_id:
+            return JsonResponse({'status': 'error', 'message': 'userId缺失'}, status=400)
 
-        files = request.FILES.getlist('images')  # 多張圖片用 getlist
+        files = request.FILES.getlist('images')
         if not files:
             return JsonResponse({'status': 'error', 'message': '沒有上傳圖片'}, status=400)
 
-        saved_images = []
+        saved_items = []
+
+        def get_next_serial_folder(base_dir):
+            i = 0
+            while True:
+                folder_name = f"{i:02d}"
+                folder_path = os.path.join(base_dir, folder_name)
+                if not os.path.exists(folder_path):
+                    return folder_path, folder_name
+                i += 1
+
         try:
+            # 先儲存 mimic items
+            mimic_items = []
             for f in files:
-                image_content = ContentFile(f.read(), name=f.name)
-                item = MimicItem(user_id=user_id, image=image_content)
-                item.save()
-                saved_images.append({
-                    'id': item.id,
-                    'url': item.image.url,
+                raw_filename = get_valid_filename(f.name)
+                image_content = ContentFile(f.read(), name=raw_filename)
+
+                mimic_item = MimicItem(user_id=user_id)
+                mimic_item.image.save(raw_filename, image_content, save=True)
+                mimic_item.save()
+
+                mimic_items.append({
+                    'instance': mimic_item,
+                    'base_filename': os.path.splitext(raw_filename)[0],
+                    'raw_filename': raw_filename
                 })
 
-                # 20250729
-                # 🔸 取得原始檔名（如 try3.jpg）並轉換為合法檔名
-                raw_filename = get_valid_filename(f.name)  # try3.jpg
-                base_filename, _ = os.path.splitext(raw_filename)  # try3
-                
-                # 🔥 呼叫處理器處理圖片，並傳入 base_filename
-                processor = RunningHubImageProcessor()
-                print(f"raw_filename: {f.name}")  # 日誌輸出
-                print(f"base_filename: {base_filename}")  # 日誌輸出
-                print(f"Processing image: {item.image.path}")  # 日誌輸出
-                print(f"Image path: {item.image.path}")  # 日誌輸出
-                success = processor.process_image(
-                    image_path= item.image.path,  # 🔸 這是原始圖片的路徑
-                    output_dir=os.path.dirname(item.image.path),
-                    base_name=base_filename  # 🔸 這是你要改進 process_image() 支援的參數
-                )
+            # 然後逐一處理
+            for item in mimic_items:
+                mimic_item = item['instance']
+                base_filename = item['base_filename']
 
+                backend_item = MimicBackendItem(user_id=user_id)
+                backend_item.save()
+
+                user_base_dir = os.path.join(settings.MEDIA_ROOT, 'Mimic_backend', user_id)
+                output_dir, serial_str = get_next_serial_folder(user_base_dir)
+                os.makedirs(output_dir, exist_ok=True)
+
+                # 執行圖片處理（如去背）
+                processor = RunningHubImageProcessor()
+                success = processor.process_image(
+                    image_path=mimic_item.image.path,
+                    output_dir=output_dir,
+                    base_name=base_filename
+                )
                 if not success:
                     return JsonResponse({'status': 'error', 'message': '圖片處理失敗'})
 
-                # 🔎 組出處理後檔案名稱
-                removed_bg_filename = f"{base_filename}_removed_bg.png"
-                removed_bg_path = os.path.join(os.path.dirname(item.image.path), removed_bg_filename)
+                # 處理後圖片路徑
+                processed_image_filename = f"{base_filename}_removed_bg.png"
+                processed_image_path = os.path.join(output_dir, processed_image_filename)
 
-                if not os.path.exists(removed_bg_path):
-                    return JsonResponse({'status': 'error', 'message': '找不到處理後圖片'})
+                if not os.path.exists(processed_image_path):
+                    return JsonResponse({'status': 'error', 'message': '找不到去背圖片'})
 
-                # 產生描述
-                prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')
-                print(f"Prompt path: {prompt_path}")  # 日誌輸出
-                print(f"Removed background image path: {removed_bg_path}")  # 日誌輸
-                prompt_text = load_prompt(prompt_path)
-                description = generate_description(removed_bg_path, prompt_text)
-                print(f"Generated description: {description}")  # 日誌輸出
+                # 儲存到 backend_item
+                with open(processed_image_path, 'rb') as imgf:
+                    backend_item.image.save(processed_image_filename, ContentFile(imgf.read()), save=True)
 
+                # ---------- 產生描述 ----------
+                try:
+                    # 取得 prompt 路徑與圖片路徑
+                    prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')
+                    removed_bg_path = processed_image_path
 
-            return JsonResponse({'status': 'success', 'new_images': saved_images})
+                    print(f"Prompt path: {prompt_path}")
+                    print(f"Removed background image path: {removed_bg_path}")
+
+                    # 取得 CSV 儲存路徑（與原始圖片同資料夾）
+                    original_img_dir = os.path.dirname(mimic_item.image.path)
+                    csv_path = os.path.join(original_img_dir, 'descriptions.csv')
+
+                    # 檢查是否已有該圖片記錄（使用圖片檔名來比對）
+                    image_filename = os.path.basename(mimic_item.image.path)
+                    already_exists = False
+
+                    if os.path.exists(csv_path):
+                        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+                            reader = csv.DictReader(csvfile)
+                            for row in reader:
+                                if row.get('filename') == image_filename:
+                                    already_exists = True
+                                    break
+
+                    if already_exists:
+                        print(f"描述已存在，略過: {image_filename}")
+                    else:
+                        # 載入 prompt 並產生描述
+                        prompt_text = load_prompt(prompt_path)
+                        description = generate_description(removed_bg_path, prompt_text)
+                        print("已寫入CSV檔案")
+
+                        # 存到 backend_item（如有欄位）
+                        backend_item.description = description
+                        backend_item.save()
+
+                        # 寫入 CSV，若不存在則建立含標頭
+                        file_exists = os.path.exists(csv_path)
+                        with open(csv_path, 'a', newline='', encoding='utf-8') as csvfile:
+                            fieldnames = ['filename', 'description']
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+                            if not file_exists:
+                                writer.writeheader()
+
+                            writer.writerow({
+                                'filename': image_filename,
+                                'description': description
+                            })
+
+                except Exception as desc_err:
+                    print(f"描述產生錯誤: {str(desc_err)}")
+                    # 不中斷流程
+
+                saved_items.append({
+                    'id': backend_item.id,
+                    'url': mimic_item.image.url,
+                    'description': backend_item.description if hasattr(backend_item, 'description') else None
+                })
+
+            return JsonResponse({'status': 'success', 'new_images': saved_items})
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
