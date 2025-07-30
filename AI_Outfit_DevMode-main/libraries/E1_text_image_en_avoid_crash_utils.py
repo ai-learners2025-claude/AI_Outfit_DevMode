@@ -44,7 +44,7 @@ def recommend_top3(desc_text, category_folder):
 def generate_top3_Json(userId,image_path,image_name):
     
     target_path = image_path
-    df = pd.read_csv(os.path.join(image_path, "descriptions_prompt7_test.csv"))
+    df = pd.read_csv(os.path.join(image_path, "descriptions.csv"))
     desc_row = df[df['filename'] == image_name]
     desc = desc_row['description'].values[0] if not desc_row.empty else "[無對應描述]"
 
@@ -58,11 +58,11 @@ def generate_top3_Json(userId,image_path,image_name):
 
     # 類別對應表（英文id: 中文名, id）
     sections = {
-        "outwear": {"name": "外套", "id": "outwear", "marker": "【Outerwear】: "},
-        "top": {"name": "上衣", "id": "top", "marker": "【Top】: "},
-        "bottom": {"name": "褲子", "id": "bottoms", "marker": "【Pants】: "},
-        "skirt": {"name": "裙子", "id": "skirt", "marker": "【Skirt】: "},
-        "dress": {"name": "洋裝", "id": "dress", "marker": "【Dress】: "},
+        "outerwear": {"name": "外套", "id": "outwear", "marker": "【Outerwear】: "},
+        "tops": {"name": "上衣", "id": "top", "marker": "【Top】: "},
+        "pants": {"name": "褲子", "id": "bottoms", "marker": "【Pants】: "},
+        "skirts": {"name": "裙子", "id": "skirt", "marker": "【Skirt】: "},
+        "dresses": {"name": "洋裝", "id": "dress", "marker": "【Dress】: "},
         "shoes": {"name": "鞋子", "id": "shoes", "marker": "【Shoes】: "}
     }
 

@@ -1,0 +1,25 @@
+{
+  "task_id": "1950485185571774465",
+  "workflow_id": "1944945226931953665",
+  "uploaded_filename": "api/27b984cc58141a32961fa17b80087153d71270e969f09248c2211f788d51a7dd.jpg",
+  "timestamp": "20250730_171441",
+  "results_count": 2,
+  "saved_files": [
+    "D:\\AI_Outfit_DevMode\\AI_Outfit_DevMode-main\\media\\Mimic_backend\\dev_test_user_12345\\06\\1_removed_bg.png",
+    "D:\\AI_Outfit_DevMode\\AI_Outfit_DevMode-main\\media\\Mimic_backend\\dev_test_user_12345\\06\\1_aligned.png"
+  ],
+  "results": [
+    {
+      "fileUrl": "https://rh-images.xiaoyaoyou.com/2ad607413018d74c3aee2da3828aa9ce/output/ComfyUI_Person_00001_crvlp_1753866934.png",
+      "fileType": "png",
+      "taskCostTime": "36",
+      "nodeId": "76"
+    },
+    {
+      "fileUrl": "https://rh-images.xiaoyaoyou.com/2ad607413018d74c3aee2da3828aa9ce/output/ComfyUI_Kontext_00001_silrh_1753866923.png",
+      "fileType": "png",
+      "taskCostTime": "36",
+      "nodeId": "70"
+    }
+  ]
+}
