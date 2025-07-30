@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
   <link rel="stylesheet" href="{% static 'css/upload_btn.css' %}" />
-  <!-- <link rel="stylesheet" href="{% static 'css/page_title.css' %}" /> -->
+  <link rel="stylesheet" href="{% static 'css/header_animation.js' %}" />
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="{% static 'js/BackendAPI.js' %}"></script>
   <script src="{% static 'js/header_active.js' %}"></script>
 
@@ -866,7 +866,6 @@
       const walk = (startX - x) * 1.5;
       filterBar.scrollLeft = scrollLeft + walk;
     });
-    document.querySelector('main').style.overflowY = 'visible';
 
   </script>
   {% include "components/footer.html" %}

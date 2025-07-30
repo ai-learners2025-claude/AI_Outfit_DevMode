@@ -96,23 +96,41 @@ main {
 }
 
 .nav-icons a {
-  color:var(--text-color);
+  color: var(--text-color);
+  padding-bottom: 10px;
+  border-bottom: 2px solid transparent; /* 預設為透明，避免與動畫線條重疊 */
+  position: relative;
+  overflow: hidden; /* 確保線條不會超出範圍 */
 }
 
 .nav-icons a.active {
-  color:var(--text-color);
-  font-weight: 1000;
-  transition: font-weight 0.3s ease;
-  border-bottom: #858589;
+  border-bottom: 2px solid transparent; /* 保持透明，防止重疊 */
 }
-/* 
-.nav-icons a:hover,
-.nav-icons i:hover,
-.nav-icons a:focus,
-.logo a:hover {
-  color: var(--text-color);;
-  /* transform: scale(1.05);
-} */
+
+.nav-icons a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--border-color);
+  transform: scaleX(0); /* 初始狀態，不顯示 */
+  transform-origin: bottom right; /* 從右邊展開 */
+  transition: transform 0.3s ease; /* 動畫效果 */
+}
+
+/* 當 hover 且沒有 active 時，底部的線條會從左至右展開 */
+.nav-icons a:hover::before {
+  transform: scaleX(1); /* 展開線條 */
+  transform-origin: bottom left; /* 從左邊展開 */
+}
+
+/* 當元素處於 active 狀態時，強制保持線條可見 */
+.nav-icons a.active::before {
+  transform: scaleX(1); /* 確保線條保持展開 */
+  transform-origin: bottom left; /* 從左邊展開 */
+}
 
 .nav-icons i {
   font-size: 1.3rem;
@@ -123,7 +141,6 @@ main {
 
 .nav-icons p {
   font-size: 1rem;
-  font-weight: 500;
   margin: 0;
   user-select: none;
   white-space: nowrap;
