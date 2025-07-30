@@ -520,6 +520,39 @@
     padding: 16px;
   }
 }
+
+/* 預覽圖片的樣式 */
+.item-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 處理中遮罩的樣式 */
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);  /* 半透明黑色背景 */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* 當圖片處理完成時，遮罩的變化 */
+.processing-overlay.done {
+  background: rgba(0, 0, 0, 0.3);  /* 透明度降低 */
+  opacity: 0.8;
+  color: #4CAF50;  /* 顯示綠色文字 */
+}
+
   </style>
 </head>
 <body>
@@ -697,31 +730,78 @@
     uploadInput.addEventListener('change', async (event) => {
       const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
       if (files.length === 0) return;
-      await uploadAndAddNewImages(files);
+
+      // 先顯示圖片預覽並加上遮罩
+      const previewImages = files.map(file => {
+        const img = URL.createObjectURL(file);
+        return {
+          file,
+          url: img,
+          status: 'processing',  // 狀態為處理中
+        };
+      });
+
+      // 將這些預覽圖片加到畫面上，並顯示遮罩
+      previewImages.forEach(img => {
+        const card = document.createElement('article');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-image-container" style="position: relative;">
+            <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+            <div class="processing-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); color: white; display: flex; justify-content: center; align-items: center;">
+              處理中...
+            </div>
+          </div>
+        `;
+        itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
+      });
+    
+      // 上傳並更新圖片
+      await uploadAndAddNewImages(files, previewImages);
     });
     /** 上傳照片3_後端API */
-    async function uploadAndAddNewImages(files) {
-      const formData = new FormData();
-      formData.append('userId', globalUserId);
-      files.forEach(file => formData.append('images', file));  // 多張圖片
-      try {
-        const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
-        const result = await res.json();
-        if (result.status === 'success') {
-          const newImages = result.new_images.map(img => ({
-            ...img,
-            url: img.url.startsWith('/') ? img.url : '/' + img.url
-          }));
-          images = [...newImages, ...images];
-          renderGallery();
-        } else {
-          alert(result.message || '上傳失敗');
+async function uploadAndAddNewImages(files, previewImages) {
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  files.forEach(file => formData.append('images', file));  // 多張圖片
+  
+  try {
+    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+    const result = await res.json();
+    
+    if (result.status === 'success') {
+      // 更新圖片，移除處理中的遮罩
+      const newImages = result.new_images.map(img => ({
+        ...img,
+        url: img.url.startsWith('/') ? img.url : '/' + img.url,
+        status: 'done'  // 設定為處理完成狀態
+      }));
+      
+      // 更新圖片卡片，移除遮罩
+      newImages.forEach(newImg => {
+        const card = itemGrid.querySelector(`[data-id="${newImg.id}"]`);
+        if (card) {
+          const overlay = card.querySelector('.processing-overlay');
+          if (overlay) {
+            overlay.textContent = '處理完成';
+            overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+          }
         }
-      } catch (error) {
-        alert('上傳發生錯誤');
-      }
-      uploadInput.value = '';
+      });
+
+      // 將新圖片添加到前端
+      images = [...newImages, ...images];
+      renderGallery();
+    } else {
+      alert(result.message || '上傳失敗');
     }
+  } catch (error) {
+    alert('上傳發生錯誤');
+  }
+  
+  // 重置上傳輸入框
+  uploadInput.value = '';
+}
 
     /** 刪除照片 **/
     /* 刪除照片_1. 點擊fa-trash -> 跳出是否確認要刪除對話框 */
