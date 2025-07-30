@@ -106,6 +106,24 @@
     .item-actions i:hover {
       background-color: var(--accent-color);
     }
+
+    
+.closet-grid,
+.closet-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 18px;
+}
+
+.closet-grid {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.closet-grid-container {
+  height: 80vh;
+  overflow-y: auto;
+}
 .more-options {
   position: absolute;
   top: 8px;      /* 距離上方 8px */

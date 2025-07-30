@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap');
+
 :root {
   --main-color: #8C7AA9;
   --secondary-color: #B8A9D1;
@@ -12,12 +14,20 @@
 }
 
 /* === 全域佈局 === */
-body {
-  font-family: 'Noto Sans TC', sans-serif;
-  background-color: var(--bg-color);
+
+html, body {
+  height: 100%;                 /* 撐滿整個 viewport */
+  margin: 0;                    /* 移除預設外距 */
+  padding: 0;                   /* 移除預設內距 */
+  display: flex;                /* 讓 body 成為 flex 容器 */
+  flex-direction: column;      /* 垂直排列，讓 header / main / footer 可堆疊 */
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: var(--bg-color);
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+html {
+   overflow-y: scroll;
 }
 
 /* === Main 預留 Header & Footer 空間 === */
@@ -26,24 +36,6 @@ main {
   width: 100%;
   margin: 0 auto;
   padding: 0 35px 20px; 
-  overflow-y: visible !important;
-}
-
-.closet-grid,
-.closet-grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 18px;
-}
-
-.closet-grid {
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.closet-grid-container {
-  height: 80vh;
-  overflow-y: auto;
 }
 
 /* === 固定 Footer === */
@@ -60,13 +52,14 @@ main {
   z-index: 100;
 }
 
-/* === Navbar Container === */
+/* === 基本樣式（Mobile First） === */
+/* === 基本樣式（手機預設） === */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--bg-color);
-  padding: 10px 35px 20px;
+  padding: 12px 30px 12px 22px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -74,7 +67,6 @@ main {
   width: 100%;
 }
 
-/* Logo */
 .logo {
   font-size: 1.5em;
   font-weight: 700;
@@ -83,65 +75,78 @@ main {
   flex-shrink: 0;
 }
 
-/* Nav Icons Container */
 .nav-icons {
   display: flex;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 0rem;
   list-style: none;
   align-items: center;
-  justify-content: center; /* 預設情況下居中 */
-  flex-grow: 1; /* 讓導航按鈕在中間 */
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
-/* Nav Links: 水平排列圖標和文字 */
 .nav-icons a,
 .logo a {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   text-decoration: none;
-  color: var(--text-color);
-  transition: color 0.3s ease, transform 0.2s ease;
+  color:#9f88bf ;
   justify-content: center;
+  padding: 6px;
+}
+
+.nav-icons a {
+  color:var(--text-color);
 }
 
 .nav-icons a.active {
-  color: rgba(0, 0, 0, 0.971); 
-  font-weight: 1000; 
+  color:var(--text-color);
+  font-weight: 1000;
   transition: font-weight 0.3s ease;
+  border-bottom: #858589;
 }
-
+/* 
 .nav-icons a:hover,
 .nav-icons i:hover,
 .nav-icons a:focus,
 .logo a:hover {
-  color: var(--hover-main);
-  transform: scale(1.05);
-}
+  color: var(--text-color);;
+  /* transform: scale(1.05);
+} */
 
-/* Icon Styling */
 .nav-icons i {
   font-size: 1.3rem;
   transition: color 0.3s ease;
   margin-right: 0.5rem;
+  justify-content: center;
 }
 
-/* Text Label */
 .nav-icons p {
   font-size: 1rem;
   font-weight: 500;
   margin: 0;
   user-select: none;
+  white-space: nowrap;
 }
 
-/* === RWD: Mobile, Tablet, etc. === */
-@media (max-width: 900px) {
+/* === min-width: 375px === */
+@media (min-width: 375px) {
+  .navbar {
+    padding: 10px 30px 10px 30px;
+  }
+  .nav-icons {
+    justify-content: flex-end;
+  }
+  .logo a{
+    font-size: 20px;
+  }
+}
+
+/* === min-width: 601px === */
+@media (min-width: 601px) {
   .nav-icons {
     gap: 1.75rem;
-    justify-content: center; /* 保持中間對齊 */
-  }
-
-  .nav-icons a {
-    padding: 0.5rem 0.75rem;
+    justify-content: center;
   }
 
   .nav-icons i {
@@ -149,78 +154,49 @@ main {
   }
 
   .nav-icons p {
-    font-size: 1rem;
+    font-size: 1.4rem;
+  }
+  .logo a{
+    font-size: 1.5rem;
   }
 }
 
-@media (max-width: 600px) {
-  .navbar {
-    padding: 10px 20px;
-  }
-
-  .nav-icons {
-    flex-direction: row; /* 保持水平排列 */
-    gap: 1rem;
-    align-items: center; /* 垂直置中 */
-    flex-wrap: wrap; /* 空間不足時換行 */
-    justify-content: flex-end; /* 只在手機尺寸時圖標和文字靠右對齊 */
-  }
-
-  .nav-icons a {
-    width: auto;
-    justify-content: center;
-  }
-
-  .nav-icons i {
-    font-size: 1.3rem;
-  }
-
-  .nav-icons p {
-    font-size: 1rem;
-    white-space: nowrap;
-  }
-}
-
-/* === 平板尺寸 (768px ~ 1023px) === */
-@media (min-width: 768px) and (max-width: 1023px) {
+/* === min-width: 768px (平板) === */
+@media (min-width: 768px) {
   main {
     padding: 0 45px 20px;
   }
 
   .navbar {
-    padding: 20px 45px 10px;
-    
+    padding: 12px 45px 12px
   }
 
   .nav-icons {
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center; /* 保持中間對齊 */
+    padding: 0 130px 0 30px;
+    justify-content: center;
+  }
+  .logo a{
+    font-size: 1.8rem;
   }
 }
 
-/* === 筆記型電腦 (1024px ~ 1366px) === */
-@media (min-width: 1024px) and (max-width: 1366px) {
+/* === min-width: 1024px (筆電) === */
+@media (min-width: 1024px) {
   main {
     padding: 0 60px 20px;
   }
 
   .navbar {
-    padding: 20px 60px 10px;
+    padding: 10px 100px 10px 50px;
   }
 
   .nav-icons {
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center; /* 保持中間對齊 */
+    padding: 0 180px 0 80px;
+    justify-content: center;
   }
 }
 
-/* === 桌機 (1367px 以上) === */
+/* === min-width: 1367px (桌機) === */
 @media (min-width: 1367px) {
   main {
     padding: 0 100px 20px;

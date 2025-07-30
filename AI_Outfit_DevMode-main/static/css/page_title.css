@@ -10,7 +10,7 @@
   font-size: 14px;
   margin-top: 0px;
   margin-bottom: 24px;
-  color: var(--border-color);
+  color: var(--text-color);
 }
 
 @media (max-width: 600px) {

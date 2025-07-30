@@ -156,18 +156,6 @@
       color: white;
     }
 
-
-.tab-content {
-  height: 40vh;         /* 你原本的固定高度 */
-  overflow-y: auto;     /* 內容超出可垂直捲動 */
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* 顯示中 */
-.tab-panel.active {
-  display: flex;
-}
 .tab-panel img {
   width: 100%;
   height: auto;           /* 高度依比例 */
@@ -176,11 +164,20 @@
   border-radius: 8px;
 }
 
+.tab-content {
+  height: 40vh;
+  flex: 1;
+  overflow-y: auto;     /* 內容超出可垂直捲動 */
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: (--bg-color);
+  box-shadow: none;
+}
+
 /* RWD：小螢幕全寬排列 */
 @media (max-width: 767px) {
   .custom-tabs {
     align-items: stretch;
-    border-bottom: none;
   }
   .tab-btn {
     border-radius: 8px;
@@ -212,8 +209,8 @@
     flex: 0 0 150px;           /* 固定寬度 */
     display: flex;
     flex-direction: column;    /* 垂直排列 */
-    border-bottom: none;
     border-right: 2px solid #eee;
+    border-bottom: none;
     overflow-y: auto;
     padding: 0;
   }
@@ -290,11 +287,11 @@
   padding: 0 8px;
   display: flex;
   overflow-x: auto;
-  white-space: nowrap;
+  white-space: nowrap;  
   -webkit-overflow-scrolling: touch; /* 手機滑順 */
+  border-bottom: none;
   gap: 8px;
   padding: 0 10px;
-  border-bottom: 2px solid #eee;
 }
 
 /* Tab 按鈕 */
@@ -305,15 +302,12 @@
   padding: 10px 20px;
   font-size: 16px;
   font-weight: 500;
-  color: #555;
   cursor: pointer;
   transition: all 0.3s ease;
   display: inline-block;
   white-space: nowrap;
 }
 
-/* 內容 */
-.tab-content { flex: 1; overflow-y: auto; padding: 8px; }
 
 
 .tab-panel img {
@@ -330,8 +324,6 @@
   .custom-tabs {
     flex: 0 0 150px;
     flex-direction: column;
-    border-bottom: none;
-    border-right: 2px solid #eee;
     overflow-y: auto;
   }
   .tab-btn {
@@ -357,7 +349,7 @@
   width: 90vw;
   max-width: 600px;
   height: 90vh;
-  background: white;
+  background: var(--bg-color);
   border-radius: 16px;
   padding: 16px;
   display: flex;
@@ -411,6 +403,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background-color: (--bg-color);
 }
 
 /* tabs 橫向可滑 */
@@ -421,7 +414,6 @@
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   gap: 8px;
-  border-bottom: 2px solid #eee;
   padding: 0 8px;
 }
 
@@ -444,8 +436,7 @@
   background: #eae6f3;
   border-color: #c8c1d3;
 }
-/* 內容 */
-.tab-content { flex: 1; overflow-y: auto; padding: 8px; }
+
 
 .tab-panel {
   display: grid;
@@ -474,8 +465,6 @@
   .custom-tabs {
     flex: 0 0 150px;
     flex-direction: column;
-    border-bottom: none;
-    border-right: 2px solid #eee;
     overflow-y: auto;
   }
   .tab-btn {
@@ -604,11 +593,11 @@
       </div>
     </div>
   </div>
-<div id="SearchResultModal" class="SearchResultModal" style="display:none; justify-content:center; align-items:center;">
+<div id="SearchResultModal" class="SearchResultModal" >
   <div class="SearchResultModal-title" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
-    <div class="modal-body" style="display:flex; gap:20px; flex-direction: column; width:100%; max-width: 600px;">
-      <div class="modal-left" style="width:100%; height:40vh;">
-        <img id="search-original-img" src="" alt="原始圖片" style="width:100%; height:100%; object-fit: contain;" />
+    <div class="modal-body" >
+      <div class="modal-left" >
+        <img id="search-original-img" src="" alt="原始圖片" />
       </div>
       <div id="tabs-container"></div> <!-- 動態建立 tabs 與內容 -->
     </div>
@@ -632,6 +621,7 @@
     const uploadBtn = document.getElementById('open-upload-menu');
     const SearchResultModal = document.getElementById('SearchResultModal');
     const SearchResultClose = document.getElementById('SearchResult_close');
+    const tabs = document.querySelectorAll(".tab-btn");
 
     let currentitem = null;
     let selectedItemCard = null;
@@ -939,7 +929,6 @@ async function uploadAndAddNewImages(files, previewImages) {
         SearchResultModal.classList.remove('show');
         setTimeout(() => SearchResultModal.style.display = 'none', 300);
       });
-    const tabs = document.querySelectorAll(".tab-btn");
 
 
     tabs.forEach(tab => {
@@ -953,7 +942,6 @@ async function uploadAndAddNewImages(files, previewImages) {
         document.getElementById(tab.dataset.target).classList.add("active");
       });
     });
-
 
   async function fetchSearchResults(imageUrl) {
     try {
@@ -981,19 +969,10 @@ async function uploadAndAddNewImages(files, previewImages) {
     // 建立 tabs 按鈕區
     const tabBtnsDiv = document.createElement('div');
     tabBtnsDiv.className = 'custom-tabs';
-    tabBtnsDiv.style.display = 'flex';
-    tabBtnsDiv.style.justifyContent = 'center';
-    tabBtnsDiv.style.gap = '8px';
-    tabBtnsDiv.style.borderBottom = '2px solid #eee';
-    tabBtnsDiv.style.padding = '0 10px';
 
     // 建立內容區
     const contentDiv = document.createElement('div');
     contentDiv.className = 'tab-content';
-    contentDiv.style.padding = '20px';
-    contentDiv.style.background = '#fff';
-    contentDiv.style.borderRadius = '0 0 12px 12px';
-    contentDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
 
     categories.forEach((cat, index) => {
       // 建立 tab 按鈕
@@ -1001,14 +980,6 @@ async function uploadAndAddNewImages(files, previewImages) {
       tabBtn.className = 'tab-btn' + (index === 0 ? ' active' : '');
       tabBtn.dataset.target = cat.id;
       tabBtn.textContent = cat.name;
-      tabBtn.style.background = index === 0 ? '#c8c1d3' : '#f8f8f8';
-      tabBtn.style.color = index === 0 ? '#fff' : '#555';
-      tabBtn.style.border = '1px solid #ddd';
-      tabBtn.style.borderRadius = '8px 8px 0 0';
-      tabBtn.style.padding = '10px 20px';
-      tabBtn.style.fontSize = '16px';
-      tabBtn.style.fontWeight = '500';
-      tabBtn.style.cursor = 'pointer';
 
       tabBtnsDiv.appendChild(tabBtn);
 
@@ -1016,17 +987,11 @@ async function uploadAndAddNewImages(files, previewImages) {
       const tabPanel = document.createElement('div');
       tabPanel.id = cat.id;
       tabPanel.className = 'tab-panel';
-      tabPanel.style.display = index === 0 ? 'grid' : 'none';
-      tabPanel.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))';
-      tabPanel.style.gap = '10px';
 
       cat.images.forEach(imgUrl => {
         const img = document.createElement('img');
         img.src = imgUrl;
         img.alt = cat.name;
-        img.style.width = '100%';
-        img.style.borderRadius = '8px';
-        img.loading = 'lazy';
         tabPanel.appendChild(img);
       });
 
