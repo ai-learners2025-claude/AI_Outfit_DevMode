@@ -113,11 +113,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 18px;
+  overflow-y: scroll;
 }
 
 .closet-grid {
   max-height: 80vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .closet-grid-container {
@@ -504,13 +505,12 @@
         await fetchGalleryFromBackend('closet');
       } else {
         try {
-          await liff.init({ liffId });
+          await liff.init({ liffId: liffId });
           if (!liff.isLoggedIn()) {
             liff.login();
           } else {
             const profile = await liff.getProfile();
             globalUserId = profile.userId;
-            console.log("LINE UserId:", globalUserId);
             await fetchGalleryFromBackend('closet');
           }
         } catch (err) {
@@ -522,7 +522,6 @@
 
     // === 初始化分類與選單 ===
     function initCategoryButtonsAndSelects() {
-
     
       // 建立篩選按鈕
       filterBar.innerHTML = '';
@@ -540,103 +539,94 @@
         filterBar.appendChild(btn);
       }
     
-      // 上傳與編輯下拉選單
-CategorySelect.innerHTML = '<option value="" disabled selected>選擇分類</option>';
-for (const [key, label] of Object.entries(categoryMap)) {
-    const opt = document.createElement('option');
-    opt.value = key;
-    opt.textContent = label;
-    CategorySelect.appendChild(opt);
-}
-    }
+      // 上傳選擇類別的下拉式選單
+      CategorySelect.innerHTML = '<option value="" disabled selected>選擇分類</option>';
+      for (const [key, label] of Object.entries(categoryMap)) {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = label;
+          CategorySelect.appendChild(opt);
+            }
+      }
 
     // === 圖片渲染 ===
-function renderGallery() {
-  let visibleCount = 0;
-  const items = [];
-
-  images.forEach(img => {
-    if (currentFilter !== 'all' && img.category !== currentFilter) return;
-    visibleCount++;
-
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.dataset.id = img.id;
-    card.dataset.category = img.category;
-
-    const imgEl = document.createElement('img');
-    imgEl.loading = 'lazy';
-    imgEl.src = img.url.startsWith('/') ? img.url : '/' + img.url;
-    imgEl.alt = '衣物';
-    card.appendChild(imgEl);
-
-    const moreBtn = document.createElement('div');
-    moreBtn.className = 'more-options';
-    moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-    card.appendChild(moreBtn);
-
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-    actions.innerHTML = `
-      <i class="fas fa-edit" title="編輯衣物"></i>
-      <i class="fas fa-trash" title="刪除衣物"></i>
-    `;
-    card.appendChild(actions);
-
-    items.push(card);
-  });
-
-  // 用 replaceChildren 一次更新，效能比 innerHTML='' + appendChild(fragment) 好
-  gallery.replaceChildren(...items);
-
-  // 事件綁定
-  items.forEach(card => bindItemCardEvents(card));
-
-  // 更新標題
-  // document.querySelector('.page-title h1').textContent = `我的衣櫃 (${visibleCount})`;
-}
-
-//     // === 篩選按鈕點擊 ===
-// filterBar.addEventListener('click', e => {
-//   if (!e.target.classList.contains('filter-btn')) return;
-
-//   filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-//   e.target.classList.add('active');
-//   currentFilter = e.target.dataset.category;
-//   renderGallery();
-// });
-
-let filterTimeout;
-filterBar.addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-btn')) return;
-
-  clearTimeout(filterTimeout);
-  filterTimeout = setTimeout(() => {
-    filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    e.target.classList.add('active');
-    currentFilter = e.target.dataset.category;
-    renderGallery();
-  }, 150);
-});
-
-    // === 上傳按鈕與彈窗控制 ===
-uploadBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    const isOpen = uploadPopup.style.display === 'flex';
-    uploadPopup.style.display = isOpen ? 'none' : 'flex';
-    // 不清空選擇分類
-    if (!isOpen) {
-        // CategorySelect.value = ''; // 注釋掉這一行，防止清空分類
+    function renderGallery() {
+      let visibleCount = 0;
+      const items = [];
+    
+      images.forEach(img => {
+        if (currentFilter !== 'all' && img.category !== currentFilter) return;
+        visibleCount++;
+      
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.dataset.id = img.id;
+        card.dataset.category = img.category;
+      
+        const imgEl = document.createElement('img');
+        imgEl.loading = 'lazy';
+        imgEl.src = img.url.startsWith('/') ? img.url : '/' + img.url;
+        imgEl.alt = '衣物';
+        card.appendChild(imgEl);
+      
+        const moreBtn = document.createElement('div');
+        moreBtn.className = 'more-options';
+        moreBtn.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+        card.appendChild(moreBtn);
+      
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+        actions.innerHTML = `
+          <i class="fas fa-edit" title="編輯衣物"></i>
+          <i class="fas fa-trash" title="刪除衣物"></i>
+        `;
+        card.appendChild(actions);
+      
+        items.push(card);
+      });
+    
+      // 用 replaceChildren 一次更新，效能比 innerHTML='' + appendChild(fragment) 好
+      gallery.replaceChildren(...items);
+    
+      // 事件綁定
+      items.forEach(card => bindItemCardEvents(card));
+    
+      // 更新標題
+      // document.querySelector('.page-title h1').textContent = `我的衣櫃 (${visibleCount})`;
     }
-});
 
+    let filterTimeout;
+    filterBar.addEventListener('click', e => {
+      if (!e.target.classList.contains('filter-btn')) return;
+    
+      clearTimeout(filterTimeout);
+      filterTimeout = setTimeout(() => {
+        filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        currentFilter = e.target.dataset.category;
+        renderGallery();
+      }, 150);
+    });
+
+
+    /** 上傳照片 */
+    /** 當點擊+icon(上傳按) -> 跳出彈窗 */ 
+    uploadBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isOpen = uploadPopup.style.display === 'flex';
+        uploadPopup.style.display = isOpen ? 'none' : 'flex';
+        // 不清空選擇分類
+        if (!isOpen) {
+            // CategorySelect.value = ''; // 注釋掉這一行，防止清空分類
+        }
+    });
+    /** 上傳照片_2 點擊上傳彈窗以外的地方彈窗會消失 for good UI */ 
     document.addEventListener('click', function (e) {
       if (!uploadPopup.contains(e.target) && e.target !== uploadBtn) {
         uploadPopup.style.display = 'none';
       }
     });
-
-    // === 確認上傳選擇分類 ===
+    /** 上傳照片_3 選擇上傳選擇分類 */ 
     confirmUpload.addEventListener('click', () => {
       if (!CategorySelect.value) {
         alert('請先選擇分類');
@@ -646,7 +636,7 @@ uploadBtn.addEventListener('click', function (e) {
       fileInput.click();
     });
 
-    // === 上傳圖片 ===
+    /** 上傳照片_3 選擇檔案->前置檢查->顯示上傳進度條->依序上傳->上傳結束後更新 UI */ 
     fileInput.addEventListener('change', async function (event) {
       const files = event.target.files;
       if (!files.length) return alert('請選擇至少一張圖片');
@@ -749,19 +739,19 @@ uploadBtn.addEventListener('click', function (e) {
         actions.style.display = actions.style.display === 'block' ? 'none' : 'block';
       });
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.more-options') && !e.target.closest('.item-actions')) {
-    document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
-  }
-});
-    
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.more-options') && !e.target.closest('.item-actions')) {
+          document.querySelectorAll('.item-actions').forEach(a => a.style.display = 'none');
+        }
+      });
+
       actions.querySelector('.fa-edit').addEventListener('click', () => {
         selectedItemCard = card;
         openModal('edit-modal');
         editCategory.value = card.dataset.category;
         actions.style.display = 'none';
       });
-    
+
       actions.querySelector('.fa-trash').addEventListener('click', () => {
         selectedItemCard = card;
         openModal('delete-modal');
