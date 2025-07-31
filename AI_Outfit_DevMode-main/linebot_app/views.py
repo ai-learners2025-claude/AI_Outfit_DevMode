@@ -159,15 +159,6 @@ def upload_closet(request):
                     'category': item.category
                 })
 
-                # # 20250729 圖檔文字描述
-                # prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')#'prompt_closet.txt')
-                # prompt_text = load_prompt(prompt_path)
-                # bgremoved_filename = os.path.join(settings.MEDIA_ROOT, item.image.name)
-                # bgremoved_filename = bgremoved_filename.replace('\\', '/')  # 確保路徑格式正確
-                # print(f"Processing image: {bgremoved_filename}")
-                # description = generate_description_from_image_path(bgremoved_filename, prompt_text)
-                # print(f"Generated description: {description}")
-
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
 
@@ -198,6 +189,7 @@ def delete_closet_images(request):
         return JsonResponse({"status": "success", "deleted_count": deleted_count})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
+
 
 @csrf_exempt
 def edit_closet_image_category(request):
@@ -263,7 +255,7 @@ def edit_closet_image_category(request):
 # }
 
 # mimic：
-    
+
 
 @csrf_exempt
 def delete_mimic_images(request):
@@ -279,79 +271,34 @@ def delete_mimic_images(request):
 
         items = MimicItem.objects.filter(user_id=user_id, id__in=image_ids)
         deleted_count = 0
+        deleted_filenames = []
+
         for item in items:
             if item.image and os.path.exists(item.image.path):
+                deleted_filenames.append(os.path.basename(item.image.path))
                 os.remove(item.image.path)
             item.delete()
             deleted_count += 1
 
+        # descriptions.csv 處理（透過 csv 模組安全過濾）
+        csv_path = os.path.join(settings.MEDIA_ROOT, f'mimic/{user_id}/descriptions.csv')
+        if os.path.exists(csv_path):
+            rows_to_keep = []
+            with open(csv_path, 'r', encoding='utf-8', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row['filename'] not in deleted_filenames:
+                        rows_to_keep.append(row)
+
+            # 寫回檔案
+            with open(csv_path, 'w', encoding='utf-8', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=['filename', 'description'])
+                writer.writeheader()
+                writer.writerows(rows_to_keep)
+
         return JsonResponse({"status": "success", "deleted_count": deleted_count})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
-
-
-# @csrf_exempt
-# def upload_mimic(request):
-#     if request.method == 'POST':
-#         user_id = request.POST.get('userId')  # key 要和前端 formData 裡的一致，這邊是 'userId'
-
-#         files = request.FILES.getlist('images')  # 多張圖片用 getlist
-#         if not files:
-#             return JsonResponse({'status': 'error', 'message': '沒有上傳圖片'}, status=400)
-
-#         saved_images = []
-#         try:
-#             for f in files:
-#                 image_content = ContentFile(f.read(), name=f.name)
-#                 item = MimicItem(user_id=user_id, image=image_content)
-#                 item.save()
-#                 saved_images.append({
-#                     'id': item.id,
-#                     'url': item.image.url,
-#                 })
-
-#                 # 20250729
-#                 # 🔸 取得原始檔名（如 try3.jpg）並轉換為合法檔名
-#                 raw_filename = get_valid_filename(f.name)  # try3.jpg
-#                 base_filename, _ = os.path.splitext(raw_filename)  # try3
-
-#                 # 🔥 呼叫處理器處理圖片，並傳入 base_filename
-#                 processor = RunningHubImageProcessor()
-#                 print(f"raw_filename: {f.name}")  # 日誌輸出
-#                 print(f"base_filename: {base_filename}")  # 日誌輸出
-#                 print(f"Processing image: {item.image.path}")  # 日誌輸出
-#                 print(f"Image path: {item.image.path}")  # 日誌輸出
-#                 success = processor.process_image(
-#                     image_path= item.image.path,  # 🔸 這是原始圖片的路徑
-#                     output_dir=os.path.dirname(item.image.path),
-#                     base_name=base_filename  # 🔸 這是你要改進 process_image() 支援的參數
-#                 )
-
-#                 if not success:
-#                     return JsonResponse({'status': 'error', 'message': '圖片處理失敗'})
-
-#                 # 🔎 組出處理後檔案名稱
-#                 removed_bg_filename = f"{base_filename}_removed_bg.png"
-#                 removed_bg_path = os.path.join(os.path.dirname(item.image.path), removed_bg_filename)
-
-#                 if not os.path.exists(removed_bg_path):
-#                     return JsonResponse({'status': 'error', 'message': '找不到處理後圖片'})
-
-                # # 產生描述
-                # prompt_path = os.path.join(settings.BASE_DIR, 'libraries', 'prompt7_en.txt')
-                # print(f"Prompt path: {prompt_path}")  # 日誌輸出
-                # print(f"Removed background image path: {removed_bg_path}")  # 日誌輸
-                # prompt_text = load_prompt(prompt_path)
-                # description = generate_description(removed_bg_path, prompt_text)
-                # print(f"Generated description: {description}")  # 日誌輸出
-
-
-#             return JsonResponse({'status': 'success', 'new_images': saved_images})
-
-#         except Exception as e:
-#             return JsonResponse({'status': 'error', 'message': f'處理圖片失敗: {str(e)}'}, status=500)
-
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @csrf_exempt
