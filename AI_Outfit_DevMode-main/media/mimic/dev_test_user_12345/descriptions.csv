@@ -1,4 +1,381 @@
 filename,description
+1.jpg,"### <Output 1>
+【Outerwear】: None
+【Top】: Short Sleeve, Cropped, Beige, Thin Cotton, Slim Fit
+【Pants】: Not Shorts, Full-length Jeans, Dark Blue, Medium Denim, Relaxed Fit
+【Skirt】: None
+【Dress】: None
+【Shoes】: Low-top, Flat Oxfords, Black, Leather, Square Toe
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, cropped beige top made of thin cotton, featuring a slim fit.  
+【Pants】: A pair of not shorts, dark blue full-length jeans made of medium denim, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat black leather oxfords with a square toe design.  "
+10.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard Polo Shirt, Multicolor (Brown, Blue, White), Medium Cotton, Relaxed Fit  
+【Pants】: None  
+【Skirt】: Mid-length, Utility Skirt, Khaki, Medium Cotton, Straight Silhouette  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sneakers, White, Synthetic, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard polo shirt with a multicolor (brown, blue, white) design, made of medium cotton, featuring a relaxed fit.  
+【Pants】: None  
+【Skirt】: A mid-length, khaki utility skirt made of medium cotton, with a straight silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, flat white sneakers made of synthetic material with a standard design.  "
+11.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard T-shirt, Beige, Thin Cotton, Loose Fit  
+【Pants】: Shorts, 3/10 Shorts, Khaki, Thin Cotton, Straight  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sneakers, White, Canvas, Round-toe  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard beige T-shirt made of thin cotton, featuring a loose fit.  
+【Pants】: A pair of shorts, 3/10 khaki shorts made of thin cotton, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat white canvas sneakers with a round-toe design.  "
+12.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Sleeveless, Standard Tank Top, Dark Gray, Thin Knit, Slim Fit  
+【Pants】: None  
+【Skirt】: Long, Tiered Skirt, Black and White Checkered, Medium Cotton, A-line  
+【Dress】: None  
+【Shoes】: Low-top, Flat Pumps, Black, Leather, Pointed Toe  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, standard dark gray tank top made of thin knit, featuring a slim fit.  
+【Pants】: None  
+【Skirt】: A long, black and white checkered tiered skirt made of medium cotton, with an A-line silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, flat black leather pumps with a pointed toe design.  "
+13.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard Polo Shirt, Navy Blue, Medium Cotton, Relaxed Fit  
+【Pants】: Not Shorts, Full-length Trousers, Beige, Medium Cotton, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Loafers, Brown, Leather, Standard  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard navy blue polo shirt made of medium cotton, featuring a relaxed fit.  
+【Pants】: A pair of not shorts, full-length beige trousers made of medium cotton, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat brown leather loafers with a standard design.  "
+14.jpg,"### <Output 1>
+【Outerwear】: None
+【Top】: Sleeveless, Standard Blazer, Gray, Medium Cotton, Structured Fit
+【Pants】: Not Shorts, 7/10 Wide-leg Pants, Gray, Medium Cotton, Relaxed Fit
+【Skirt】: None
+【Dress】: None
+【Shoes】: Low-top, Low-heel Loafers, Black, Rubber, Square
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, standard gray blazer made of medium cotton, featuring a structured fit.  
+【Pants】: A pair of not shorts, gray 7/10-wide leg pants made of medium cotton, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black rubber loafers with a square design.  "
+15.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard Shirt, White, Thin Cotton, Slim Fit  
+【Pants】: Not Shorts, Full-length Pleated Pants, Beige, Medium Cotton, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Loafers, Black, Leather, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard white shirt made of thin cotton, featuring a slim fit.  
+【Pants】: A pair of not shorts, full-length beige pleated pants made of medium cotton, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat black leather loafers with a standard design.  "
+16.jpg,"### <Output 1>
+【Outerwear】: Short Sleeve, Mid-length Cardigan, Light Blue, Medium Denim, Loose Fit  
+【Top】: Sleeveless, Short T-shirt, White, Thin Cotton, Tight Fit  
+【Pants】: None  
+【Skirt】: Short, Denim Skirt, Dark Blue, Medium Denim, A-line  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Oxfords, Brown, Leather, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: A short-sleeved, mid-length light blue cardigan made of medium denim, featuring a loose fit.  
+【Top】: A sleeveless, short white T-shirt made of thin cotton, with a tight fit.  
+【Pants】: None  
+【Skirt】: A short, dark blue denim skirt made of medium denim, with an A-line silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, low-heel brown leather oxfords with a standard design.  "
+17.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Mid-length Shirt, White, Medium Cotton, Relaxed Fit  
+【Pants】: Not Shorts, Full-length Pants, Light Blue, Medium Denim, Wide Leg  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sandals, White, Synthetic, Square Toe  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, mid-length white shirt made of medium cotton, featuring a relaxed fit.  
+【Pants】: A pair of not shorts, light blue full-length pants made of medium denim, with a wide-leg silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat white synthetic sandals with a square toe design.  "
+18.jpg,"### <Output 1>
+【Outerwear】: Long Sleeve, Mid-length Cardigan, Light Gray, Medium Knit, Relaxed Fit  
+【Top】: Long Sleeve, Short T-shirt, White, Thin Cotton, Slim Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Jeans, Dark Gray, Medium Denim, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Sneakers, Leopard Print, Synthetic, Round Toe  
+
+---
+
+### <Output 2>
+【Outerwear】: A long-sleeved, mid-length light gray cardigan made of medium knit, featuring a relaxed fit.  
+【Top】: A long-sleeved, short white T-shirt made of thin cotton, with a slim fit.  
+【Pants】: A pair of not shorts, full-length dark gray wide-leg jeans made of medium denim, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel leopard print sneakers made of synthetic material, with a round toe design.  "
+19.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Long Sleeve, Standard T-shirt, Dark Gray, Medium Knit, Slim Fit  
+【Pants】: None  
+【Skirt】: None  
+【Dress】: Sleeveless Long, Strap Dress, Light Gray, Medium Cotton, A-line  
+【Shoes】: Low-top, Flat Sneakers, Black, Synthetic, Round  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A long-sleeved, standard dark gray T-shirt made of medium knit, featuring a slim fit.  
+【Pants】: None  
+【Skirt】: None  
+【Dress】: A sleeveless, long light gray strap dress made of medium cotton, with an A-line silhouette.  
+【Shoes】: Low-top, flat black synthetic sneakers with a round design.  "
+2.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Cropped T-shirt, Maroon, Thin Cotton, Tight Fit  
+【Pants】: Shorts, 3/10 Wide-leg Jeans, Dark Blue, Medium Denim, Wide-leg  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Mid-heel Derby Shoes, Black, Leather, Square-toe  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, cropped maroon T-shirt made of thin cotton, featuring a tight fit.  
+【Pants】: A pair of shorts, dark blue 3/10 wide-leg jeans made of medium denim, with a wide-leg silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, mid-heel black leather Derby shoes with a square-toe design.  "
+20.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Sleeveless, Standard Halter Top, White, Thin Cotton, Tight Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Pants, Light Gray, Medium Knit, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Loafers, Black, Leather, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, standard white halter top made of thin cotton, featuring a tight fit.  
+【Pants】: A pair of not shorts, full-length light gray wide-leg pants made of medium knit, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat black leather loafers with a standard design.  "
+21.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Sleeveless, Short Crop Top, Dark Brown, Thin Cotton, Tight Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Jeans, Light Blue, Medium Denim, Relaxed Fit  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Oxfords, Black, Leather, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, short dark brown crop top made of thin cotton, featuring a tight fit.  
+【Pants】: A pair of not shorts, light blue full-length wide-leg jeans made of medium denim, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black leather oxfords with a standard design.  "
+22.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Short T-shirt, Dark Blue, Thin Cotton, Slim Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Pants, Light Blue, Medium Denim, Relaxed Fit  
+【Skirt】: None  
+【Dress】: Sleeveless Long, Slip Dress, White, Thin Sheer Fabric, A-line  
+【Shoes】: Low-top, Flat Sandals, Brown, Leather, Flat  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, dark blue T-shirt made of thin cotton, featuring a slim fit.  
+【Pants】: A pair of not shorts, light blue full-length wide-leg pants made of medium denim, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: A sleeveless, long white slip dress made of thin sheer fabric, with an A-line silhouette.  
+【Shoes】: Low-top, flat brown leather sandals with a flat design.  "
+23.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Short T-shirt, Light Gray, Thin Cotton, Loose Fit  
+【Pants】: Not Shorts, Full-length Trousers, Black, Medium Cotton, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Oxfords, Black, Leather, Square Toe  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, light gray T-shirt made of thin cotton, featuring a loose fit.  
+【Pants】: A pair of not shorts, full-length black trousers made of medium cotton, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black leather oxfords with a square toe design.  "
+24.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Sleeveless, Standard Top, Beige, Medium Knit, Tight Fit  
+【Pants】: Not Shorts, Full-length Pants, Beige, Medium Cotton, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sneakers, Beige, Synthetic, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, standard beige top made of medium knit, featuring a tight fit.  
+【Pants】: A pair of not shorts, full-length beige pants made of medium cotton, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat beige synthetic sneakers with a standard design.  "
+25.jpg,"### <Output 1>
+【Outerwear】: Long Sleeve, Mid-length Jacket, Light Blue, Medium Cotton, Relaxed Fit  
+【Top】: Sleeveless, Short T-shirt, White, Thin Cotton, Tight Fit  
+【Pants】: Shorts, 3/10 Shorts, Gray, Medium Cotton, Relaxed Fit  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Sneakers, White, Synthetic, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: A long-sleeved, mid-length light blue jacket made of medium cotton, featuring a relaxed fit.  
+【Top】: A sleeveless, short white T-shirt made of thin cotton, with a tight fit.  
+【Pants】: A pair of shorts, gray 3/10 shorts made of medium cotton, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel white sneakers made of synthetic material with a standard design.  "
+26.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard T-shirt, White, Thin Cotton, Loose Fit  
+【Pants】: Not Shorts, 7/10 Wide-leg Jeans, Blue, Medium Denim, Relaxed Silhouette  
+【Skirt】: None  
+【Dress】: Sleeveless Knee-length, Peplum Top with Attached Skirt, Black and White Checkered, Medium Cotton, A-line Silhouette  
+【Shoes】: Low-top, Flat Derby Shoes, Black, Leather, Standard  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard white T-shirt made of thin cotton, featuring a loose fit.  
+【Pants】: A pair of not shorts, blue 7/10 wide-leg jeans made of medium denim, with a relaxed silhouette.  
+【Skirt】: None  
+【Dress】: A sleeveless, knee-length black and white checkered peplum top with an attached skirt made of medium cotton, featuring an A-line silhouette.  
+【Shoes】: Low-top, flat black leather Derby shoes with a standard design.  "
+27.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Sleeveless, Short Crop Top, White with Blue Floral Print, Thin Cotton, Tight Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Jeans, Blue, Medium Denim, Relaxed Fit  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Flatforms, Brown, Leather, Square-toe  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A sleeveless, short white crop top with blue floral print, made of thin cotton, featuring a tight fit.  
+【Pants】: A pair of not shorts, full-length blue wide-leg jeans made of medium denim, with a relaxed fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel brown leather flatforms with a square-toe design.  "
+28.jpg,"### <Output 1>
+【Outerwear】: Sleeveless, Mid-length Cape, Red, Medium Knit, Loose Fit  
+【Top】: Sleeveless, Short T-shirt, White, Thin Cotton, Tight Fit  
+【Pants】: None  
+【Skirt】: Knee-length, Pleated Skirt, White, Medium Cotton, A-line  
+【Dress】: None  
+【Shoes】: Low-top, Flat Pumps, Red, Satin, Pointed Toe  
+
+---
+
+### <Output 2>
+【Outerwear】: A sleeveless, mid-length red cape made of medium knit, featuring a loose fit.  
+【Top】: A sleeveless, short white T-shirt made of thin cotton, with a tight fit.  
+【Pants】: None  
+【Skirt】: A knee-length, white pleated skirt made of medium cotton, with an A-line silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, flat red satin pumps with a pointed toe design.  "
+29.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard Shirt, White, Thin Cotton, Loose Fit  
+【Pants】: None  
+【Skirt】: Long, Pleated Skirt, White, Thin Cotton, A-line  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Sandals, White, Synthetic, Flat  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard white shirt made of thin cotton, featuring a loose fit.  
+【Pants】: None  
+【Skirt】: A long, white pleated skirt made of thin cotton, with an A-line silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, low-heel white synthetic sandals with a flat design.  "
+3.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Long Sleeve, Standard T-shirt, Beige, Thin Knit, Loose Fit  
+【Pants】: Not Shorts, Full-length Pants, Olive Green, Medium Cotton, Wide Leg  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sandals, Leopard Print, Synthetic, Flat  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A long-sleeved, standard beige T-shirt made of thin knit, featuring a loose fit.  
+【Pants】: A pair of not shorts, olive green full-length pants made of medium cotton, with a wide-leg silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat leopard-print synthetic sandals with a flat design.  "
 4.jpg,"### <Output 1>
 【Outerwear】: Short Sleeve, Mid-length Jacket, Light Blue, Medium Cotton, Relaxed Fit  
 【Top】: Sleeveless, Short T-shirt, Black, Thin Cotton, Slim Fit  
@@ -15,4 +392,83 @@ filename,description
 【Pants】: A pair of not shorts, dark blue full-length wide-leg pants made of medium denim, with a straight silhouette.  
 【Skirt】: None  
 【Dress】: None  
-【Shoes】: Low-top, low-heel brown leather oxfords with a square toe design."
+【Shoes】: Low-top, low-heel brown leather oxfords with a square toe design.  "
+5.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Short Cropped T-shirt, White, Thin Cotton, Loose Fit  
+【Pants】: Not Shorts, 7/10 Wide-leg Pants, Black, Medium Wool, Straight Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Boots, Black, Leather, Square-toe  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, white cropped T-shirt made of thin cotton, featuring a loose fit.  
+【Pants】: A pair of not shorts, black 7/10 wide-leg pants made of medium wool, with a straight silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black leather boots with a square-toe design.  "
+6.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard Turtleneck, Dark Green, Medium Knit, Fitted  
+【Pants】: None  
+【Skirt】: Knee-length, Pleated Skirt, Dark Gray, Medium Wool, A-line  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Loafers, Black, Leather, Standard  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard dark green turtleneck made of medium knit, featuring a fitted silhouette.  
+【Pants】: None  
+【Skirt】: A knee-length, dark gray pleated skirt made of medium wool, with an A-line silhouette.  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black leather loafers with a standard design.  "
+7.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Short T-shirt, Dark Blue, Thin Cotton, Tight Fit  
+【Pants】: Not Shorts, Full-length Trousers, Beige, Medium Cotton, Straight Fit  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Low-heel Oxfords, Black, Leather, Standard  
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, dark blue T-shirt made of thin cotton, featuring a tight fit.  
+【Pants】: A pair of not shorts, beige full-length trousers made of medium cotton, with a straight fit.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, low-heel black leather oxfords with a standard design.  "
+8.jpg,"### <Output 1>
+【Outerwear】: Sleeveless, Mid-length Vest, Beige, Medium Wool, Relaxed Fit  
+【Top】: Sleeveless, Short Tank Top, Light Green, Thin Knit, Form-Fitting  
+【Pants】: Not Shorts, Full-length Flared Pants, Black, Medium Denim, Flared Silhouette  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Ballet Flats, Black, Fabric, Round Toe  
+
+### <Output 2>
+【Outerwear】: A sleeveless, mid-length beige vest made of medium wool, featuring a relaxed fit.  
+【Top】: A sleeveless, short light green tank top made of thin knit, with a form-fitting silhouette.  
+【Pants】: A pair of not shorts, full-length black flared pants made of medium denim, with a flared silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat black ballet flats made of fabric, with a round toe design.  "
+9.jpg,"### <Output 1>
+【Outerwear】: None  
+【Top】: Short Sleeve, Standard T-shirt, Black, Thin Cotton, Loose Fit  
+【Pants】: Not Shorts, Full-length Cargo Pants, Light Gray, Medium Cotton, Wide Leg  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, Flat Sneakers, Silver, Synthetic, Round Toe  
+
+---
+
+### <Output 2>
+【Outerwear】: None  
+【Top】: A short-sleeved, standard black T-shirt made of thin cotton, featuring a loose fit.  
+【Pants】: A pair of not shorts, full-length light gray cargo pants made of medium cotton, with a wide-leg silhouette.  
+【Skirt】: None  
+【Dress】: None  
+【Shoes】: Low-top, flat silver sneakers made of synthetic material, with a round-toe design.  "
