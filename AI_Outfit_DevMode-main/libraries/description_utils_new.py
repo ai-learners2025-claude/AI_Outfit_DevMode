@@ -5,7 +5,8 @@ import time
 import csv
 
 # === 可調參數 ===
-OPENROUTER_API_KEY = "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"  # 建議改用 .env 管理
+#OPENROUTER_API_KEY = "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"  # 建議改用 .env 管理
+OPENROUTER_API_KEY = "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"  # 建議改用 .env 管理
 MODEL_NAME = "qwen/qwen2.5-vl-32b-instruct:free"
 RETRY_LIMIT = 3
 DELAY_SECONDS = 20

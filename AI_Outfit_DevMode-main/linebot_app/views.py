@@ -40,7 +40,7 @@ from libraries.E1_text_image_en_avoid_crash_utils import generate_top3_Json
 
 
 
-from libraries.description_utils import generate_description_from_image_path, save_description_to_csv, load_prompt
+#from libraries.description_utils import generate_description_from_image_path, save_description_to_csv, load_prompt
 from libraries.description_utils_new import generate_description, load_prompt, save_description_to_csv
 from libraries.runninghub_utils import RunningHubImageProcessor
 import csv

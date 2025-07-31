@@ -9,7 +9,8 @@ import csv
 from dotenv import load_dotenv
 load_dotenv()
 
-OPENROUTER_API_KEY = "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"
+#OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 DEFAULT_MODEL = "qwen/qwen2.5-vl-32b-instruct:free"
 RETRY_LIMIT = 3
 DELAY_SECONDS = 20
