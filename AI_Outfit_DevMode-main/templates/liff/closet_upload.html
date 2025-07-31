@@ -16,11 +16,11 @@
 
   <style>
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     .filter-bar {
       display: flex;
@@ -540,13 +540,6 @@
       }
     
       // 上傳選擇類別的下拉式選單
-      CategorySelect.innerHTML = '<option value="" disabled selected>選擇分類</option>';
-      for (const [key, label] of Object.entries(categoryMap)) {
-          const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = label;
-          CategorySelect.appendChild(opt);
-            }
       editCategory.innerHTML = '<option value="" disabled selected>選擇分類</option>';
       for (const [key, label] of Object.entries(categoryMap)) {
           const opt = document.createElement('option');
@@ -618,6 +611,14 @@
 
     /** 上傳照片 */
     /** 當點擊+icon(上傳按) -> 跳出彈窗 */ 
+
+        CategorySelect.innerHTML = '<option value="" disabled selected>選擇分類</option>';
+      for (const [key, label] of Object.entries(categoryMap)) {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = label;
+          CategorySelect.appendChild(opt);
+            }
     uploadBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const isOpen = uploadPopup.style.display === 'flex';
