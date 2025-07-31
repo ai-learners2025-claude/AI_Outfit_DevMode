@@ -89,19 +89,25 @@ def handle_message(event):
 
 @csrf_exempt
 def view_images(request, user_id, source):
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
+
+    def is_image(file_path):
+        ext = os.path.splitext(file_path)[1].lower()
+        return ext in image_extensions
+
     if source == 'closet':
         items = ClosetItem.objects.filter(user_id=user_id)
         images = [{
             'id': item.id,
             'url': item.image.url,
             'category': item.category
-        } for item in items]
+        } for item in items if is_image(item.image.name)]
     elif source == 'mimic':
         items = MimicItem.objects.filter(user_id=user_id).order_by('-id')
         images = [{
             'id': item.id,
             'url': item.image.url,
-        } for item in items]
+        } for item in items if is_image(item.image.name)]
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid source'}, status=400)
 

@@ -1,31 +1,18 @@
 filename,description
-1.jpg,"### <Output 1>
-【Outerwear】: None  
-【Top】: Short Sleeve, Mid-length Crop Top, Beige, Thin Cotton, Tight Fit  
-【Pants】: Not Shorts, Full-length Wide-leg Pants, Black, Medium Denim, Straight Silhouette  
+4.jpg,"### <Output 1>
+【Outerwear】: Short Sleeve, Mid-length Jacket, Light Blue, Medium Cotton, Relaxed Fit  
+【Top】: Sleeveless, Short T-shirt, Black, Thin Cotton, Slim Fit  
+【Pants】: Not Shorts, Full-length Wide-leg Pants, Dark Blue, Medium Denim, Straight Silhouette  
 【Skirt】: None  
 【Dress】: None  
-【Shoes】: Low-top, Flat Dress Shoes, Black, Leather, Toe Cap Design  
+【Shoes】: Low-top, Low-heel Oxfords, Brown, Leather, Square Toe  
+
+---
 
 ### <Output 2>
-【Outerwear】: None  
-【Top】: A short-sleeved, mid-length beige crop top made of thin cotton, featuring a tight fit.  
-【Pants】: A pair of not shorts, full-length black wide-leg pants made of medium denim, with a straight silhouette.  
+【Outerwear】: A short-sleeved, mid-length light blue jacket made of medium cotton, featuring a relaxed fit.  
+【Top】: A sleeveless, short black T-shirt made of thin cotton, with a slim fit.  
+【Pants】: A pair of not shorts, dark blue full-length wide-leg pants made of medium denim, with a straight silhouette.  
 【Skirt】: None  
 【Dress】: None  
-【Shoes】: Low-top, flat black leather dress shoes with a toe cap design."
-2.jpg,"### <Output 1>
-【Outerwear】: None
-【Top】: Short Sleeve, Cropped T-shirt, Maroon, Thin Cotton, Tight Fit
-【Pants】: Shorts, 7/10 Wide-leg Jeans, Dark Blue, Medium Denim, Wide-leg
-【Skirt】: None
-【Dress】: None
-【Shoes】: Low-top, Low-heel Derby Shoes, Black, Leather, Square-toe
-
-### <Output 2>
-【Outerwear】: None  
-【Top】: A short-sleeved, cropped maroon T-shirt made of thin cotton, featuring a tight fit.  
-【Pants】: A pair of shorts, dark blue 7/10 wide-leg jeans made of medium denim, with a wide-leg silhouette.  
-【Skirt】: None  
-【Dress】: None  
-【Shoes】: Low-top, low-heel black leather Derby shoes with a square-toe design."
+【Shoes】: Low-top, low-heel brown leather oxfords with a square toe design."
