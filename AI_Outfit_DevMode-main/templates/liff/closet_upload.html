@@ -547,6 +547,13 @@
           opt.textContent = label;
           CategorySelect.appendChild(opt);
             }
+      editCategory.innerHTML = '<option value="" disabled selected>選擇分類</option>';
+      for (const [key, label] of Object.entries(categoryMap)) {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = label;
+          editCategory.appendChild(opt);
+            }
       }
 
     // === 圖片渲染 ===
