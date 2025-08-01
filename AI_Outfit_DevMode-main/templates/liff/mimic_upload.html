@@ -489,7 +489,7 @@
   </div>
   <!-- 刪除 Modal -->
   <div class="modal-overlay" id="delete-modal">
-    <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-title" role="dialog" aria-modal="true">
       <h3>您確定要刪除這件衣物嗎？</h3>
       <div class="modal-buttons">
         <button class="modal-button btn-cancel" id="modal-delete-yes">確定</button>
@@ -499,17 +499,9 @@
   </div>
   <!-- Loading Modal -->
   <div class="modal-overlay" id="search_loading" aria-live="polite" aria-label="搜尋中">
-    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
-      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
+    <div class="modal-title" role="alert" aria-busy="true">
+      <h3>搜尋中...</h3>
       <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="progress-bar"></div>
-      </div>
-    </div>
-  </div>
-   <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
-    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
-      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
-      <div class="progress-bar-container" aria-label="上傳進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="progress-bar"></div>
       </div>
     </div>
@@ -533,7 +525,6 @@
     let globalUserId = "";
     const itemGrid = document.querySelector('.item-grid');
     const uploadInput = document.getElementById('upload-input');
-    const modal = document.getElementById('modal');
     const btnCancel = document.getElementById('btnCancel');
     const btnConfirm = document.getElementById('btnConfirm');
     const search_loading = document.getElementById('search_loading');
@@ -637,20 +628,20 @@
       uploadInput.click();
     });
     /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
-uploadInput.addEventListener('change', async (event) => {
-  const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
-  if (files.length === 0) return;
-
-  // 先顯示圖片預覽並加上處理中的遮罩
-  const previewImages = files.map(file => {
-    const img = URL.createObjectURL(file);
-    return {
-      file,
-      url: img,
-      status: 'processing',  // 狀態為處理中
-    };
-  });
-
+    uploadInput.addEventListener('change', async (event) => {
+      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+      if (files.length === 0) return;
+    
+      // 先顯示圖片預覽並加上處理中的遮罩
+      const previewImages = files.map(file => {
+        const img = URL.createObjectURL(file);
+        return {
+          file,
+          url: img,
+          status: 'processing',  // 狀態為處理中
+        };
+      });
+    
   // 創建圖片預覽卡片，並插入到最前面
   previewImages.forEach(img => {
     const card = document.createElement('article');
