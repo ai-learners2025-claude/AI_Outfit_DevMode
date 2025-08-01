@@ -28,6 +28,7 @@
       gap: 26px;
     }
     .item-card {
+      position: relative; /* 讓處理中的遮罩能相對於 .item-card 定位 */
       border-radius: 12px;
       box-shadow: 0 6px 15px var(--shadow-color);
       overflow: hidden;
@@ -35,6 +36,8 @@
       flex-direction: column;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 1.5px solid transparent;
+      width: 100%; /* 確保大小可以自動適應 */
+      height: 100%; /* 確保高度是100% */
     }
     .item-card:hover {
       transform: translateY(-8px);
@@ -430,7 +433,6 @@
 
 /* 預覽圖片的樣式 */
 .item-image-container {
-  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -453,7 +455,6 @@
   transition: opacity 0.3s ease;
   z-index: 10; /* 確保在 .fa-trash 上方 */
   pointer-events: all; /* 防止下方元素被點擊 */
-
 }
 
 /* 當圖片處理完成時，遮罩的變化 */
@@ -636,41 +637,41 @@
       uploadInput.click();
     });
     /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
-    uploadInput.addEventListener('change', async (event) => {
-      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
-      if (files.length === 0) return;
-    
-      // 先顯示圖片預覽並加上處理中的遮罩
-      const previewImages = files.map(file => {
-        const img = URL.createObjectURL(file);
-        return {
-          file,
-          url: img,
-          status: 'processing',  // 狀態為處理中
-        };
-      });
-    
-      // 創建圖片預覽卡片，並插入到最前面
-      previewImages.forEach(img => {
-        const card = document.createElement('article');
-        card.className = 'item-card';
-        card.innerHTML = `
-          <div class="item-image-container" style="position: relative;">
-            <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
-            <div class="processing-overlay">處理中...</div>
-          </div>
-          <div class="item-info">
-            <div class="actions">
-              <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
-            </div>
-          </div>
-        `;
-        itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
-      });
-    
-      // 上傳並處理圖片
-      await uploadAndAddNewImages(files, previewImages);
-    });
+uploadInput.addEventListener('change', async (event) => {
+  const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+  if (files.length === 0) return;
+
+  // 先顯示圖片預覽並加上處理中的遮罩
+  const previewImages = files.map(file => {
+    const img = URL.createObjectURL(file);
+    return {
+      file,
+      url: img,
+      status: 'processing',  // 狀態為處理中
+    };
+  });
+
+  // 創建圖片預覽卡片，並插入到最前面
+  previewImages.forEach(img => {
+    const card = document.createElement('article');
+    card.className = 'item-card';  // 保證這裡的 class 會正確套用
+    card.innerHTML = `
+      <div class="item-image-container">
+        <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+        <div class="processing-overlay">處理中...</div>
+      </div>
+      <div class="item-info">
+        <div class="actions">
+          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+        </div>
+      </div>
+    `;
+    itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
+  });
+
+  // 上傳並處理圖片
+  await uploadAndAddNewImages(files, previewImages);
+});
 
     /** 上傳並添加新圖片 */
     async function uploadAndAddNewImages(files, previewImages) {
