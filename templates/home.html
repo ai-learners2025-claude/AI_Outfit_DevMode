@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <title>MyStylist - 隨身設計師</title>
+  <style>
+
+      :root {
+      --main-color: #8C7AA9;
+      --secondary-color: #B8A9D1;
+      --accent-color: #F0EAFB;
+      --hover-main: #7B6995;
+      --hover-secondary: #9E8BC3;
+      --text-color: #4C445B;
+      --bg-color: #F9F8FC;
+      --shadow-color: rgba(140,122,169,0.3);
+      --modal-bg: rgba(0, 0, 0, 0.4);
+      --border-color: #858589;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+
+    /* 全螢幕背景 */
+    .hero {
+     background-image: url("{% static 'images/index.jpg' %}"); /* 替換為適合的圖像 */
+     background-size: cover;
+     background-position: center;
+     height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     text-align: center;
+     color: var(--text-color);
+     padding: 0; /* Remove padding that might affect bottom positioning */
+     position: relative; /* Ensure this is the positioning context */
+     overflow: hidden;
+    }
+
+  .scroll-indicator-wrapper {
+    position: absolute;
+    bottom: 20px; /* 垂直位置微調 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px; /* 設定圖片的寬度 */
+    height: 50px; /* 設定圖片的高度 */
+    overflow: hidden; /* 防止圖片溢出 */
+    z-index: 2
+  }
+
+  .scroll-indicator-wrapper img {
+    width: 100%; /* 讓圖片寬度填滿容器 */
+    height: 100%; /* 讓圖片高度填滿容器 */
+    object-fit: contain; /* 保持圖片比例 */
+    animation: bounce 1.5s infinite; /* 跳動動畫 */
+  }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(10px);
+      }
+    }
+
+    .hero::after {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-color: rgba(255, 255, 255, 0.6); /* 透明遮罩層 */
+     z-index: 1;
+    }
+
+    .hero > .hero-content {
+      position: relative; /* Ensure this is above the overlay */
+      z-index: 2;
+      max-width: 900px;
+      width: 90%;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      margin-bottom: 20px;
+    }
+
+    .btn-region {
+      width: 50%; /* 讓按鈕區域填滿父元素 */
+      display: flex; /* 啟用 flexbox */
+      margin: 35px auto 0;
+      justify-content: center;
+      margin-top: 35px;
+    }
+
+.btn-hero {
+  display: inline-block;
+  padding: 12px 30px;   /* 上下12px，左右30px */
+  background-color: var(--text-color);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background-color 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  animation: fadeIn 1.8s ease-out forwards;
+  animation-delay: 0.5s;
+  white-space: nowrap; /* 不換行 */
+  width: auto;         /* 寬度自適應文字 */
+  max-width: 280px;    /* 設定最大寬度，避免過長 */
+  text-align: center;
+  box-sizing: border-box;
+}
+
+
+    .btn-hero:hover {
+      background-color: var(--hover-color);
+      transform: scale(1.1);
+    }
+
+    .btn-start {
+      animation-delay: 1.2s;
+    }
+
+    /* 願景區 */
+    #vision {
+      padding: 60px 20px;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+      color: var(--text-color);
+      border-bottom: 1px solid var(--border-color); /* 添加底部分隔線 */
+    }
+
+    #vision h2 {
+      font-size: 28px;
+      color: var(--text-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    #vision p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      text-align: left; /* 文字靠左對齊 */
+      display: inline-block; /* 讓段落內的文字成為區塊，並允許水平居中 */
+      width: 100%; /* 占滿整個容器 */
+      text-align: center; /* 置中整個段落 */
+    }
+
+    /* 核心理念區 */
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border-color); /* 添加底部分隔線 */
+    }
+
+    .section h2 {
+      font-size: 32px;
+      color: var(--main-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .section p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    /* 團隊成員區 */
+    .team-members {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      padding: 40px 20px;
+    }
+
+    .team-members h2 {
+      font-size: 32px;
+      color: var(--main-color);
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* 團隊成員的單個卡片 */
+    .team-member {
+      background-color: var(--accent-color);
+      border-radius: 5px;
+      padding: 5px;
+      width: clamp(180px, 20vw, 220px);
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: center;
+    }
+
+    .team-member:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 20px var(--shadow-color);
+    }
+
+    .team-member h3 {
+      font-size: 22px;
+      color: var(--text-color);
+      font-weight: bold;
+    }
+
+    .team-member p {
+      font-size: 14px;
+      color: var(--text-color);
+      margin-top: 10px;
+    }
+
+    /* 動畫效果 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+
+/* 小於 768px（手機）時調整 */
+@media (max-width: 767px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+  .hero p {
+    font-size: 16px;
+  }
+
+  .btn-region {
+    flex-direction: column; /* 按鈕堆疊 */
+    gap: 12px;
+  }
+
+  .btn-hero {
+    width: 100%; /* 按鈕全寬 */
+  }
+
+  .team-members {
+    flex-wrap: wrap; /* 允許換行 */
+    justify-content: center; /* 置中排列 */
+    gap: 10px; /* 卡片間距稍微縮小 */
+    padding: 20px 10px; /* 適當內距 */
+  }
+
+  .team-member {
+    flex: 1 1 calc(50% - 20px); /* 兩欄並排，減去gap空間 */
+    max-width: calc(50% - 20px);
+    box-sizing: border-box;
+    margin-bottom: 15px; /* 卡片間垂直間距 */
+  }
+}
+
+/* 中等裝置 768px - 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero h1 {
+    font-size: 40px;
+  }
+  .hero p {
+    font-size: 18px;
+  }
+
+  .btn-region {
+    gap: 15px;
+  }
+
+  .btn-hero {
+    max-width: 280px; /* 在中尺寸螢幕時限制更小寬度 */
+    padding: 10px 24px; /* 略微減少padding */
+    font-size: 1rem; /* 保持字型適中 */
+  }
+
+  .team-members {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .team-member {
+    width: 45%;
+    margin-bottom: 20px;
+  }
+}
+
+/* 大螢幕維持原本設定 */
+@media (min-width: 992px) {
+  .hero h1 {
+    font-size: 48px;
+  }
+  .hero p {
+    font-size: 20px;
+  }
+
+  .btn-region {
+    gap: 20px;
+  }
+
+  .btn-hero {
+    width: 42%;
+  }
+
+  .team-member {
+    width: 220px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>MyStylist</h1>
+      <p>妳想成為的樣子，我們一起穿出來</p>
+      <div class="btn-region">
+        <a href="/liff/mimic/?dev=1" class="btn-hero">開始體驗</a>
+      </div>
+    </div>
+    <!-- 向下滾動的箭頭 -->
+<div class="scroll-indicator-wrapper" onclick="smoothScroll()">
+  <img src="/static/images/down-arrow.png" alt="Arrow" />
+</div>
+  </div>
+
+  <!-- 願景區 -->
+  <div id="vision" class="section">
+    <h2>「時尚從不是盲目的追逐，而是一次次自我風格的重組」</h2>
+    <p>我們結合科技的力量，為你梳理衣櫃的可能性，</p>
+    <p>讓每一件衣服都有再次發光的機會。</p>
+  </div>
+
+  <!-- 團隊成員區 -->
+  <div class="section">
+    <h2>團隊成員</h2>
+    <div class="team-members">
+      <div class="team-member">
+        <h3>吳姿漫</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>郭啓榮</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>林群偉</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>曾詩婷</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>蘇靜瑜</h3>
+        <p>XXXXX</p>
+      </div>
+      <div class="team-member">
+        <h3>陳禹翔</h3>  
+        <p>XXXXX</p>
+      </div>
+    </div>
+  </div>
+<script>
+// 平滑滾動到指定區域
+function smoothScroll() {
+  const targetElement = document.querySelector("#vision");
+
+  if (targetElement) {
+    window.scrollTo({
+      top: targetElement.offsetTop - 20, // 可以微調讓目標區域不會被遮擋
+      behavior: "smooth"
+    });
+  }
+}
+
+// 確保DOMContentLoaded之後才開始綁定事件
+document.addEventListener("DOMContentLoaded", () => {
+  const scrollIndicator = document.querySelector(".scroll-indicator-wrapper");
+  if (scrollIndicator) {
+    scrollIndicator.addEventListener("click", smoothScroll);
+  }
+});
+</script>
+</body>
+</html>

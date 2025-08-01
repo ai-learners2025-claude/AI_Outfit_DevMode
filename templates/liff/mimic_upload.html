@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyStylist</title>
+  {% load static %}
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/upload_btn.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/page_title.css' %}" />
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="{% static 'js/BackendAPI.js' %}"></script>
+  <script src="{% static 'js/header_active.js' %}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 26px;
+    }
+    .item-card {
+      border-radius: 12px;
+      box-shadow: 0 6px 15px var(--shadow-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1.5px solid transparent;
+    }
+    .item-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 14px 25px var(--shadow-color);
+      border-color: var(--main-color);
+    }
+    .item-card img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-bottom: 1px solid var(--accent-color);
+      user-select: none;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .item-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      .item-card img {
+        aspect-ratio: 3 / 4;
+      }
+
+    }
+    @media (max-width: 360px) {
+      .item-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.7;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .item-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .item-card img {
+        aspect-ratio: 3 / 4;
+      }
+      .item-card {
+        border-radius: 8px;
+      }
+      .item-info {
+        padding: 4px;
+      }
+      .actions i {
+        font-size: 1.2rem;
+        padding: 6px;
+      }
+    }
+    .item-info {
+      padding: 2px 2px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background-color: white;
+    }
+    .actions {
+      background-color: white;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .actions i {
+      font-size: 1.4rem;
+      color: var(--main-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .actions i:hover {
+      background-color: var(--accent-color);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+    .modal-button {
+      padding: 10px 28px;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .btn-confirm {
+      background-color: var(--main-color);
+      color: white;
+    }
+    .btn-confirm:hover {
+      background-color: var(--hover-main);
+    }
+    .btn-cancel {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+    }
+    .btn-cancel:hover {
+      background-color: var(--hover-secondary);
+      color: white;
+    }
+
+.SearchResultModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+
+.SearchResultModal-title {
+  width: 90vw;
+  max-width: 600px;
+  height: 90vh;
+  background: var(--bg-color);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  /* box-shadow: 0 5px 20px rgba(0,0,0,0.3); */
+  position: relative;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.SearchResultModal.show .SearchResultModal-title {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 內文文字 */
+.SearchResultModal-title p {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 關閉按鈕 */
+.close-btn {
+  position: absolute; /* 讓按鈕浮在標題區右上角 */
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 36px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  align-items: center;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-left {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 40vh;
+  display: flex;                /* 置中 */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-left img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+#tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-color);
+}
+
+/* Tabs 容器 */
+.custom-tabs {
+  display: flex;
+  height: auto; /* 或給一個最小高度 */
+  min-height: 40px;  /* 依照你的按鈕高度調整 */
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 10px;
+  border-bottom:2px solid #eee;
+  justify-content:center;
+}
+
+.tab-panel {
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  justify-content: center;  /* 置中整體 grid */
+  height: 100%; /* 滿高撐滿 tab-content */
+  padding: 4px;
+  align-items: center;
+  overflow-y: scroll;
+  padding-bottom: 16px;
+}
+
+/* Tab 按鈕 */
+.tab-btn {
+  background: #f8f8f8;
+  color: #555;
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1.2; 
+  box-sizing: border-box;
+}
+
+.tab-btn:hover {
+  background: #eae6f3;
+  border-color: #c8c1d3;
+}
+
+.tab-btn.active {
+  background: #c8c1d3;
+  color: #fff;
+}
+
+.tab-content {
+  height: 40vh;
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: var(--bg-color); /* ✅ 修正 */
+  box-shadow: none;
+}
+
+.tab-panel img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;           /* 固定成正方形比例 */
+  object-fit: contain;          /* 依照原始比例縮放，完整顯示 */
+  border-radius: 8px;
+  padding: 4px;                 /* 可選：讓圖離邊一點 */
+  box-sizing: border-box;
+}
+
+/* 顯示中 */
+.tab-panel.active {
+  display: grid; /* 小螢幕改 grid，才可捲動 */
+}
+
+/* --- 大螢幕: 左右 layout + 垂直 tabs --- */
+@media (min-width: 768px) {
+  .SearchResultModal-title{
+    width: 80vw;       /* 貼近全寬 */
+    height: 80vh;      /* 貼近全高 */
+    max-width: none;   /* 移除桌機限制 */
+    max-height: none;
+    border-radius: 12px; /* 大螢幕圓角稍大 */
+    padding: 24px;
+  }
+
+  .modal-body {
+    flex-direction: row;
+    align-items: center;   /* 垂直置中 */
+    gap: 20px;
+    height: 100%;
+  }
+
+  .modal-left {
+    flex: 0 0 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-left img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+  }
+
+#tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-color); /* ✅ 修正 */
+}
+
+  .custom-tabs {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 2px solid #eee;
+    overflow-x: auto;
+    padding: 0 10px;
+    gap: 8px;
+    justify-content: center;
+    align-item:center;
+  }
+
+  .tab-btn {
+    width: auto;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+  }
+
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    background-color: var(--bg-color);
+    box-shadow: none;
+    padding: 10px;
+  }
+    .tab-panel {
+      overflow-y: hidden;
+    }
+}
+
+
+@media (max-width: 767px) {
+  .SearchResultModal-title {
+    width: 95vw;       /* 貼近全寬 */
+    height: 95vh;      /* 貼近全高 */
+    max-width: none;   /* 移除桌機限制 */
+    max-height: none;
+    border-radius: 8px; /* 小螢幕圓角稍小 */
+    padding: 16px;
+  }
+  .custom-tabs {
+    align-items: stretch;
+    display: flex !important;
+  }
+  .tab-btn {
+    border-radius: 8px;
+    }
+  .tab-panel {
+    grid-template-columns: 1fr;   /* 每列一張圖片 */
+    overflow-y: auto;             /* 可垂直捲動 */
+    max-height: 100%;             /* 撐滿容器高度 */
+    align-items: start;           /* 上對齊圖片 */
+  }
+}
+
+/* 手機：幾乎全螢幕 */
+@media (max-width: 600px) {
+  .SearchResultModal-title {
+    width: 80vw;        /* 幾乎滿版 */
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 8px;  /* 手機上圓角小一點 */
+    padding: 16px;
+  }
+}
+
+/* 預覽圖片的樣式 */
+.item-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 處理中遮罩的樣式 */
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);  /* 半透明黑色背景 */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* 當圖片處理完成時，遮罩的變化 */
+.processing-overlay.done {
+  background: rgba(0, 0, 0, 0.3);  /* 透明度降低 */
+  opacity: 0.8;
+  color: #4CAF50;  /* 顯示綠色文字 */
+}
+
+  </style>
+</head>
+<body>
+  {% include "components/header.html" %}
+  {% include "components/upload_btn.html" %}
+  <main>
+    <div class="page-title">
+      <!-- <h1>我喜歡的穿搭</h1> -->
+      <p>點擊圖片以搜尋衣櫃裡的衣服</p>
+    </div>
+    <section class="item-grid" aria-live="polite">
+      <!-- 動態圖片卡片會從 JS 加入這裡 -->
+    </section>
+  </main>
+  <!--search modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-title" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3>是否要搜尋衣櫃裡的衣服？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="btnCancel">取消</button>
+        <button class="modal-button btn-confirm" id="btnConfirm">確定</button>
+      </div>
+    </div>
+  </div>
+  <!-- 刪除 Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>您確定要刪除這件衣物嗎？</h3>
+      <div class="modal-buttons">
+        <button class="modal-button btn-cancel" id="modal-delete-yes">確定</button>
+        <button class="modal-button btn-confirm" id="modal-delete-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+  <!-- Loading Modal -->
+  <div class="modal-overlay" id="search_loading" aria-live="polite" aria-label="搜尋中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">搜尋中...</p>
+      <div class="progress-bar-container" aria-label="搜尋進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+   <div class="modal-overlay" id="loadingModal" aria-live="polite" aria-label="上傳中">
+    <div class="modal" role="alert" aria-busy="true" style="flex-direction: column; gap: 24px;">
+      <p style="font-weight: 600; font-size: 1.2rem; color: var(--main-color); user-select: none;">上傳中...</p>
+      <div class="progress-bar-container" aria-label="上傳進度條" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+<div id="SearchResultModal" class="SearchResultModal" >
+  <div class="SearchResultModal-title" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
+    <div class="modal-body" >
+      <div class="modal-left" >
+        <img id="search-original-img" src="" alt="原始圖片" />
+      </div>
+      <div id="tabs-container"></div> <!-- 動態建立 tabs 與內容 -->
+    </div>
+    <button id="SearchResult_close" class="close-btn" aria-label="關閉視窗">&times;</button>
+  </div>
+</div>
+
+  <script>
+    const liffId = "2007741127-KXgn38Dn";  // 你的 LIFF ID
+    const isDevelopmentMode = {% if debug %}true{% else %}false{% endif %} || new URLSearchParams(window.location.search).get('dev') === '1';
+    const DEV_USER_ID = "dev_test_user_12345";  // 開發模式固定 userId
+    let globalUserId = "";
+    const itemGrid = document.querySelector('.item-grid');
+    const uploadInput = document.getElementById('upload-input');
+    const modal = document.getElementById('modal');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnConfirm = document.getElementById('btnConfirm');
+    const search_loading = document.getElementById('search_loading');
+    const progressBar = search_loading.querySelector('.progress-bar');
+    const deleteModal = document.getElementById('delete-modal');
+    const uploadBtn = document.getElementById('open-upload-menu');
+    const SearchResultModal = document.getElementById('SearchResultModal');
+    const SearchResultClose = document.getElementById('SearchResult_close');
+
+    let currentitem = null;
+    let selectedItemCard = null;
+    let images = [];
+
+
+    /** 搜尋中,上傳中Modal 開啟/關閉 */
+    function openModal() {
+      modal.classList.add('active');
+    }
+    function closeModal(modalElement) {
+      modalElement.classList.remove('active');
+    }
+
+      /** Loading Modal 開啟/關閉 + 進度條動畫 */
+    function showLoading() {
+      search_loading.classList.add('active');
+      startProgressBar();
+    }
+
+    function startProgressBar() {
+      let progress = 0;
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+      const interval = setInterval(() => {
+        progress += 2;
+        if (progress > 100) {
+          clearInterval(interval);
+          return;
+        }
+        progressBar.style.width = progress + '%';
+        search_loading.setAttribute('aria-valuenow', progress);
+      }, 50);
+    }
+
+    function closeLoading() {
+      search_loading.classList.remove('active');
+      document.body.style.overflow = '';
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+    }
+
+    function resetProgressBar() {
+      progressBar.style.width = '0%';
+      search_loading.setAttribute('aria-valuenow', 0);
+    }
+
+    /** 初始化 LIFF 或開發模式 */
+    document.addEventListener("DOMContentLoaded", async function () {
+      if (isDevelopmentMode) {
+        console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
+        globalUserId = DEV_USER_ID;
+        await fetchGalleryFromBackend('mimic');
+      } else {
+        try {
+          await liff.init({ liffId: liffId });
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          } else {
+            const profile = await liff.getProfile();
+            globalUserId = profile.userId;
+            await fetchGalleryFromBackend('mimic');
+          }
+        } catch (err) {
+          console.error("LIFF 初始化錯誤", err);
+          alert('LIFF 初始化失敗，請重新整理');
+        }
+      }
+    });
+
+    /** 渲染 Mimic 圖片卡片 */
+    function renderGallery() {
+      itemGrid.innerHTML = '';
+      images.forEach(img => {
+        const card = document.createElement('article');
+        card.className = 'item-card';
+        card.dataset.id = img.id;
+        card.innerHTML = `
+          <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+          <div class="item-info">
+            <div class="actions">
+              <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+            </div>
+          </div>
+        `;
+        itemGrid.appendChild(card);
+      });
+    }
+
+    /** 上傳照片 */
+    /** 上傳照片1_ 點選 + icon -> 觸發檔案選擇器 */
+    uploadBtn.addEventListener('click', () => {
+      uploadInput.click();
+    });
+    /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
+uploadInput.addEventListener('change', async (event) => {
+  const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+  if (files.length === 0) return;
+
+  // 先顯示圖片預覽並加上處理中的遮罩
+  const previewImages = files.map(file => {
+    const img = URL.createObjectURL(file);
+    return {
+      file,
+      url: img,
+      status: 'processing',  // 狀態為處理中
+    };
+  });
+
+  // 創建圖片預覽卡片，並插入到最前面
+  previewImages.forEach(img => {
+    const card = document.createElement('article');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div class="item-image-container" style="position: relative;">
+        <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+        <div class="processing-overlay">處理中...</div>
+      </div>
+      <div class="item-info">
+        <div class="actions">
+          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+        </div>
+      </div>
+    `;
+    itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
+  });
+
+  // 上傳並處理圖片
+  await uploadAndAddNewImages(files, previewImages);
+});
+
+/** 上傳並添加新圖片 */
+async function uploadAndAddNewImages(files, previewImages) {
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  files.forEach(file => formData.append('images', file));  // 多張圖片
+
+  try {
+    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+    const result = await res.json();
+    
+    if (result.status === 'success') {
+      // 從後端返回新圖片的列表，逐一更新每張圖片
+      const newImages = result.new_images.map((img, index) => ({
+        ...img,
+        url: img.url.startsWith('/') ? img.url : '/' + img.url,
+        status: 'done'  // 預設為已處理
+      }));
+
+      // 更新圖片卡片，逐一移除處理中的遮罩
+      previewImages.forEach((previewImg, index) => {
+        const card = itemGrid.querySelector(`img[src="${previewImg.url}"]`).closest('.item-card');
+        if (card) {
+          const overlay = card.querySelector('.processing-overlay');
+          if (overlay) {
+            if (newImages[index]) {
+              // 如果這張圖片已處理完成，移除處理中的遮罩
+              overlay.textContent = '處理完成';
+              overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+            }
+          }
+        }
+      });
+
+      // 將新圖片添加到前端
+      images = [...newImages, ...images];
+      renderGallery();
+    } else {
+      alert(result.message || '上傳失敗');
+    }
+  } catch (error) {
+    alert('上傳發生錯誤');
+  }
+  
+  // 重置上傳輸入框
+  uploadInput.value = '';
+}
+    /** 上傳照片3_後端API */
+async function uploadAndAddNewImages(files, previewImages) {
+  const formData = new FormData();
+  formData.append('userId', globalUserId);
+  files.forEach(file => formData.append('images', file));  // 多張圖片
+  
+  try {
+    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+    const result = await res.json();
+    
+    if (result.status === 'success') {
+      // 更新圖片，移除處理中的遮罩
+      const newImages = result.new_images.map(img => ({
+        ...img,
+        url: img.url.startsWith('/') ? img.url : '/' + img.url,
+        status: 'done'  // 設定為處理完成狀態
+      }));
+      
+      // 更新圖片卡片，移除遮罩
+      newImages.forEach(newImg => {
+        const card = itemGrid.querySelector(`[data-id="${newImg.id}"]`);
+        if (card) {
+          const overlay = card.querySelector('.processing-overlay');
+          if (overlay) {
+            overlay.textContent = '處理完成';
+            overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+          }
+        }
+      });
+
+      // 將新圖片添加到前端
+      images = [...newImages, ...images];
+      renderGallery();
+    } else {
+      alert(result.message || '上傳失敗');
+    }
+  } catch (error) {
+    alert('上傳發生錯誤');
+  }
+  
+  // 重置上傳輸入框
+  uploadInput.value = '';
+}
+
+    /** 刪除照片 **/
+    /* 刪除照片_1. 點擊fa-trash -> 跳出是否確認要刪除對話框 */
+    itemGrid.addEventListener('click', e => {
+      if (e.target.classList.contains('fa-trash')) {
+        // 找到點擊的垃圾桶所在的卡片
+        const card = e.target.closest('.item-card');
+        if (!card) return;
+      
+        selectedItemCard = card;
+        deleteModal.classList.add('active');  // 顯示刪除確認 Modal
+      }
+    });
+    /* 刪除照片_2. 點擊確認刪除 → 呼叫刪除 API */
+    document.getElementById('modal-delete-yes').addEventListener('click', async function () {
+      if (!selectedItemCard) return;
+      const imageId = selectedItemCard.getAttribute('data-id');
+      try {
+        const res = await fetch('/linebot/delete_mimic_images/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: globalUserId, imageIds: [Number(imageId)] }),
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          await fetchGalleryFromBackend('mimic');
+        } else {
+          alert(result.message || '刪除失敗');
+        }
+      } catch (error) {
+        alert('刪除時發生錯誤');
+      }
+      selectedItemCard = null;
+      deleteModal.classList.remove('active');
+    });
+
+    /* 刪除照片_3. 點擊取消刪除 -> 關閉是否確認要刪除對話框 */
+    document.getElementById('modal-delete-cancel').addEventListener('click', () => {
+      closeModal(deleteModal);
+    });
+
+      /** 搜尋比對結果 **/
+      /* 搜尋比對結果_1. 點擊itemGrid(mimic照片) -> 跳出是否要搜尋對話框 */
+      itemGrid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('clickable-img')) {
+          const card = e.target.closest('.item-card');
+          if (!card) return;
+          currentitem = card;
+          openModal();
+        }
+      });
+      /* 搜尋比對結果_2. 按取消搜尋 -> 關閉是否要搜尋對話框 */
+      btnCancel.addEventListener('click', () => {
+        closeModal(modal);
+      });
+
+      /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
+  btnConfirm.addEventListener('click', async () => {
+    closeModal(modal);
+    showLoading();
+
+    if (!currentitem) {
+      alert('找不到目前選中的圖片');
+      closeLoading();
+      return;
+    }
+
+    const clickedImgSrc = currentitem.querySelector('img').src;
+
+    // 模擬等待
+    await new Promise(r => setTimeout(r, 1500));
+
+    await fetchSearchResults(clickedImgSrc);
+
+    // 設定原圖
+    document.getElementById('search-original-img').src = clickedImgSrc;
+
+    closeLoading();
+    SearchResultModal.style.display = 'flex';
+    setTimeout(() => SearchResultModal.classList.add('show'), 10);
+  });
+
+      /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
+      SearchResultClose.addEventListener('click', () => {
+        SearchResultModal.classList.remove('show');
+        setTimeout(() => SearchResultModal.style.display = 'none', 300);
+      });
+
+
+  async function fetchSearchResults(imageUrl) {
+    try {
+      const res = await fetch('/linebot/get_search_results/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: globalUserId, imageUrl: imageUrl })
+      });
+      const result = await res.json();
+      if (result.status !== 'success') {
+        alert(result.message || '搜尋失敗');
+        return;
+      }
+      renderSearchTabs(result.categories);
+    } catch (err) {
+      alert('取得搜尋結果失敗');
+    }
+  }
+
+  /** 動態生成 Tabs + 內容 */
+  function renderSearchTabs(categories) {
+    const container = document.getElementById('tabs-container');
+    container.innerHTML = '';  // 清空
+
+    // 建立 tabs 按鈕區
+    const tabBtnsDiv = document.createElement('div');
+    tabBtnsDiv.className = 'custom-tabs';
+
+    // 建立內容區
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'tab-content';
+
+    categories.forEach((cat, index) => {
+      // 建立 tab 按鈕
+      const tabBtn = document.createElement('button');
+      tabBtn.className = 'tab-btn' + (index === 0 ? ' active' : '');
+      tabBtn.dataset.target = cat.id;
+      tabBtn.textContent = cat.name;
+
+      tabBtnsDiv.appendChild(tabBtn);
+
+      // 建立 tab 內容面板
+      const tabPanel = document.createElement('div');
+      tabPanel.id = cat.id;
+      tabPanel.className = 'tab-panel';
+
+      if (cat.images.length === 0) {
+        const msg = document.createElement('p');
+        msg.textContent = '衣櫃無類似衣服';
+        msg.style.textAlign = 'center';
+        tabPanel.appendChild(msg);
+      } else {
+        cat.images.forEach(imgUrl => {
+          const img = document.createElement('img');
+          img.src = imgUrl;
+          img.alt = cat.name;
+          tabPanel.appendChild(img);
+        });
+      }
+
+      if (index === 0) {
+        tabPanel.classList.add('active');
+      }
+
+      contentDiv.appendChild(tabPanel);
+    });
+
+    container.appendChild(tabBtnsDiv);
+    container.appendChild(contentDiv);
+
+    // 綁定切換事件
+    const tabButtons = tabBtnsDiv.querySelectorAll('.tab-btn');
+
+    tabButtons.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 移除其他按鈕 active
+        tabButtons.forEach(t => t.classList.remove('active'));
+      
+        // 加上當前按鈕 active
+        tab.classList.add('active');
+      
+        // 切換內容
+        contentDiv.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.classList.remove('active');
+        });
+        document.getElementById(tab.dataset.target).classList.add('active');
+      });
+});
+  }
+
+  </script>
+  {% include "components/footer.html" %}
+</body>
+</html>

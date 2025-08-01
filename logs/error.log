@@ -1,0 +1,992 @@
+2025-07-27 18:49:16,674 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 18:49:16,691 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137949
+2025-07-27 18:49:16,941 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 18:49:16,943 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137949
+2025-07-27 18:49:17,265 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 18:49:17,266 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137949
+2025-07-27 18:49:17,428 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 18:49:17,430 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137949
+2025-07-27 18:49:19,893 [ERROR] django.request Internal Server Error: /linebot/view_closet/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_closetitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\linebot_app\views.py", line 236, in view_closet
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\OneDrive\桌面\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_closetitem
+2025-07-27 18:49:19,896 [ERROR] django.server "GET /linebot/view_closet/dev_test_user_12345/ HTTP/1.1" 500 137811
+2025-07-27 19:09:05,044 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 19:09:05,053 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 136277
+2025-07-27 19:09:09,243 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 19:09:09,249 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 136277
+2025-07-27 19:09:27,017 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:09:27,017 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 108
+2025-07-27 19:09:30,162 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 335, in view_mimic
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-27 19:09:30,166 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 136277
+2025-07-27 19:09:34,178 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:09:34,179 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 108
+2025-07-27 19:09:39,077 [ERROR] django.request Internal Server Error: /linebot/view_closet/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_closetitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 236, in view_closet
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_closetitem
+2025-07-27 19:09:39,081 [ERROR] django.server "GET /linebot/view_closet/dev_test_user_12345/ HTTP/1.1" 500 136139
+2025-07-27 19:09:41,239 [ERROR] django.request Internal Server Error: /linebot/view_closet/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: linebot_app_closetitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 236, in view_closet
+    } for item in items]
+                  ^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: linebot_app_closetitem
+2025-07-27 19:09:41,241 [ERROR] django.server "GET /linebot/view_closet/dev_test_user_12345/ HTTP/1.1" 500 136139
+2025-07-27 19:11:46,847 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-27 19:11:46,849 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 109
+2025-07-27 19:35:28,042 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\linebot_app\views.py", line 401, in upload_mimic
+    if not user_id or not category or not files:
+                          ^^^^^^^^
+NameError: name 'category' is not defined
+2025-07-27 19:35:28,048 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 73725
+2025-07-27 19:36:46,304 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:36:46,305 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:37:25,606 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:37:25,607 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:39:58,198 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:39:58,198 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:40:13,376 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:40:13,376 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:40:14,882 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+          ~~~~~~~~~^~~~~~~~
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-27 19:40:14,886 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 82981
+2025-07-27 19:40:58,210 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:40:58,210 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 19:41:07,869 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 19:41:07,870 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 102
+2025-07-27 20:10:53,703 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-27 20:10:53,704 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 104
+2025-07-27 21:59:52,543 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+          ~~~~~~~~~^~~~~~~~
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-27 21:59:52,543 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 82977
+2025-07-27 21:59:56,193 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+          ~~~~~~~~~^~~~~~~~
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-27 21:59:56,197 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 82977
+2025-07-28 10:26:57,067 [ERROR] django.request Internal Server Error: /linebot/view_mimic/dev_test_user_12345/
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\user\Desktop\AI_outfit\linebot_app\views.py", line 332, in view_mimic
+    images = [{
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-28 10:26:57,070 [ERROR] django.server "GET /linebot/view_mimic/dev_test_user_12345/ HTTP/1.1" 500 137937
+2025-07-28 13:56:50,270 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-28 13:56:50,271 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 86
+2025-07-28 19:26:12,072 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-28 19:26:12,073 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 99
+2025-07-28 19:27:21,674 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-28 20:52:37,223 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\USER\Desktop\AI_outfit\vm\Lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+          ~~~~~~~~~^~~~~~~~
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-28 20:52:37,227 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 83627
+2025-07-29 09:31:41,053 [ERROR] django.request Internal Server Error: /linebot/view_images/dev_test_user_12345/mimic/
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\user\Desktop\AI_outfit\linebot_app\views.py", line 96, in view_images
+    images = [{
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\Desktop\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-29 09:31:41,056 [ERROR] django.server "GET /linebot/view_images/dev_test_user_12345/mimic/ HTTP/1.1" 500 138301
+2025-07-29 09:34:36,922 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-29 09:34:36,922 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 99
+2025-07-29 19:11:20,252 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-29 19:11:20,252 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 126
+2025-07-29 19:13:49,601 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-29 19:13:49,601 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 283
+2025-07-29 19:16:18,733 [ERROR] django.request Internal Server Error: /linebot/upload_closet/
+2025-07-29 19:16:18,734 [ERROR] django.server "POST /linebot/upload_closet/ HTTP/1.1" 500 126
+2025-07-30 10:30:30,663 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-30 10:30:30,665 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84830
+2025-07-30 13:01:59,289 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:01:59,289 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 13:02:51,742 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:02:51,743 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 13:03:21,106 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 13:03:21,106 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 110
+2025-07-30 14:25:53,013 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 14:25:53,014 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 130
+2025-07-30 14:26:04,189 [ERROR] django.request Internal Server Error: /linebot/upload_mimic/
+2025-07-30 14:26:04,189 [ERROR] django.server "POST /linebot/upload_mimic/ HTTP/1.1" 500 130
+2025-07-30 14:44:33,823 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-30 14:44:33,825 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84838
+2025-07-30 14:44:35,402 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-30 14:44:35,402 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84838
+2025-07-30 17:11:08,588 [ERROR] django.request Internal Server Error: /linebot/view_images/dev_test_user_12345/mimic/
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\linebot_app\views.py", line 101, in view_images
+    images = [{
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-30 17:11:08,592 [ERROR] django.server "GET /linebot/view_images/dev_test_user_12345/mimic/ HTTP/1.1" 500 135334
+2025-07-31 09:39:05,661 [ERROR] django.request Internal Server Error: /linebot/view_images/dev_test_user_12345/mimic/
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\linebot_app\views.py", line 101, in view_images
+    images = [{
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-31 09:39:05,664 [ERROR] django.server "GET /linebot/view_images/dev_test_user_12345/mimic/ HTTP/1.1" 500 138751
+2025-07-31 16:03:16,231 [ERROR] django.request Internal Server Error: /linebot/view_images/dev_test_user_12345/mimic/
+Traceback (most recent call last):
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: linebot_app_mimicitem
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\linebot_app\views.py", line 107, in view_images
+    images = [{
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "D:\AI_outfit\AI_outfit\vm\lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: linebot_app_mimicitem
+2025-07-31 16:03:16,232 [ERROR] django.server "GET /linebot/view_images/dev_test_user_12345/mimic/ HTTP/1.1" 500 138402
+2025-07-31 16:51:07,658 [ERROR] django.request Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\views\generic\base.py", line 259, in get
+    url = self.get_redirect_url(*args, **kwargs)
+  File "D:\AI_Outfit_DevMode\AI_Outfit_DevMode-main\vm\lib\site-packages\django\views\generic\base.py", line 247, in get_redirect_url
+    url = self.url % kwargs
+TypeError: unsupported operand type(s) for %: 'list' and 'dict'
+2025-07-31 16:51:07,659 [ERROR] django.server "GET /favicon.ico HTTP/1.1" 500 84858
