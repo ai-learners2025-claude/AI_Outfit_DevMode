@@ -95,6 +95,7 @@
       .actions i {
         font-size: 1.2rem;
         padding: 6px;
+        z-index:5;
       }
     }
     .item-info {
@@ -450,13 +451,15 @@
   font-weight: bold;
   opacity: 1;
   transition: opacity 0.3s ease;
+  z-index: 10; /* 確保在 .fa-trash 上方 */
+  pointer-events: all; /* 防止下方元素被點擊 */
+
 }
 
 /* 當圖片處理完成時，遮罩的變化 */
 .processing-overlay.done {
   background: rgba(0, 0, 0, 0.3);  /* 透明度降低 */
   opacity: 0.8;
-  color: #4CAF50;  /* 顯示綠色文字 */
 }
 
   </style>
@@ -570,7 +573,7 @@
         }
         progressBar.style.width = progress + '%';
         search_loading.setAttribute('aria-valuenow', progress);
-      }, 50);
+      }, 1000);
     }
 
     function closeLoading() {
@@ -633,131 +636,131 @@
       uploadInput.click();
     });
     /** 上傳照片2_選擇檔案後上傳並呼叫後端API */
-uploadInput.addEventListener('change', async (event) => {
-  const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
-  if (files.length === 0) return;
-
-  // 先顯示圖片預覽並加上處理中的遮罩
-  const previewImages = files.map(file => {
-    const img = URL.createObjectURL(file);
-    return {
-      file,
-      url: img,
-      status: 'processing',  // 狀態為處理中
-    };
-  });
-
-  // 創建圖片預覽卡片，並插入到最前面
-  previewImages.forEach(img => {
-    const card = document.createElement('article');
-    card.className = 'item-card';
-    card.innerHTML = `
-      <div class="item-image-container" style="position: relative;">
-        <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
-        <div class="processing-overlay">處理中...</div>
-      </div>
-      <div class="item-info">
-        <div class="actions">
-          <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
-        </div>
-      </div>
-    `;
-    itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
-  });
-
-  // 上傳並處理圖片
-  await uploadAndAddNewImages(files, previewImages);
-});
-
-/** 上傳並添加新圖片 */
-async function uploadAndAddNewImages(files, previewImages) {
-  const formData = new FormData();
-  formData.append('userId', globalUserId);
-  files.forEach(file => formData.append('images', file));  // 多張圖片
-
-  try {
-    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
-    const result = await res.json();
+    uploadInput.addEventListener('change', async (event) => {
+      const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));  // 多張圖片
+      if (files.length === 0) return;
     
-    if (result.status === 'success') {
-      // 從後端返回新圖片的列表，逐一更新每張圖片
-      const newImages = result.new_images.map((img, index) => ({
-        ...img,
-        url: img.url.startsWith('/') ? img.url : '/' + img.url,
-        status: 'done'  // 預設為已處理
-      }));
+      // 先顯示圖片預覽並加上處理中的遮罩
+      const previewImages = files.map(file => {
+        const img = URL.createObjectURL(file);
+        return {
+          file,
+          url: img,
+          status: 'processing',  // 狀態為處理中
+        };
+      });
+    
+      // 創建圖片預覽卡片，並插入到最前面
+      previewImages.forEach(img => {
+        const card = document.createElement('article');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-image-container" style="position: relative;">
+            <img src="${img.url}" alt="衣物圖片" loading="lazy" class="clickable-img" />
+            <div class="processing-overlay">處理中...</div>
+          </div>
+          <div class="item-info">
+            <div class="actions">
+              <i class="fas fa-trash" title="刪除穿搭" role="button"></i>
+            </div>
+          </div>
+        `;
+        itemGrid.insertBefore(card, itemGrid.firstChild); // 插入到最前面
+      });
+    
+      // 上傳並處理圖片
+      await uploadAndAddNewImages(files, previewImages);
+    });
 
-      // 更新圖片卡片，逐一移除處理中的遮罩
-      previewImages.forEach((previewImg, index) => {
-        const card = itemGrid.querySelector(`img[src="${previewImg.url}"]`).closest('.item-card');
-        if (card) {
-          const overlay = card.querySelector('.processing-overlay');
-          if (overlay) {
-            if (newImages[index]) {
-              // 如果這張圖片已處理完成，移除處理中的遮罩
-              overlay.textContent = '處理完成';
-              overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+    /** 上傳並添加新圖片 */
+    async function uploadAndAddNewImages(files, previewImages) {
+      const formData = new FormData();
+      formData.append('userId', globalUserId);
+      files.forEach(file => formData.append('images', file));  // 多張圖片
+    
+      try {
+        const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (result.status === 'success') {
+          // 從後端返回新圖片的列表，逐一更新每張圖片
+          const newImages = result.new_images.map((img, index) => ({
+            ...img,
+            url: img.url.startsWith('/') ? img.url : '/' + img.url,
+            status: 'done'  // 預設為已處理
+          }));
+        
+          // 更新圖片卡片，逐一移除處理中的遮罩
+          previewImages.forEach((previewImg, index) => {
+            const card = itemGrid.querySelector(`img[src="${previewImg.url}"]`).closest('.item-card');
+            if (card) {
+              const overlay = card.querySelector('.processing-overlay');
+              if (overlay) {
+                if (newImages[index]) {
+                  // 如果這張圖片已處理完成，移除處理中的遮罩
+                  overlay.textContent = '處理完成';
+                  overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+                }
+              }
             }
-          }
+          });
+        
+          // 將新圖片添加到前端
+          images = [...newImages, ...images];
+          renderGallery();
+        } else {
+          alert(result.message || '上傳失敗');
         }
-      });
+      } catch (error) {
+        alert('上傳發生錯誤');
+      }
 
-      // 將新圖片添加到前端
-      images = [...newImages, ...images];
-      renderGallery();
-    } else {
-      alert(result.message || '上傳失敗');
+      // 重置上傳輸入框
+      uploadInput.value = '';
     }
-  } catch (error) {
-    alert('上傳發生錯誤');
-  }
-  
-  // 重置上傳輸入框
-  uploadInput.value = '';
-}
     /** 上傳照片3_後端API */
-async function uploadAndAddNewImages(files, previewImages) {
-  const formData = new FormData();
-  formData.append('userId', globalUserId);
-  files.forEach(file => formData.append('images', file));  // 多張圖片
-  
-  try {
-    const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
-    const result = await res.json();
-    
-    if (result.status === 'success') {
-      // 更新圖片，移除處理中的遮罩
-      const newImages = result.new_images.map(img => ({
-        ...img,
-        url: img.url.startsWith('/') ? img.url : '/' + img.url,
-        status: 'done'  // 設定為處理完成狀態
-      }));
-      
-      // 更新圖片卡片，移除遮罩
-      newImages.forEach(newImg => {
-        const card = itemGrid.querySelector(`[data-id="${newImg.id}"]`);
-        if (card) {
-          const overlay = card.querySelector('.processing-overlay');
-          if (overlay) {
-            overlay.textContent = '處理完成';
-            overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
-          }
-        }
-      });
+    async function uploadAndAddNewImages(files, previewImages) {
+      const formData = new FormData();
+      formData.append('userId', globalUserId);
+      files.forEach(file => formData.append('images', file));  // 多張圖片
 
-      // 將新圖片添加到前端
-      images = [...newImages, ...images];
-      renderGallery();
-    } else {
-      alert(result.message || '上傳失敗');
+      try {
+        const res = await fetch('/linebot/upload_mimic/', { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (result.status === 'success') {
+          // 更新圖片，移除處理中的遮罩
+          const newImages = result.new_images.map(img => ({
+            ...img,
+            url: img.url.startsWith('/') ? img.url : '/' + img.url,
+            status: 'done'  // 設定為處理完成狀態
+          }));
+
+          // 更新圖片卡片，移除遮罩
+          newImages.forEach(newImg => {
+            const card = itemGrid.querySelector(`[data-id="${newImg.id}"]`);
+            if (card) {
+              const overlay = card.querySelector('.processing-overlay');
+              if (overlay) {
+                overlay.textContent = '處理完成';
+                overlay.style.background = 'rgba(0, 0, 0, 0.3)';  // 減少遮罩的透明度
+              }
+            }
+          });
+        
+          // 將新圖片添加到前端
+          images = [...newImages, ...images];
+          renderGallery();
+        } else {
+          alert(result.message || '上傳失敗');
+        }
+      } catch (error) {
+        alert('上傳發生錯誤');
+      }
+
+      // 重置上傳輸入框
+      uploadInput.value = '';
     }
-  } catch (error) {
-    alert('上傳發生錯誤');
-  }
-  
-  // 重置上傳輸入框
-  uploadInput.value = '';
-}
 
     /** 刪除照片 **/
     /* 刪除照片_1. 點擊fa-trash -> 跳出是否確認要刪除對話框 */
@@ -815,30 +818,30 @@ async function uploadAndAddNewImages(files, previewImages) {
       });
 
       /* 搜尋比對結果_3. 按確定搜尋 -> 進度條 -> 跳出比對結果畫面 */
-  btnConfirm.addEventListener('click', async () => {
-    closeModal(modal);
-    showLoading();
-
-    if (!currentitem) {
-      alert('找不到目前選中的圖片');
-      closeLoading();
-      return;
-    }
-
-    const clickedImgSrc = currentitem.querySelector('img').src;
-
-    // 模擬等待
-    await new Promise(r => setTimeout(r, 1500));
-
-    await fetchSearchResults(clickedImgSrc);
-
-    // 設定原圖
-    document.getElementById('search-original-img').src = clickedImgSrc;
-
-    closeLoading();
-    SearchResultModal.style.display = 'flex';
-    setTimeout(() => SearchResultModal.classList.add('show'), 10);
-  });
+      btnConfirm.addEventListener('click', async () => {
+        closeModal(modal);
+        showLoading();
+      
+        if (!currentitem) {
+          alert('找不到目前選中的圖片');
+          closeLoading();
+          return;
+        }
+      
+        const clickedImgSrc = currentitem.querySelector('img').src;
+      
+        // 模擬等待
+        await new Promise(r => setTimeout(r, 1500));
+      
+        await fetchSearchResults(clickedImgSrc);
+      
+        // 設定原圖
+        document.getElementById('search-original-img').src = clickedImgSrc;
+      
+        closeLoading();
+        SearchResultModal.style.display = 'flex';
+        setTimeout(() => SearchResultModal.classList.add('show'), 10);
+      });
 
       /* 搜尋比對結果_4. 於比對結果畫面按叉叉(SearchResultClose) -> 關閉比對結果 */
       SearchResultClose.addEventListener('click', () => {
