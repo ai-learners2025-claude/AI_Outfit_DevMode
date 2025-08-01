@@ -598,11 +598,11 @@ class RunningHubImageProcessor:
             parsed_url = urlparse(url)
             original_filename = Path(parsed_url.path).name or f"result_{i+1}.png"
             base_name = self.custom_base_name if hasattr(self, 'custom_base_name') else Path(self.uploaded_filename).stem
-
-            # 自訂儲存檔名
-            if i == 0:
+            print(original_filename)
+            # 自訂儲存檔名，並改用original_filename 開頭判斷
+            if original_filename.startswith("ComfyUI_Person"):
                 new_filename = f"{base_name}_removed_bg.png"   
-            elif i == 1:
+            elif original_filename.startswith("ComfyUI_Kontext"):
                 new_filename = f"{base_name}_aligned.png"
             else:
                 new_filename = original_filename
