@@ -586,6 +586,8 @@
         console.log("🚀 開發模式：跳過 LINE LIFF 驗證");
         globalUserId = DEV_USER_ID;
         await fetchGalleryFromBackend('mimic');
+        await fetchGalleryFromBackend('closet',false);
+
       } else {
         try {
           await liff.init({ liffId: liffId });
@@ -595,6 +597,7 @@
             const profile = await liff.getProfile();
             globalUserId = profile.userId;
             await fetchGalleryFromBackend('mimic');
+            await fetchGalleryFromBackend('closet',false);
           }
         } catch (err) {
           console.error("LIFF 初始化錯誤", err);
